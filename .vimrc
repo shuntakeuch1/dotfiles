@@ -13,9 +13,9 @@ call dein#begin(expand('/Users/takeuchishun/.vim/bundle'))
 " Required:
 call dein#add('Shougo/dein.vim')
 call dein#add('Shougo/unite.vim')
-call dein#add('Shougo/neossh.vim')
-call dein#add('Shougo/vimfiler')
-call dein#add('Shougo/vimproc')
+"call dein#add('Shougo/neossh.vim')
+"call dein#add('Shougo/vimfiler')
+"call dein#add('Shougo/vimproc')
 call dein#add('tomasr/molokai')
 
 " Add or remove your plugins here:
@@ -69,4 +69,4 @@ let g:netrw_altv = 1
 let g:netrw_alto = 1
 let g:vimfiler_as_default_explorer=1
 colorscheme molokai
-"autocmd VimEnter * execute 'NERDTree'
+autocmd VimEnter * execute 'NERDTree'
