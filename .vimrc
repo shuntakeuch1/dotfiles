@@ -24,7 +24,7 @@ call dein#add('Shougo/neosnippet-snippets')
 
 " You can specify revision/branch/tag.
 call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
-call dein#add('scrooloose/nerdtree')
+"call dein#add('scrooloose/nerdtree')
 
 " Required:
 call dein#end()
@@ -69,4 +69,4 @@ let g:netrw_altv = 1
 let g:netrw_alto = 1
 let g:vimfiler_as_default_explorer=1
 colorscheme molokai
-autocmd VimEnter * execute 'NERDTree'
+"autocmd VimEnter * execute 'NERDTree'

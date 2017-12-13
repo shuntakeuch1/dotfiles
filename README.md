@@ -1,4 +1,4 @@
-#個人的な.から始まる再利用するファイル群
+#個人的な「.」から始まる再利用するファイル群
 clone
 ```
 https://github.com/shuntakeuchi/dotfiles.git
