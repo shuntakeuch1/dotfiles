@@ -699,7 +699,7 @@
  '(desktop-save-mode t)
  '(package-selected-packages
    (quote
-    (git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes elscreen-persist helm-package helm-descbinds coffee-mode haskell-mode js2-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line yasnippet web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+    (git-gutter-fringe git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes elscreen-persist helm-package helm-descbinds coffee-mode haskell-mode js2-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line yasnippet web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -841,7 +841,7 @@
 (when (require 'git-gutter nil t)
   (global-git-gutter-mode t)
   ;; linum-modeを利用している場合は次の設定も追加
-  ;; (git-gutter:linum-setup)
+  (git-gutter:linum-setup)
   )
 ;; (custom-set-variables
 ;;  '(git-gutter:modified-sign "*")
@@ -994,4 +994,35 @@
 ;;;;javascript
 ;; (add-hook 'after-init-hook #'global-flycheck-mode)
 ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;;; P160 標準のjs-mode
+(defun js-indent-hook ()
+  ;; インデント幅を4にする
+  (setq js-indent-level 2
+        js-expr-indent-offset 2
+        indent-tabs-mode nil)
+  ;; switch文のcaseラベルをインデントする関数を定義する
+  (defun my-js-indent-line () ←(d1)
+    (interactive)
+    (let* ((parse-status (save-excursion (syntax-ppss (point-at-bol))))
+           (offset (- (current-column) (current-indentation)))
+           (indentation (js--proper-indentation parse-status)))
+      (back-to-indentation)
+      (if (looking-at "case\\s-")
+          (indent-line-to (+ indentation 2))
+        (js-indent-line))
+      (when (> offset 0) (forward-char offset))))
+  ;; caseラベルのインデント処理をセットする
+  (set (make-local-variable 'indent-line-function) 'my-js-indent-line)
+  ;; ここまでcaseラベルを調整する設定
+  )
+
+;; js-modeの起動時にhookを追加
+(add-hook 'js-mode-hook 'js-indent-hook)
+
+
+;;; 構文チェック機能を備えたjs2-mode
+;; (package-install 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;; React（JSX）を使う場合はこちら
+;; (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 
