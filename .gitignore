@@ -1,3 +1,0 @@
-/.emacs.d/*
-# Gitで管理したいファイル
-!/.emacs.d/init.el
