@@ -29,6 +29,7 @@
 ;;           (set-frame-parameter nil 'alpha 80)
 ;;         (set-frame-parameter nil 'alpha 100)))))
 ;;起動時だけウインドウ最大化してみる
+;; (require 'maxframe)
 ;; (add-hook 'window-setup-hook 'maximize-frame t)
 
 (require 'hl-line)
@@ -66,7 +67,7 @@
 
 ;; C-mにnewline-and-indentを割り当てる。
 ;; 先ほどとは異なりglobal-set-keyを利用
-                                        ; (global-set-key (kbd "C-m") 'newline-and-indent)
+(global-set-key (kbd "C-m") 'newline-and-indent)
 ;; 折り返しトグルコマンド
 (define-key global-map (kbd "C-c l") 'toggle-truncate-lines)
 
@@ -143,6 +144,10 @@
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (c-set-style "bsd")))
+;; php-modeのswitch文のインデント
+(add-hook 'php-mode-hook
+          (lambda ()
+            (c-set-offset 'case-label '+)))
 
 
 ;;; 表示テーマの設定
@@ -317,27 +322,30 @@
 ;; (elscreen-start)
 ;; (elscreen-persist-mode 1)
 
-;; ;; howmメモ保存の場所
-;; (setq howm-directory (concat user-emacs-directory "howm"))
-;; ;; howm-menuの言語を日本語に
-;; (setq howm-menu-lang 'ja)
-;; ;; howmメモを1日1ファイルにする
-;; ; (setq howm-file-name-format "%Y/%m/%Y-%m-%d.howm")
-;; ;; howm-modeを読み込む
-;; (when (require 'howm-mode nil t)
-;;   ;; C-c,,でhowm-menuを起動
-;;   (define-key global-map (kbd "C-c ,,") 'howm-menu))
-;; ;; howmメモを保存と同時に閉じる
-;; (defun howm-save-buffer-and-kill ()
-;;   "howmメモを保存と同時に閉じます。"
-;;   (interactive)
-;;   (when (and (buffer-file-name)
-;;              (string-match "\\.howm" (buffer-file-name)))
-;;     (save-buffer)
-;;     (kill-buffer nil)))
+;;; メモ書き・ToDo管理 howm
+;; (package-install 'howm)
+;; howmメモ保存の場所
+(setq howm-directory (concat user-emacs-directory "howm"))
+;; howm-menuの言語を日本語に
+(setq howm-menu-lang 'ja)
+;; howmメモを1日1ファイルにする
+; (setq howm-file-name-format "%Y/%m/%Y-%m-%d.howm")
+;; howm-modeを読み込む
+(when (require 'howm-mode nil t)
+  ;; C-c,,でhowm-menuを起動
+  (define-key global-map (kbd "C-c ,,") 'howm-menu))
 
-;; ;; C-c C-cでメモの保存と同時にバッファを閉じる
-;; (define-key howm-mode-map (kbd "C-c C-c") 'howm-save-buffer-and-kill)
+;; howmメモを保存と同時に閉じる
+(defun howm-save-buffer-and-kill ()
+  "howmメモを保存と同時に閉じます。"
+  (interactive)
+  (when (and (buffer-file-name)
+             (howm-buffer-p))
+    (save-buffer)
+    (kill-buffer nil)))
+
+;; C-c C-cでメモの保存と同時にバッファを閉じる
+(define-key howm-mode-map (kbd "C-c C-c") 'howm-save-buffer-and-kill)
 
 ;; cua-modeの設定
 (cua-mode t) ; cua-modeをオン
@@ -641,24 +649,29 @@
 
 (helm-mode 1)
 ;; web-mode
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[gj]sp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(setq web-mode-engines-alist
-      '(("php"    . "\\.phtml\\'")
-        ("blade"  . "\\.blade\\.")))
-
-(setq web-mode-extra-auto-pairs
-      '(("erb"  . (("beg" "end")))
-        ("php"  . (("beg" "end")
-                   ("beg" "end")))
-        ))
+(when (require 'web-mode nil t)
+  ;; 自動的にweb-modeを起動したい拡張子を追加する
+  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.ctp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  ;;; web-modeのインデント設定用フック
+  ;; (defun web-mode-hook ()
+  ;;   "Hooks for Web mode."
+  ;;   (setq web-mode-markup-indent-offset 2) ; HTMLのインデイント
+  ;;   (setq web-mode-css-indent-offset 2) ; CSSのインデント
+  ;;   (setq web-mode-code-indent-offset 2) ; JS, PHP, Rubyなどのインデント
+  ;;   (setq web-mode-comment-style 2) ; web-mode内のコメントのインデント
+  ;;   (setq web-mode-style-padding 1) ; <style>内のインデント開始レベル
+  ;;   (setq web-mode-script-padding 1) ; <script>内のインデント開始レベル
+  ;;   )
+  ;; (add-hook 'web-mode-hook  'web-mode-hook)
+  )
 
 (require 'emmet-mode)
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; マークアップモードで自動的に emmet-mode をたちあげる
@@ -668,7 +681,7 @@
 (eval-after-load "emmet-mode"
   '(define-key emmet-mode-keymap (kbd "C-j") nil)) ;; C-j は newline のままにしておく
 (keyboard-translate ?\C-i ?\H-i) ;;C-i と Tabの被りを回避
-(define-key emmet-mode-keymap (kbd "H-i") 'emmet-expand-line) ;; C-i で展開
+(define-key emmet-mode-keymap (kbd "s-e") 'emmet-expand-line) ;; command + e で展開
 (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 0)));;自動インデントなし
 
 ;;; P172 ruby-modeのインデントを調整する
@@ -698,9 +711,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(desktop-save-mode t)
+ '(git-gutter:added-sign ">")
+ '(git-gutter:deleted-sign "x")
+ '(git-gutter:modified-sign "*")
  '(package-selected-packages
    (quote
-    (which-key helm-projectile zenburn-theme git-gutter-fringe git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes elscreen-persist helm-package helm-descbinds coffee-mode haskell-mode js2-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line yasnippet web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+    (quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes elscreen-persist helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -849,12 +865,12 @@
 (global-set-key [f8] 'neotree-project-dir)
 
 ;; tramp sudo利用 /ssh:sudo:$hostname:$directory
-(add-to-list 'tramp-default-proxies-alist
-             '(nil "\\`root\\'" "/ssh:%h:"))
-(add-to-list 'tramp-default-proxies-alist
-             '("localhost" nil nil))
-(add-to-list 'tramp-default-proxies-alist
-             '((regexp-quote (system-name)) nil nil))
+;; (add-to-list 'tramp-default-proxies-alist
+;;              '(nil "\\`root\\'" "/ssh:%h:"))
+;; (add-to-list 'tramp-default-proxies-alist
+;;              '("localhost" nil nil))
+;; (add-to-list 'tramp-default-proxies-alist
+;;              '((regexp-quote (system-name)) nil nil))
 ;; magit
 (global-set-key (kbd "C-x g") 'magit-status)
 
@@ -862,26 +878,23 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-;; gitの差分表示
+;;;; gitの差分表示
 (when (require 'git-gutter nil t)
   (global-git-gutter-mode t)
   ;; linum-modeを利用している場合は次の設定も追加
   (git-gutter:linum-setup)
   )
-;; (custom-set-variables
-;;  '(git-gutter:modified-sign "*")
-;;  '(git-gutter:added-sign ">")
-;;  '(git-gutter:deleted-sign "x"))
+
 (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
 (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
 
 ;;chrome更新save-rehash
-(defun reload-chrome ()"Save and reload browser"
+(defun reload-browser ()"Save and reload browser"
        (interactive)
        (save-buffer)
        (shell-command "osascript ~/.emacs.d/script/reload.scpt")
        )
-(global-set-key (kbd "<f5>") 'reload-chrome)
+(global-set-key (kbd "<f5>") 'reload-browser)
 
 ;; PDF出力
 ;; (setq my-pdfout-command-format "nkf -e | e2ps -a4 -p -nh | ps2pdf - %s")
@@ -956,27 +969,27 @@
   "Rename eww browser's buffer so sites open in new page."
   (rename-buffer "eww" t))
 (add-hook 'eww-mode-hook 'eww-mode-hook--rename-buffer)
+;; エラー回避
+;; (use-package eww
+;;   :config
+;;   (bind-keys :map eww-mode-map
+;;              ("h" . backward-char)
+;;              ("j" . next-line)
+;;              ("k" . previous-line)
+;;              ("l" . forward-char)
+;;              ("J" . View-scroll-line-forward)  ;; カーソルは移動せず、画面がスクロースする
+;;              ("K" . View-scroll-line-backward)
+;;              ("s-[" . eww-back-url)
+;;              ("s-]" . eww-forward-url)
+;;              ("s-{" . previous-buffer)
+;;              ("s-}" . next-buffer)
+;;              )
+;;   )
 
-(use-package eww
-  :config
-  (bind-keys :map eww-mode-map
-             ("h" . backward-char)
-             ("j" . next-line)
-             ("k" . previous-line)
-             ("l" . forward-char)
-             ("J" . View-scroll-line-forward)  ;; カーソルは移動せず、画面がスクロースする
-             ("K" . View-scroll-line-backward)
-             ("s-[" . eww-back-url)
-             ("s-]" . eww-forward-url)
-             ("s-{" . previous-buffer)
-             ("s-}" . next-buffer)
-             )
-  )
-
-(define-key eww-mode-map "r" 'eww-reload)
-(define-key eww-mode-map "c 0" 'eww-copy-page-url)
-(define-key eww-mode-map "p" 'scroll-down)
-(define-key eww-mode-map "n" 'scroll-up)
+;; (define-key eww-mode-map "r" 'eww-reload)
+;; (define-key eww-mode-map "c 0" 'eww-copy-page-url)
+;; (define-key eww-mode-map "p" 'scroll-down)
+;; (define-key eww-mode-map "n" 'scroll-up)
 
 (defun eww-search (term)
   (interactive "sSearch terms: ")
@@ -1019,36 +1032,56 @@
 ;;;;javascript
 ;; (add-hook 'after-init-hook #'global-flycheck-mode)
 ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-;;; P160 標準のjs-mode
-(defun js-indent-hook ()
-  ;; インデント幅を4にする
-  (setq js-indent-level 2
-        js-expr-indent-offset 2
-        indent-tabs-mode nil)
-  ;; switch文のcaseラベルをインデントする関数を定義する
-  (defun my-js-indent-line () ←(d1)
-         (interactive)
-         (let* ((parse-status (save-excursion (syntax-ppss (point-at-bol))))
-                (offset (- (current-column) (current-indentation)))
-                (indentation (js--proper-indentation parse-status)))
-           (back-to-indentation)
-           (if (looking-at "case\\s-")
-               (indent-line-to (+ indentation 2))
-             (js-indent-line))
-           (when (> offset 0) (forward-char offset))))
-  ;; caseラベルのインデント処理をセットする
-  (set (make-local-variable 'indent-line-function) 'my-js-indent-line)
-  ;; ここまでcaseラベルを調整する設定
-  )
+;;; 標準のjs-mode
+;; (defun js-indent-hook ()
+;;   ;; インデント幅を4にする
+;;   (setq js-indent-level 2
+;;         js-expr-indent-offset 2
+;;         indent-tabs-mode nil)
+;;   ;; switch文のcaseラベルをインデントする関数を定義する
+;;   (defun my-js-indent-line () ←(d1)
+;;          (interactive)
+;;          (let* ((parse-status (save-excursion (syntax-ppss (point-at-bol))))
+;;                 (offset (- (current-column) (current-indentation)))
+;;                 (indentation (js--proper-indentation parse-status)))
+;;            (back-to-indentation)
+;;            (if (looking-at "case\\s-")
+;;                (indent-line-to (+ indentation 2))
+;;              (js-indent-line))
+;;            (when (> offset 0) (forward-char offset))))
+;;   ;; caseラベルのインデント処理をセットする
+;;   (set (make-local-variable 'indent-line-function) 'my-js-indent-line)
+;;   ;; ここまでcaseラベルを調整する設定
+;;   )
 
-;; js-modeの起動時にhookを追加
-(add-hook 'js-mode-hook 'js-indent-hook)
+;; ;; js-modeの起動時にhookを追加
+;; (add-hook 'js-mode-hook 'js-indent-hook)
 
 ;;; 構文チェック機能を備えたjs2-mode
 ;; (package-install 'js2-mode)
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 ;; React（JSX）を使う場合はこちら
 ;; (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+
+(use-package js2-mode
+  :mode
+  (("\.js$" . js2-mode))
+  :config
+  )
+(use-package jquery-doc
+  :commands (jquery-doc-setup)
+  :init
+  (add-hook 'js2-mode-hook 'jquery-doc-setup))
+(use-package tern
+  :commands (tern-mode)
+  :init
+  (add-hook 'js2-mode-hook 'tern-mode)
+  :config
+  )
+(eval-after-load 'tern
+  '(progn
+     (require 'tern-auto-complete)
+     (tern-ac-setup)))
 
 ;; キーバインドを動的に表示 which-key
 ;; http://emacs.rubikitch.com/which-key/
@@ -1057,3 +1090,35 @@
 ;; (which-key-setup-side-window-right)     ;右端
 ;; (which-key-setup-side-window-right-bottom) ;両方使う
 (which-key-mode 1)
+;;;; 入力補助
+;; (require 'yasnippet)
+;; (yas-global-mode 1)
+;; 括弧の自動挿入
+(electric-pair-mode 1)
+
+;;;; バッファーの読み込み
+;; (defun revert-buffer-no-confirm ()
+;;     "Revert buffer without confirmation."
+;;     (interactive) (revert-buffer t t))
+
+;; (global-set-key (kbd "C-c C-r") 'revert-buffer-no-confirm)
+;; (global-auto-revert-mode 1)
+
+;; reload buffer
+(global-set-key (kbd "s-r") 'revert-buffer-no-confirm)
+;; (global-set-key "\M-r" 'revert-buffer-no-confirm) ;
+
+;; 日本語ドキュメントを利用するための設定
+(when (require 'php-mode nil t)
+  (setq php-site-url "https://secure.php.net/"
+        php-manual-url 'ja))
+;; php-modeのインデント設定
+(defun php-indent-hook ()
+  (setq indent-tabs-mode nil)
+  (setq c-basic-offset 4)
+  ;; (c-set-offset 'case-label '+) ; switch文のcaseラベル
+  (c-set-offset 'arglist-intro '+) ; 配列の最初の要素が改行した場合
+  (c-set-offset 'arglist-close 0)) ; 配列の閉じ括弧
+
+(add-hook 'php-mode-hook 'php-indent-hook)
+
