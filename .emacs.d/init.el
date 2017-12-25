@@ -289,12 +289,20 @@
 ;; emacs-lisp-modeのフックをセット
 (add-hook 'emacs-lisp-mode-hook 'elisp-mode-hooks)
 
-;;; P130-131 利用可能にする
+;;; Auto Complete 補完機能を利用可能にする
 (when (require 'auto-complete-config nil t)
   (add-to-list 'ac-dictionary-directories
                "~/.emacs.d/elisp/ac-dict")
   (define-key ac-mode-map (kbd "TAB") 'auto-complete)
-  (ac-config-default))
+  (ac-config-default)
+  (add-to-list 'ac-modes 'text-mode)         ;; text-modeでも自動的に有効にする
+  (add-to-list 'ac-modes 'fundamental-mode)  ;; fundamental-mode
+  (add-to-list 'ac-modes 'markdown-mode)  ;; fundamental-mode
+  ;; (add-to-list 'ac-modes 'org-mode)
+  ;; (add-to-list 'ac-modes 'yatex-mode)
+  (setq ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
+  ;; (setq ac-use-fuzzy t)          ;; 曖昧マッチ
+  )
 
 ;; ▼要拡張機能インストール▼
 ;;; P137-138 編集履歴を記憶する──undohist
@@ -354,16 +362,41 @@
 ;; TRAMPでバックアップファイルを作成しない
 (add-to-list 'backup-directory-alist
              (cons tramp-file-name-regexp nil))
-;;TRAMOでinvalid base64 エラー回避
+;;TRAMPでinvalid base64 エラー回避
 (setq tramp-copy-size-limit nil)
 
-;;; P226-228 Emacs版manビューア（WoMan）の利用
+;;; Emacs版manビューア（WoMan）の利用
 ;; キャッシュを作成
 (setq woman-cache-filename "~/.emacs.d/.wmncach.el")
 ;; manパスを設定
 (setq woman-manpath '("/usr/share/man"
                       "/usr/local/share/man"
                       "/usr/local/share/man/ja"))
+;;; P212 Helmによるman検索
+;; 既存のソースを読み込む
+(require 'helm-elisp)
+(require 'helm-man)
+;; 基本となるソースを定義
+(setq helm-for-document-sources
+      '(helm-source-info-elisp
+        helm-source-info-cl
+        helm-source-info-pages
+        helm-source-man-pages))
+;; helm-for-documentコマンドを定義
+(defun helm-for-document ()
+  "Preconfigured `helm' for helm-for-document."
+  (interactive)
+  (let ((default (thing-at-point 'symbol)))
+    (helm :sources
+          (nconc
+           (mapcar (lambda (func)
+                     (funcall func default))
+                   helm-apropos-function-list)
+           helm-for-document-sources)
+          :buffer "*helm for docuemont*")))
+
+;; s-dにhelm-for-documentを割り当て
+(define-key global-map (kbd "s-d") 'helm-for-document)
 
 ;;; カーソル位置のファイルパスやアドレスを "C-x C-f" で開く
 (ffap-bindings)
