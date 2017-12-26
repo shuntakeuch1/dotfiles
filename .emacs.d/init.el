@@ -305,30 +305,35 @@
   )
 
 ;; ▼要拡張機能インストール▼
-;;; P137-138 編集履歴を記憶する──undohist
+;;; 編集履歴を記憶する──undohist
 ;; undohistの設定
 (when (require 'undohist nil t)
   (undohist-initialize))
 
 ;; ▼要拡張機能インストール▼
-;;; P138 アンドゥの分岐履歴──undo-tree
+;;; アンドゥの分岐履歴──undo-tree
 ;; undo-treeの設定
 (when (require 'undo-tree nil t)
   (global-undo-tree-mode))
 
 ;; ElScreenのプレフィックスキーを変更する（初期値はC-z）
-                                        ; (setq elscreen-prefix-key (kbd "C-t"))
-                                        ;
-                                        ; (when (require 'elscreen nil t)
-                                        ;   ;; C-z C-zをタイプした場合にデフォルトのC-zを利用する
-                                        ;   (if window-system
-                                        ;       (define-key elscreen-map (kbd "C-z") 'iconify-or-deiconify-frame)
-                                        ;     (define-key elscreen-map (kbd "C-z") 'suspend-emacs)))
-                                        ; (elscreen-start)
-;;; プレフィクスキーはC-z elscreen永続化
-;; (setq elscreen-prefix-key (kbd "C-z"))
-;; (elscreen-start)
-;; (elscreen-persist-mode 1)
+;; (setq elscreen-prefix-key (kbd "C-t"))
+
+(when (require 'elscreen nil t)
+  ;; C-z C-zをタイプした場合にデフォルトのC-zを利用する
+  ;; (if window-system
+  ;;     (define-key elscreen-map (kbd "C-z") 'iconify-or-deiconify-frame)
+  ;;   (define-key elscreen-map (kbd "C-z") 'suspend-emacs))
+  )
+(elscreen-start)
+;; プレフィクスキーはC-z elscreen永続化
+(setq elscreen-prefix-key (kbd "C-z"))
+(elscreen-start)
+(elscreen-persist-mode 1)
+(global-set-key (kbd "M-<right>") 'elscreen-next)
+(global-set-key (kbd "M-<left>") 'elscreen-previous)
+(global-set-key (kbd "s-}") 'elscreen-next)
+(global-set-key (kbd "s-{") 'elscreen-previous)
 
 ;;; メモ書き・ToDo管理 howm
 ;; (package-install 'howm)
@@ -528,105 +533,105 @@
 ;;
 ;; tabbarの設定
 ;;
-(require 'tabbar)
-(tabbar-mode)
+;; (require 'tabbar)
+;; (tabbar-mode)
 
-(tabbar-mwheel-mode nil)                  ;; マウスホイール無効
-(setq tabbar-buffer-groups-function nil)  ;; グループ無効
-(setq tabbar-use-images nil)              ;; 画像を使わない
-
-
-;;----- キーに割り当てる
-;;(global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
-;;(global-set-key (kbd "<C-S-tab>") 'tabbar-backward-tab)
-(global-set-key (kbd "<f10>") 'tabbar-forward-tab)
-(global-set-key (kbd "<f9>") 'tabbar-backward-tab)
-(global-set-key (kbd "M-<right>") 'tabbar-forward-tab)
-(global-set-key (kbd "M-<left>") 'tabbar-backward-tab)
-(global-set-key (kbd "s-}") 'tabbar-forward-tab)
-(global-set-key (kbd "s-{") 'tabbar-backward-tab)
-
-;;----- 左側のボタンを消す
-(dolist (btn '(tabbar-buffer-home-button
-               tabbar-scroll-left-button
-               tabbar-scroll-right-button))
-  (set btn (cons (cons "" nil)
-                 (cons "" nil))))
+;; (tabbar-mwheel-mode nil)                  ;; マウスホイール無効
+;; (setq tabbar-buffer-groups-function nil)  ;; グループ無効
+;; (setq tabbar-use-images nil)              ;; 画像を使わない
 
 
-;;----- タブのセパレーターの長さ
-;; (setq tabbar-separator '(1.0))
+;; ;;----- キーに割り当てる
+;; ;;(global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
+;; ;;(global-set-key (kbd "<C-S-tab>") 'tabbar-backward-tab)
+;; (global-set-key (kbd "<f10>") 'tabbar-forward-tab)
+;; (global-set-key (kbd "<f9>") 'tabbar-backward-tab)
+;; (global-set-key (kbd "M-<right>") 'tabbar-forward-tab)
+;; (global-set-key (kbd "M-<left>") 'tabbar-backward-tab)
+;; (global-set-key (kbd "s-}") 'tabbar-forward-tab)
+;; (global-set-key (kbd "s-{") 'tabbar-backward-tab)
+
+;; ;;----- 左側のボタンを消す
+;; (dolist (btn '(tabbar-buffer-home-button
+;;                tabbar-scroll-left-button
+;;                tabbar-scroll-right-button))
+;;   (set btn (cons (cons "" nil)
+;;                  (cons "" nil))))
 
 
-;;----- タブの色（CUIの時。GUIの時は後でカラーテーマが適用）
-(set-face-attribute
- 'tabbar-default nil
- :background "brightblack"
- :foreground "white"
- )
-(set-face-attribute
- 'tabbar-selected nil
- :background "brightwhite"
- :foreground "#ff5f00"
- :box nil
- )
-(set-face-attribute
- 'tabbar-modified nil
- :background "brightred"
- :foreground "brightwhite"
- :box nil
- )
+;; ;;----- タブのセパレーターの長さ
+;; ;; (setq tabbar-separator '(1.0))
 
-(when window-system                       ; GUI時
-  ;; 外観変更
-  (set-face-attribute
-   'tabbar-default nil
-   :family "MeiryoKe_Gothic"
-   :background "#34495E"
-   :foreground "#EEEEEE"
-   :height 0.85
-   )
-  (set-face-attribute
-   'tabbar-unselected nil
-   :background "#34495E"
-   :foreground "#EEEEEE"
-   :box nil
-   )
-  (set-face-attribute
-   'tabbar-modified nil
-   :background "#E67E22"
-   :foreground "#EEEEEE"
-   :box nil
-   )
-  (set-face-attribute
-   'tabbar-selected nil
-   :background "#EEEEEE"
-   :foreground "#34495E"
-   :box nil)
-  (set-face-attribute
-   'tabbar-button nil
-   :box nil)
-  (set-face-attribute
-   'tabbar-separator nil
-   :height 2.0)
-  )
 
-;;----- 表示するバッファ
-(defun my-tabbar-buffer-list ()
-  (delq nil
-        (mapcar #'(lambda (b)
-                    (cond
-                     ;; Always include the current buffer.
-                     ((eq (current-buffer) b) b)
-                     ((buffer-file-name b) b)
-                     ((char-equal ?\  (aref (buffer-name b) 0)) nil)
-                     ((equal "*scratch*" (buffer-name b)) b) ; *scratch*バッファは表示する
-                     ((equal "*terminal<1>*" (buffer-name b)) b) ;terminalは外す
-                     ((equal "*terminal<2>*" (buffer-name b)) b) ;terminalは外す
-                     ((char-equal ?* (aref (buffer-name b) 0)) nil) ; それ以外の * で始まるバッファは表示しない
-                     ((buffer-live-p b) b)))
-                (buffer-list))))
-(setq tabbar-buffer-list-function 'my-tabbar-buffer-list)
+;; ;;----- タブの色（CUIの時。GUIの時は後でカラーテーマが適用）
+;; (set-face-attribute
+;;  'tabbar-default nil
+;;  :background "brightblack"
+;;  :foreground "white"
+;;  )
+;; (set-face-attribute
+;;  'tabbar-selected nil
+;;  :background "brightwhite"
+;;  :foreground "#ff5f00"
+;;  :box nil
+;;  )
+;; (set-face-attribute
+;;  'tabbar-modified nil
+;;  :background "brightred"
+;;  :foreground "brightwhite"
+;;  :box nil
+;;  )
+
+;; (when window-system                       ; GUI時
+;;   ;; 外観変更
+;;   (set-face-attribute
+;;    'tabbar-default nil
+;;    :family "MeiryoKe_Gothic"
+;;    :background "#34495E"
+;;    :foreground "#EEEEEE"
+;;    :height 0.85
+;;    )
+;;   (set-face-attribute
+;;    'tabbar-unselected nil
+;;    :background "#34495E"
+;;    :foreground "#EEEEEE"
+;;    :box nil
+;;    )
+;;   (set-face-attribute
+;;    'tabbar-modified nil
+;;    :background "#E67E22"
+;;    :foreground "#EEEEEE"
+;;    :box nil
+;;    )
+;;   (set-face-attribute
+;;    'tabbar-selected nil
+;;    :background "#EEEEEE"
+;;    :foreground "#34495E"
+;;    :box nil)
+;;   (set-face-attribute
+;;    'tabbar-button nil
+;;    :box nil)
+;;   (set-face-attribute
+;;    'tabbar-separator nil
+;;    :height 2.0)
+;;   )
+
+;; ;;----- 表示するバッファ
+;; (defun my-tabbar-buffer-list ()
+;;   (delq nil
+;;         (mapcar #'(lambda (b)
+;;                     (cond
+;;                      ;; Always include the current buffer.
+;;                      ((eq (current-buffer) b) b)
+;;                      ((buffer-file-name b) b)
+;;                      ((char-equal ?\  (aref (buffer-name b) 0)) nil)
+;;                      ((equal "*scratch*" (buffer-name b)) b) ; *scratch*バッファは表示する
+;;                      ((equal "*terminal<1>*" (buffer-name b)) b) ;terminalは外す
+;;                      ((equal "*terminal<2>*" (buffer-name b)) b) ;terminalは外す
+;;                      ((char-equal ?* (aref (buffer-name b) 0)) nil) ; それ以外の * で始まるバッファは表示しない
+;;                      ((buffer-live-p b) b)))
+;;                 (buffer-list))))
+;; (setq tabbar-buffer-list-function 'my-tabbar-buffer-list)
 
 (require 'helm)
 (require 'helm-config)
@@ -658,25 +663,27 @@
       helm-ff-file-name-history-use-recentf t
       helm-echo-input-in-header-line t)
 
-(defun spacemacs//helm-hide-minibuffer-maybe ()
-  "Hide minibuffer in Helm session if we use the header line as input field."
-  (when (with-helm-buffer helm-echo-input-in-header-line)
-    (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-      (overlay-put ov 'window (selected-window))
-      (overlay-put ov 'face
-                   (let ((bg-color (face-background 'default nil)))
-                     `(:background ,bg-color :foreground ,bg-color)))
-      (setq-local cursor-type nil))))
+;; (defun spacemacs//helm-hide-minibuffer-maybe ()
+;;   "Hide minibuffer in Helm session if we use the header line as input field."
+;;   (when (with-helm-buffer helm-echo-input-in-header-line)
+;;     (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+;;       (overlay-put ov 'window (selected-window))
+;;       (overlay-put ov 'face
+;;                    (let ((bg-color (face-background 'default nil)))
+;;                      `(:background ,bg-color :foreground ,bg-color)))
+;;       (setq-local cursor-type nil))))
 
 
-(add-hook 'helm-minibuffer-set-up-hook
-          'spacemacs//helm-hide-minibuffer-maybe)
+;; (add-hook 'helm-minibuffer-set-up-hook
+;;           'spacemacs//helm-hide-minibuffer-maybe)
 
                                         ; (setq helm-autoresize-max-height 0)
                                         ; (setq helm-autoresize-min-height 20)
 (helm-autoresize-mode 1)
 
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
 ;;(define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
 
 
@@ -1154,4 +1161,32 @@
   (c-set-offset 'arglist-close 0)) ; 配列の閉じ括弧
 
 (add-hook 'php-mode-hook 'php-indent-hook)
+
+;; マイナーモードの短縮
+(defmacro safe-diminish (file mode &optional new-name)
+  "https://github.com/larstvei/dot-emacs/blob/master/init.org"
+  `(with-eval-after-load ,file
+     (diminish ,mode ,new-name)))
+
+(safe-diminish "abbrev" 'abbrev-mode)
+(safe-diminish "auto-complete" 'auto-complete-mode)
+(safe-diminish "eldoc" 'eldoc-mode)
+(safe-diminish "flycheck" 'flycheck-mode)
+(safe-diminish "flyspell" 'flyspell-mode)
+(safe-diminish "helm-mode" 'helm-mode)
+(safe-diminish "paredit" 'paredit-mode)
+;; (safe-diminish "projectile" 'projectile-mode)
+(safe-diminish "rainbow-mode" 'rainbow-mode)
+(safe-diminish "simple" 'auto-fill-function)
+(safe-diminish "smartparens" 'smartparens-mode)
+(safe-diminish "smooth-scroll" 'smooth-scroll-mode)
+(safe-diminish "undo-tree" 'undo-tree-mode)
+(safe-diminish "volatile-highlights" 'volatile-highlights-mode)
+(safe-diminish "yasnippet" 'yas-minor-mode)
+(safe-diminish "git-gutter" 'git-gutter-mode)
+(safe-diminish "tern" 'tern-mode)
+(safe-diminish "which-key" 'which-key-mode)
+
+(setq confirm-kill-emacs 'y-or-n-p)     ; 終了を確認する
+
 
