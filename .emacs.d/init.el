@@ -99,9 +99,9 @@
   (setq locale-coding-system 'utf-8-hfs))
 
 ;; カラム番号も表示
-;;(column-number-mode t)
+(column-number-mode t)
 ;; ファイルサイズを表示
-(size-indication-mode t)
+(size-indication-mode nil)
 ;; 時計を表示（好みに応じてフォーマットを変更可能）
 ;; (setq display-time-day-and-date t) ; 曜日・月・日を表示
 ;; (setq display-time-24hr-format t) ; 24時表示
@@ -126,7 +126,7 @@
 (setq frame-title-format "%f")
 ;; 行番号を常に表示する
 ;;(global-linum-mode t)
-;; バッファの左側に行番号を表示する
+;; バッファの左側に行番号を表示する linumより早い
 ;; (global-nlinum-mode t)
 ;; ;; 3 桁分の表示領域を確保する
 ;; (setq nlinum-format "%3d")
@@ -154,19 +154,37 @@
 
 ;;; 表示テーマの設定
 ;; http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz
-(when (require 'color-theme nil t)
-  ;; テーマを読み込むための設定
-  (color-theme-initialize)
-  ;; テーマhoberに変更する
-  ;;   (color-theme-molokai)) ;; 使うカラーテーマ名
-  ;;(color-theme-hover)) ;; 使うカラーテーマ名
-  ;; (require 'monokai-theme)
-  (when (require 'color-theme-solarized)
-    (color-theme-solarized-dark)))
+;; (when (require 'color-theme nil t)
+;;   ;; テーマを読み込むための設定
+;;   (color-theme-initialize)
+;;   ;; テーマhoberに変更する
+;;   ;;   (color-theme-molokai)) ;; 使うカラーテーマ名
+;;   ;;(color-theme-hover)) ;; 使うカラーテーマ名
+;;   ;; (require 'monokai-theme)
+;;   (when (require 'color-theme-solarized)
+;;     (color-theme-solarized-dark)))
 ;; (require 'color-theme-solarized)
 ;; (load-theme 'solarized-dark t)
 ;; (load-theme 'solarizedized-light t)
 
+;;; カスタマイズできる項目！
+;;; これらはload-themeの前に配置すること
+;; fringeを背景から目立たせる
+(setq solarized-distinct-fringe-background t)
+;;
+;; mode-lineを目立たせる(Fig3)
+;; (setq solarized-high-contrast-mode-line t)
+;;
+;; bold度を減らす
+;; (setq solarized-use-less-bold t)
+;;
+;; italicを増やす
+;; (setq solarized-use-more-italic t)
+;;
+;; インジケータの色を減らす (git-gutter, flycheckなど)
+;; (setq solarized-emphasize-indicators nil)
+(load-theme 'solarized-dark t)
+;; (load-theme 'sanityinc-solarized-dark t)
 ;;; フォントの設定
 
                                         ; (when (eq window-system 'ns)
@@ -303,6 +321,7 @@
   ;; (add-to-list 'ac-modes 'org-mode)
   ;; (add-to-list 'ac-modes 'yatex-mode)
   (setq ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
+  (setq ac-ignore-case nil)
   ;; (setq ac-use-fuzzy t)          ;; 曖昧マッチ
   )
 
@@ -755,7 +774,7 @@
  '(git-gutter:modified-sign "*")
  '(package-selected-packages
    (quote
-    (quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes elscreen-persist helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+    (yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes elscreen-persist helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -826,14 +845,8 @@
 (require 'powerline)
 (powerline-default-theme)
 (set-face-attribute 'mode-line nil
-                    :foreground "#fff"    ;背景
-                    :background "#FF6699" ;文字
-                    ;; :foreground "#000"
-                    ;; :background "#ffaeb9"
-                    :box nil)
-(set-face-attribute 'mode-line-inactive nil
-                    :foreground "#fff" ;背景
-                    :background "#FF6699" ;文字
+                    :foreground "#fff"    ;文字
+                    :background "#FF6699" ;背景
                     ;; :foreground "#000"
                     ;; :background "#ffaeb9"
                     :box nil)
@@ -841,18 +854,26 @@
                     :foreground "#FF6699"
                     :background "#fff"
                     :inherit 'mode-line)
+(set-face-attribute 'powerline-active2 nil
+                    :foreground "#000"
+                    :background "#888888"
+                    ;; :background "#ffaeb9"
+                    :inherit 'mode-line)
+
+(set-face-attribute 'mode-line-inactive nil
+                    :foreground "#fff"
+                    :background "#FF6699"
+                    ;; :foreground "#000"
+                    ;; :background "#ffaeb9"
+                    :box nil)
+(set-face-attribute 'powerline-inactive1 nil
+                    :foreground "#000"
+                    :background "#888888"
+                    ;; :background "#ffaeb9"
+                    :inherit 'mode-line)
 (set-face-attribute 'powerline-inactive2 nil
                     :foreground "#FF6699"
                     :background "#fff"
-                    :inherit 'mode-line)
-
-(set-face-attribute 'powerline-active2 nil
-                    :foreground "#000"
-                    :background "#ffaeb9"
-                    :inherit 'mode-line)
-(set-face-attribute 'powerline-inactive1 nil
-                    :foreground "#000"
-                    :background "#ffaeb9"
                     :inherit 'mode-line)
 (setq mac-use-srgb-colorspace nil)      ;powerline綺麗に表示されない問題
 (setq powerline-height 15)
@@ -1173,19 +1194,16 @@
 (safe-diminish "flycheck" 'flycheck-mode)
 (safe-diminish "flyspell" 'flyspell-mode)
 (safe-diminish "helm-mode" 'helm-mode)
-(safe-diminish "paredit" 'paredit-mode)
 ;; (safe-diminish "projectile" 'projectile-mode)
-(safe-diminish "rainbow-mode" 'rainbow-mode)
-(safe-diminish "simple" 'auto-fill-function)
-(safe-diminish "smartparens" 'smartparens-mode)
-(safe-diminish "smooth-scroll" 'smooth-scroll-mode)
 (safe-diminish "undo-tree" 'undo-tree-mode)
-(safe-diminish "volatile-highlights" 'volatile-highlights-mode)
-(safe-diminish "yasnippet" 'yas-minor-mode)
 (safe-diminish "git-gutter" 'git-gutter-mode)
 (safe-diminish "tern" 'tern-mode)
 (safe-diminish "which-key" 'which-key-mode)
+(safe-diminish "auto-revert" 'auto-revert-mode)
+(safe-diminish "auto-revert-tail" 'auto-revert-tail-mode)
 
 (setq confirm-kill-emacs 'y-or-n-p)     ; 終了を確認する
 
-
+;; スクロール
+(require 'yascroll)
+(global-yascroll-bar-mode 1)
