@@ -127,9 +127,11 @@
 ;; 行番号を常に表示する
 ;;(global-linum-mode t)
 ;; バッファの左側に行番号を表示する
-(global-nlinum-mode t)
-;; 5 桁分の表示領域を確保する
-(setq nlinum-format "%3d")
+;; (global-nlinum-mode t)
+;; ;; 3 桁分の表示領域を確保する
+;; (setq nlinum-format "%3d")
+;; モードラインに行番号を常に表示させる
+(setq line-number-display-limit-width 10000)
 
 ;; TABの表示幅。初期値は8
 (setq-default tab-width 4)
@@ -509,12 +511,9 @@
 ;; 隠しファイルをデフォルトで表示
 (setq neo-show-hidden-files t)
 ;; cotrol + q でneotreeを起動
-(global-set-key [f8] 'neotree-toggle)
-                                        ; ;; neotree でファイルを新規作成した後、自動的にファイルを開く
-(setq neo-create-file-auto-open t)
-                                        ; ;; neotree ウィンドウを表示する毎に current file のあるディレクトリを表示する
-(setq neo-smart-open t)
-                                        ; ;; キーバインドをシンプルにする
+(global-set-key [f8] 'neotree-toggle) ;; neotree でファイルを新規作成した後、自動的にファイルを開く
+(setq neo-create-file-auto-open t) ;; neotree ウィンドウを表示する毎に current file のあるディレクトリを表示する
+(setq neo-smart-open t) ;; キーバインドをシンプルにする
 ;; (setq neo-keymap-style 'concise)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
                                         ; (all-the-icons-wicon "tornado" :face 'all-the-icons-blue)
@@ -922,7 +921,7 @@
 (when (require 'git-gutter nil t)
   (global-git-gutter-mode t)
   ;; linum-modeを利用している場合は次の設定も追加
-  (git-gutter:linum-setup)
+  ;; (git-gutter:linum-setup)
   )
 
 (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
