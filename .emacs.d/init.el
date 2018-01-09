@@ -32,6 +32,15 @@
 ;; (require 'maxframe)
 ;; (add-hook 'window-setup-hook 'maximize-frame t)
 
+;; 最近開いたファイルのリストを自動保存する
+(when (require 'recentf nil t)
+  (setq recentf-max-saved-items 2000)
+  (setq recentf-exclude '(".recentf"))
+  (setq recentf-auto-cleanup 10)
+  (setq recentf-auto-save-timer
+        (run-with-idle-timer 30 t 'recentf-save-list))
+  (recentf-mode 1))
+
 (require 'hl-line)
 ;;; hl-lineを無効にするメジャーモードを指定する
 (defvar global-hl-line-timer-exclude-modes '(todotxt-mode))
@@ -64,7 +73,8 @@
 (global-set-key (kbd "s-v") 'clipboard-yank);貼り付け
 (global-set-key (kbd "s-s") 'save-buffer);バッファ保存
 (global-set-key (kbd "s-w") 'kill-buffer);バッファ削除
-
+;; インデントの行の最初の空白でない文字にポイントを移動
+;;(global-set-key (kbd "C-a") 'back-to-indentation) ;;本来はM-mに割り当てられている。
 ;; C-mにnewline-and-indentを割り当てる。
 ;; 先ほどとは異なりglobal-set-keyを利用
 (global-set-key (kbd "C-m") 'newline-and-indent)
@@ -398,7 +408,7 @@
 (setq woman-manpath '("/usr/share/man"
                       "/usr/local/share/man"
                       "/usr/local/share/man/ja"))
-;;; P212 Helmによるman検索
+;;; Helmによるman検索
 ;; 既存のソースを読み込む
 (require 'helm-elisp)
 (require 'helm-man)
@@ -423,7 +433,6 @@
 
 ;; s-dにhelm-for-documentを割り当て
 (define-key global-map (kbd "s-d") 'helm-for-document)
-
 ;;; カーソル位置のファイルパスやアドレスを "C-x C-f" で開く
 (ffap-bindings)
 
@@ -665,11 +674,6 @@
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 (define-key helm-map (kbd "C-h") 'delete-backward-char)
-                                        ; (add-to-list 'helm-completing-read-handlers-alist '(find-file . nil))
-                                        ; (define-key helm-find-files-map (kbd "C-h") 'delete-backward-char)
-                                        ; (define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
-
-                                        ; (define-key helm-read-file-map (kbd "TAB") 'helm-execute-persistent-action)
 
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
@@ -698,14 +702,14 @@
                                         ; (setq helm-autoresize-max-height 0)
                                         ; (setq helm-autoresize-min-height 20)
 (helm-autoresize-mode 1)
-
+(global-set-key (kbd "C-x b") 'helm-for-files)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
 ;;(define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
-
-
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (helm-mode 1)
+
 ;; web-mode
 (when (require 'web-mode nil t)
   ;; 自動的にweb-modeを起動したい拡張子を追加する
@@ -1123,6 +1127,11 @@
 ;; React（JSX）を使う場合はこちら
 ;; (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 
+(defun my-js-mode-hook ()
+  (setq-local electric-layout-rules
+              '((?\{ . after) (?\} . before))))
+
+(add-hook 'js-mode-hook 'my-js-mode-hook)
 (use-package js2-mode
   :mode
   (("\.js$" . js2-mode))
@@ -1181,6 +1190,9 @@
   (c-set-offset 'arglist-close 0)) ; 配列の閉じ括弧
 
 (add-hook 'php-mode-hook 'php-indent-hook)
+;; スクロール
+(require 'yascroll)
+(global-yascroll-bar-mode 1)
 
 ;; マイナーモードの短縮
 (defmacro safe-diminish (file mode &optional new-name)
@@ -1199,11 +1211,9 @@
 (safe-diminish "git-gutter" 'git-gutter-mode)
 (safe-diminish "tern" 'tern-mode)
 (safe-diminish "which-key" 'which-key-mode)
+(safe-diminish "emmet" 'emmet-mode)
 (safe-diminish "auto-revert" 'auto-revert-mode)
 (safe-diminish "auto-revert-tail" 'auto-revert-tail-mode)
 
 (setq confirm-kill-emacs 'y-or-n-p)     ; 終了を確認する
 
-;; スクロール
-(require 'yascroll)
-(global-yascroll-bar-mode 1)
