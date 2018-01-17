@@ -323,7 +323,7 @@
 (when (require 'auto-complete-config nil t)
   (add-to-list 'ac-dictionary-directories
                "~/.emacs.d/elisp/ac-dict")
-  (define-key ac-mode-map (kbd "TAB") 'auto-complete)
+  ;; (define-key ac-mode-map (kbd "TAB") 'auto-complete)
   (ac-config-default)
   (add-to-list 'ac-modes 'text-mode)         ;; text-modeでも自動的に有効にする
   (add-to-list 'ac-modes 'fundamental-mode)  ;; fundamental-mode
@@ -332,8 +332,42 @@
   ;; (add-to-list 'ac-modes 'yatex-mode)
   (setq ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
   (setq ac-ignore-case nil)
+  (setq ac-delay nil)
+  (setq ac-auto-show-menu nil)  ;; n秒後に補完メニューを表示
   ;; (setq ac-use-fuzzy t)          ;; 曖昧マッチ
   )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-idle-delay nil)
+ '(custom-safe-themes
+   (quote
+    ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+ '(desktop-save-mode t)
+ '(git-gutter:added-sign ">")
+ '(git-gutter:deleted-sign "x")
+ '(git-gutter:modified-sign "*")
+ '(package-selected-packages
+   (quote
+    (powerline-evil company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes elscreen-persist helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+
+(global-company-mode +1)
+(global-set-key (kbd "TAB") 'company-complete)
+;; C-n, C-pで補完候補を次/前の候補を選
+(define-key company-active-map (kbd "C-n") 'company-select-next)
+(define-key company-active-map (kbd "C-p") 'company-select-previous)
+(define-key company-search-map (kbd "C-n") 'company-select-next)
+(define-key company-search-map (kbd "C-p") 'company-select-previous)
+;; C-sで絞り込む
+(define-key company-active-map (kbd "C-s") 'company-filter-candidates)
+;; TABで候補を設定
+(define-key company-active-map (kbd "C-i") 'company-complete-selection)
+;; 各種メジャーモードでも C-M-iで company-modeの補完を使う
+(define-key emacs-lisp-mode-map (kbd "TAB") 'company-complete)
+;; クイックヘルプ
+(company-quickhelp-mode +1)
 
 ;; ▼要拡張機能インストール▼
 ;;; 編集履歴を記憶する──undohist
@@ -754,6 +788,7 @@
  ;; ruby-indent-tabs-mode t ; タブ文字を使用する。初期値はnil
  )
 (setq ruby-insert-encoding-magic-comment nil) ;マジックコメントなし
+(setq ruby-deep-indent-paren-style nil) ;Railsのインデント
 
 (require 'ruby-end)
 (add-hook 'ruby-mode-hook
@@ -762,23 +797,24 @@
              (electric-pair-mode t)
              (electric-indent-mode t)
              (electric-layout-mode t)))
+;; robe
+(add-hook 'ruby-mode-hook 'robe-mode)
+(eval-after-load 'company
+  '(push 'company-robe company-backends))
+(defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
+  (rvm-activate-corresponding-ruby))
+;; ;; riなどのエスケープシーケンスを処理し、色付けする
+;; (add-hook 'inf-ruby-mode-hook 'ansi-color-for-comint-mode-on)
+
+;; (autoload 'robe-mode "robe" "Code navigation, documentation lookup and completion for Ruby" t nil)
+;; (autoload 'ac-robe-setup "ac-robe" "auto-complete robe" nil nil)
+;; (add-hook 'robe-mode-hook 'ac-robe-setup)
 
 (require 'flycheck)
 (setq flycheck-check-syntax-automatically '(mode-enabled save))
 (add-hook 'ruby-mode-hook 'flycheck-mode)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(desktop-save-mode t)
- '(git-gutter:added-sign ">")
- '(git-gutter:deleted-sign "x")
- '(git-gutter:modified-sign "*")
- '(package-selected-packages
-   (quote
-    (yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes elscreen-persist helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -848,37 +884,40 @@
 ;;PowerLineの設定
 (require 'powerline)
 (powerline-default-theme)
+
 (set-face-attribute 'mode-line nil
-                    :foreground "#fff"    ;文字
-                    :background "#FF6699" ;背景
-                    ;; :foreground "#000"
-                    ;; :background "#ffaeb9"
+                    ;; :foreground "#000"    ;文字
+                    ;; :background "#FF6699" ;背景
+                    :foreground "#859900"
+                    ;; :background "#2aa198"
                     :box nil)
 (set-face-attribute 'powerline-active1 nil
-                    :foreground "#FF6699"
-                    :background "#fff"
+;;                     :foreground "#FF6699"
+                    :foreground "#859900"
+;;                     :background "#003366"
                     :inherit 'mode-line)
 (set-face-attribute 'powerline-active2 nil
-                    :foreground "#000"
-                    :background "#888888"
-                    ;; :background "#ffaeb9"
+                    ;; :foreground "#859900"
+;;                     :foreground "#000"
+;;                     :background "#888888"
+;;                     ;; :background "#ffaeb9"
                     :inherit 'mode-line)
 
-(set-face-attribute 'mode-line-inactive nil
-                    :foreground "#fff"
-                    :background "#FF6699"
-                    ;; :foreground "#000"
-                    ;; :background "#ffaeb9"
-                    :box nil)
-(set-face-attribute 'powerline-inactive1 nil
-                    :foreground "#000"
-                    :background "#888888"
-                    ;; :background "#ffaeb9"
-                    :inherit 'mode-line)
-(set-face-attribute 'powerline-inactive2 nil
-                    :foreground "#FF6699"
-                    :background "#fff"
-                    :inherit 'mode-line)
+;; (set-face-attribute 'mode-line-inactive nil
+;;                     :foreground "#fff"
+;;                     :background "#FF6699"
+;;                     ;; :foreground "#000"
+;;                     ;; :background "#ffaeb9"
+;;                     :box nil)
+;; (set-face-attribute 'powerline-inactive1 nil
+;;                     :foreground "#000"
+;;                     :background "#888888"
+;;                     ;; :background "#ffaeb9"
+;;                     :inherit 'mode-line)
+;; (set-face-attribute 'powerline-inactive2 nil
+;;                     :foreground "#FF6699"
+;;                     :background "#003366"
+;;                     :inherit 'mode-line)
 (setq mac-use-srgb-colorspace nil)      ;powerline綺麗に表示されない問題
 (setq powerline-height 15)
 (setq powerline-raw " ")
@@ -1151,6 +1190,13 @@
   '(progn
      (require 'tern-auto-complete)
      (tern-ac-setup)))
+;; (setq company-tern-property-marker "")
+;; (defun company-tern-depth (candidate)
+;;   "Return depth attribute for CANDIDATE. 'nil' entries are treated as 0."
+;;   (let ((depth (get-text-property 0 'depth candidate)))
+;;     (if (eq depth nil) 0 depth)))
+;; (add-hook 'js2-mode-hook 'tern-mode) ; 自分が使っているjs用メジャーモードに変える
+;; (add-to-list 'company-backends 'company-tern) ; backendに追加
 
 ;; キーバインドを動的に表示 which-key
 ;; http://emacs.rubikitch.com/which-key/
@@ -1195,25 +1241,54 @@
 (global-yascroll-bar-mode 1)
 
 ;; マイナーモードの短縮
-(defmacro safe-diminish (file mode &optional new-name)
-  "https://github.com/larstvei/dot-emacs/blob/master/init.org"
-  `(with-eval-after-load ,file
-     (diminish ,mode ,new-name)))
+(defvar mode-line-cleaner-alist
+  '( ;; For minor-mode, first char is 'space'
+    (yas-minor-mode . "")
+    (paredit-mode . " Pe")
+    (eldoc-mode . "")
+    (abbrev-mode . "")
+    (undo-tree-mode . "")
+    (elisp-slime-nav-mode . " EN")
+    (helm-gtags-mode . " HG")
+    ;; (flymake-mode . " Fm")
+    (flycheck-mode . "")
+    (git-gutter-mode . "")
+    (helm-mode . "")
+    (which-key-mode . "")
+    (company-mode . "")
+    (auto-complete-mode . "")
+    (projectile-rails-mode . "")
+    (emmet-mode . "")
+    (auto-revert-mode . "")
+    ;; (robe-mode . "")
+    (ruby-end-mode . "")
+    (tern-mode . "")
+    ;; Major modes
+    (lisp-interaction-mode . "Li")
+    (python-mode . "Py")
+    (ruby-mode   . "Rb")
+    (web-mode   . "W")
+    (emacs-lisp-mode . "El")
+    (js2-mode . "JS2")
+    (markdown-mode . "Md")))
 
-(safe-diminish "abbrev" 'abbrev-mode)
-(safe-diminish "auto-complete" 'auto-complete-mode)
-(safe-diminish "eldoc" 'eldoc-mode)
-(safe-diminish "flycheck" 'flycheck-mode)
-(safe-diminish "flyspell" 'flyspell-mode)
-(safe-diminish "helm-mode" 'helm-mode)
-;; (safe-diminish "projectile" 'projectile-mode)
-(safe-diminish "undo-tree" 'undo-tree-mode)
-(safe-diminish "git-gutter" 'git-gutter-mode)
-(safe-diminish "tern" 'tern-mode)
-(safe-diminish "which-key" 'which-key-mode)
-(safe-diminish "emmet" 'emmet-mode)
-(safe-diminish "auto-revert" 'auto-revert-mode)
-(safe-diminish "auto-revert-tail" 'auto-revert-tail-mode)
+(defun clean-mode-line ()
+  (interactive)
+  (loop for (mode . mode-str) in mode-line-cleaner-alist
+        do
+        (let ((old-mode-str (cdr (assq mode minor-mode-alist))))
+          (when old-mode-str
+            (setcar old-mode-str mode-str))
+          ;; major mode
+          (when (eq mode major-mode)
+            (setq mode-name mode-str)))))
 
+(add-hook 'after-change-major-mode-hook 'clean-mode-line)
 (setq confirm-kill-emacs 'y-or-n-p)     ; 終了を確認する
+
+;; パスの引継ぎ
+(setq exec-path-from-shell-check-startup-files nil) ;メッセージを無視する
+(exec-path-from-shell-initialize)
+;; オートコンプリートオフ
+;; (auto-complete-mode -1)
 
