@@ -14,12 +14,32 @@
 ;;スタートアップメッセージを非表示
 (setq inhibit-startup-screen t)
 
+;; (require 'dashboard)
+;; (dashboard-setup-startup-hook)
+;; ;; Or if you use use-package
+;; (use-package dashboard
+;;   :config
+;;   (dashboard-setup-startup-hook))
+
+;; 括弧の自動挿入
+(electric-pair-mode 1)
+
+
+;; 複数ウィンドウを禁止する
+(setq ns-pop-up-frames nil)
 ;; スクリーンの最大化
 ;; (set-frame-parameter nil 'fullscreen 'maximized)
 ;; フルスクリーン
 ;; (set-frame-parameter nil 'fullscreen 'fullboth)
 ;; mac 自動 ローマ字切り替え
 (mac-auto-ascii-mode 1)
+;;;;;;; 不要だけど．．．一応
+(set-language-environment "Japanese")
+;; (set-default-coding-systems 'euc-japan)
+;; (set-terminal-coding-system 'euc-japan)
+;;; 文字コードを指定する
+(prefer-coding-system 'utf-8)
+;; (prefer-coding-system 'euc-japan)
 
 ;; for window system 半透明化
 ;; (if window-system
@@ -104,16 +124,14 @@
 (setq exec-path-from-shell-check-startup-files nil) ;メッセージを無視する
 (exec-path-from-shell-initialize)
 
-;;; 文字コードを指定する
-(set-language-environment "Japanese")
-(prefer-coding-system 'utf-8)
-
 ;;; ファイル名の扱い
 ;; Mac OS Xの場合のファイル名の設定
 (when (eq system-type 'darwin)
   (require 'ucs-normalize)
   (set-file-name-coding-system 'utf-8-hfs)
   (setq locale-coding-system 'utf-8-hfs))
+;; バッファの終端を明示する
+(setq-default indicate-empty-lines t)
 
 ;; カラム番号も表示
 (column-number-mode t)
@@ -156,22 +174,25 @@
 
 ;; TABの表示幅。初期値は8
 (setq-default tab-width 4)
-;; インデントにタブ文字を使用しない
+;; インデントにタブ文字を使用しない タブをスペースにする
 (setq-default indent-tabs-mode nil)
 ;; php-modeのみタブを利用しない
 ;; (add-hook 'php-mode-hook
 ;;           '(lambda ()
 ;;             (setq indent-tabs-mode nil)))
-
 ;; C、C++、JAVA、PHPなどのインデント
-(add-hook 'c-mode-common-hook
-          '(lambda ()
-             (c-set-style "bsd")))
-;; php-modeのswitch文のインデント
-(add-hook 'php-mode-hook
-          (lambda ()
-            (c-set-offset 'case-label '+)))
-
+;; (add-hook 'c-mode-common-hook
+;;           '(lambda ()
+;;              (c-set-style "linux")))
+(defun php-mode-options ()
+  (php-eldoc-enable)
+  (cond
+   ((string-match-p "^/my-project-folder")
+    (php-eldoc-probe-load "http://my-project.com/probe.php?secret=sesame"))
+   ((string-match-p "^/other-project-folder")
+    (php-eldoc-probe-load "http://localhost/otherproject/probe.php?secret=sesame"))))
+;; (add-hook 'php-mode-hook 'php-mode-options)
+;; (add-to-list 'auto-minor-mode-alist `(,(format "^%s/cloudear/highClass/" (getenv "HOME")) . cake2-major-mode))
 
 ;;; 表示テーマの設定
 ;; http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz
@@ -331,43 +352,55 @@
 (add-hook 'emacs-lisp-mode-hook 'elisp-mode-hooks)
 
 ;;; Auto Complete 補完機能を利用可能にする
-(when (require 'auto-complete-config nil t)
-  (add-to-list 'ac-dictionary-directories
-               "~/.emacs.d/elisp/ac-dict")
-  ;; (define-key ac-mode-map (kbd "TAB") 'auto-complete)
-  (ac-config-default)
-  (add-to-list 'ac-modes 'text-mode)         ;; text-modeでも自動的に有効にする
-  (add-to-list 'ac-modes 'fundamental-mode)  ;; fundamental-mode
-  (add-to-list 'ac-modes 'markdown-mode)  ;; fundamental-mode
-  ;; (add-to-list 'ac-modes 'org-mode)
-  ;; (add-to-list 'ac-modes 'yatex-mode)
-  (setq ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
-  (setq ac-ignore-case nil)
-  (setq ac-delay nil)
-  (setq ac-auto-show-menu nil)  ;; n秒後に補完メニューを表示
-  ;; (setq ac-use-fuzzy t)          ;; 曖昧マッチ
-  )
+;; (when (require 'auto-complete-config nil t)
+;;   (add-to-list 'ac-dictionary-directories
+;;                "~/.emacs.d/elisp/ac-dict")
+;;   ;; (define-key ac-mode-map (kbd "TAB") 'auto-complete)
+;;   (ac-config-default)
+;;   (add-to-list 'ac-modes 'text-mode)         ;; text-modeでも自動的に有効にする
+;;   (add-to-list 'ac-modes 'fundamental-mode)  ;; fundamental-mode
+;;   (add-to-list 'ac-modes 'markdown-mode)  ;; fundamental-mode
+;;   ;; (add-to-list 'ac-modes 'org-mode)
+;;   ;; (add-to-list 'ac-modes 'yatex-mode)
+;;   (setq ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
+;;   (setq ac-ignore-case nil)
+;;   (setq ac-delay nil)
+;;   (setq ac-auto-show-menu nil)  ;; n秒後に補完メニューを表示
+;;   ;; (setq ac-use-fuzzy t)          ;; 曖昧マッチ
+;;   )
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-idle-delay nil)
+ '(beacon-blink-when-focused t)
+ '(beacon-blink-when-window-changes nil)
+ '(beacon-color "magenta")
+ '(beacon-mode nil)
+ '(company-idle-delay 0.1)
  '(custom-safe-themes
    (quote
     ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
  '(desktop-save-mode t)
+ '(flycheck-disabled-checkers (quote (javascript-jshint javascript-jscs)))
  '(git-gutter:added-sign ">")
  '(git-gutter:deleted-sign "x")
  '(git-gutter:modified-sign "*")
  '(global-company-mode t)
+ '(helm-gtags-auto-update t)
  '(package-selected-packages
    (quote
-    (company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list powerline-evil company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+    (slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list powerline-evil company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
 
 (require 'company)
 (global-company-mode +1)
-(global-set-key (kbd "TAB") 'company-complete)
+(setq company-auto-expand t) ;; 1個目を自動的に補完
+(setq company-minimum-prefix-length 2) ; デフォルトは4
+;; (setq company-idle-delay 0) ; 遅延なしにすぐ表示
+(setq company-selection-wrap-around t) ; 候補の最後の次は先頭に戻る
+(setq completion-ignore-case t)
+(setq company-dabbrev-downcase nil)
+(global-set-key (kbd "C-M-i") 'company-complete)
 ;; C-n, C-pで補完候補を次/前の候補を選
 (define-key company-active-map (kbd "C-n") 'company-select-next)
 (define-key company-active-map (kbd "C-p") 'company-select-previous)
@@ -375,11 +408,12 @@
 (define-key company-search-map (kbd "C-p") 'company-select-previous)
 ;; C-sで絞り込む
 (define-key company-active-map (kbd "C-s") 'company-filter-candidates)
-;; TABで候補を設定
-;; (define-key company-active-map (kbd "C-i") 'company-complete-selection)
+;; C-M-iで候補を設定
 (define-key company-active-map (kbd "TAB") 'company-complete-selection)
+;; (define-key company-active-map (kbd "C-M-i") 'company-complete-selection)
 ;; 各種メジャーモードでも C-M-iで company-modeの補完を使う
-(define-key emacs-lisp-mode-map (kbd "TAB") 'company-complete)
+(define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
+;; (define-key php-mode-map (kbd "C-M-i") 'company-complete)
 ;; クイックヘルプ
 (company-quickhelp-mode +1)
 ;; company-mode off
@@ -389,6 +423,17 @@
 (require 'company-statistics)
 (company-statistics-mode)
 (setq company-transformers '(company-sort-by-statistics company-sort-by-backend-importance))
+
+;; yasnippetとの連携
+(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+      backend
+    (append (if (consp backend) backend (list backend))
+            '(:with company-yasnippet))))
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
 
 
 ;; ▼要拡張機能インストール▼
@@ -414,16 +459,23 @@
   )
 ;; プレフィクスキーはC-z elscreen永続化
 ;; (add-to-list 'load-path "/usr/local/Cellar/emacs/25.2/share/emacs/site-lisp/elscreen-persist")
+(setq elscreen-prefix-key (kbd "C-z"))
+(elscreen-start)
 (require 'elscreen-persist)
 (elscreen-persist-mode 1)
-(setq elscreen-prefix-key (kbd "C-z"))
 (elscreen-separate-buffer-list-mode 1)
 (require 'elscreen-multi-term)
 (global-set-key (kbd "M-<right>") 'elscreen-next)
 (global-set-key (kbd "M-<left>") 'elscreen-previous)
 (global-set-key (kbd "s-}") 'elscreen-next)
 (global-set-key (kbd "s-{") 'elscreen-previous)
-(elscreen-start)                        ;最後に書く
+(setq save-visited-files-ignore-tramp-files t)
+(turn-on-save-visited-files-mode)
+;; elscreen-separate-buffer-list 版 BufferSelection の
+;; bs-cycle-previous , bs-cycle-next のようなもの
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/elscreen-separate-buffer-list-cycle.el")
+(load "elscreen-separate-buffer-list-cycle")
+
 ;;; メモ書き・ToDo管理 howm
 ;; (package-install 'howm)
 ;; howmメモ保存の場所
@@ -532,10 +584,10 @@
 (make-variable-buffer-local 'delete-trailing-whitespece-before-save)
 (advice-add 'delete-trailing-whitespace :before-while
             (lambda () delete-trailing-whitespece-before-save))
-                                        ; 空白と行末を削除 無効にしたいモードのhook
+;; auto-cleanup無効
 (add-hook 'markdown-mode-hook
           '(lambda ()
-             (set (make-local-variable 'delete-trailing-whitespece-before-save) nil)))
+             (set (make-local-variable 'whitespace-action) nil)))
 ;;;;
 
 ;;; Mac でファイルを開いたときに、新たなフレームを作らない
@@ -583,9 +635,6 @@
 (add-to-list 'term-unbind-key-list "C-t")
 ;; emacs に認識させたいキーがある場合は、term-unbind-key-list に追加する
 ;; (add-to-list 'term-unbind-key-list "C-t") ;
-(set-language-environment  'utf-8)
-(prefer-coding-system 'utf-8)
-
 (require 'ucs-normalize)
 (setq file-name-coding-system 'utf-8-hfs)
 (setq locale-coding-system 'utf-8-hfs)
@@ -741,8 +790,10 @@
       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
       helm-ff-file-name-history-use-recentf t
-      helm-echo-input-in-header-line t)
-
+      helm-echo-input-in-header-line t
+      )
+    (setq-default helm-truncate-lines t
+                  helm-projectile-truncate-lines t)
 ;; (defun spacemacs//helm-hide-minibuffer-maybe ()
 ;;   "Hide minibuffer in Helm session if we use the header line as input field."
 ;;   (when (with-helm-buffer helm-echo-input-in-header-line)
@@ -766,8 +817,19 @@
 (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
 ;;(define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(require 'helm-config)
 (helm-mode 1)
-
+;; (defun my-helm ()
+;;   (interactive)
+;;   (helm :sources '(
+;;                    helm-c-source-buffers-list
+;;                    helm-c-source-recentf
+;;                    helm-c-source-files-in-current-dir
+;;                    helm-c-source-mac-spotlight
+;;                    helm-c-source-buffer-not-found)
+;;         :buffer "*my helm*"))
+;; (setq helm-source-locate helm-source-mac-spotlight)
+;; (global-set-key (kbd "C-x b") 'my-helm)
 ;; web-mode
 (when (require 'web-mode nil t)
   ;; 自動的にweb-modeを起動したい拡張子を追加する
@@ -781,17 +843,20 @@
   (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
   ;;; web-modeのインデント設定用フック
-  ;; (defun web-mode-hook ()
+  (defun web-mode-hook ()
   ;;   "Hooks for Web mode."
   ;;   (setq web-mode-markup-indent-offset 2) ; HTMLのインデイント
   ;;   (setq web-mode-css-indent-offset 2) ; CSSのインデント
-  ;;   (setq web-mode-code-indent-offset 2) ; JS, PHP, Rubyなどのインデント
+    (setq web-mode-code-indent-offset 2) ; JS, PHP, Rubyなどのインデント
   ;;   (setq web-mode-comment-style 2) ; web-mode内のコメントのインデント
-  ;;   (setq web-mode-style-padding 1) ; <style>内のインデント開始レベル
-  ;;   (setq web-mode-script-padding 1) ; <script>内のインデント開始レベル
+    (setq web-mode-style-padding 1) ; <style>内のインデント開始レベル
+    (setq web-mode-script-padding 1) ; <script>内のインデント開始レベル
+     (setq web-mode-engines-alist
+        '(("php"    . "\\.ctp\\'"))
+        )
   ;;   )
-  ;; (add-hook 'web-mode-hook  'web-mode-hook)
-  )
+  (add-hook 'web-mode-hook  'web-mode-hook)
+  ))
 
 (require 'emmet-mode)
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; マークアップモードで自動的に emmet-mode をたちあげる
@@ -804,7 +869,7 @@
 (define-key emmet-mode-keymap (kbd "s-e") 'emmet-expand-line) ;; command + e で展開
 (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 0)));;自動インデントなし
 
-;;; P172 ruby-modeのインデントを調整する
+;;; ruby-modeのインデントを調整する
 ;; ruby-modeのインデント設定
 (setq ;; ruby-indent-level 3 ; インデント幅を3に。初期値は2
  ruby-deep-indent-paren-style nil ; 改行時のインデントを調整する
@@ -867,14 +932,21 @@
 
 (require 'flycheck)
 (setq flycheck-check-syntax-automatically '(mode-enabled save))
-(add-hook 'ruby-mode-hook 'flycheck-mode)
+;; (add-hook 'ruby-mode-hook 'flycheck-mode)
+(add-hook 'after-init-hook #'global-flycheck-mode)
 (setq flycheck-display-errors-delay 0.3)
+
+;; (add-hook 'ruby-mode-hook
+;;           '(lambda ()
+;;              (setq flycheck-checker 'ruby-rubocop)
+;;              (flycheck-mode 1)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(beacon-fallback-background ((t (:background "magenta"))))
  '(magit-diff-added ((t (:background "black" :foreground "green"))))
  '(magit-diff-added-highlight ((t (:background "white" :foreground "green"))))
  '(magit-diff-removed ((t (:background "black" :foreground "blue"))))
@@ -1007,7 +1079,8 @@
 (setq helm-projectile-fuzzy-match nil)
 (when (require 'helm-projectile nil t)
   (setq projectile-completion-system 'helm)
-  (helm-projectile-on))
+  )
+(add-hook 'helm-mode-hook (lambda () (setq truncate-lines t)))
 
 ;; railsサポート
 ;; (require 'projectile-rails)
@@ -1233,39 +1306,50 @@
 ;; React（JSX）を使う場合はこちら
 ;; (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 
+(eval-after-load 'flycheck
+  '(custom-set-variables
+    '(flycheck-disabled-checkers '(javascript-jshint javascript-jscs))))
 (defun my-js-mode-hook ()
   (setq-local electric-layout-rules
               '((?\{ . after) (?\} . before))))
-
-(add-hook 'js-mode-hook 'my-js-mode-hook)
 (use-package js2-mode
   :mode
   (("\.js$" . js2-mode))
   :config
   )
-;; (use-package jquery-doc
-;;   :commands (jquery-doc-setup)
-;;   :init
-;;   (add-hook 'js2-mode-hook 'jquery-doc-setup))
-;; (use-package tern
-;;   :commands (tern-mode)
-;;   :init
-;;   (add-hook 'js2-mode-hook 'tern-mode)
-;;   :config
-;;   )
-;; (eval-after-load 'tern
-;;   '(progn
-;;      (require 'tern-auto-complete)
-;;      (tern-ac-setup)))
+(add-hook 'js-mode-hook 'my-js-mode-hook)
+(setq js2-strict-missing-semi-warning nil)
+(setq js2-missing-semi-one-line-override nil)
+;; (add-hook 'js2-mode-hook
+;;           (lambda ()
+;;             (setq my-js-mode-indent-num 2)
+;;             (setq js2-basic-offset my-js-mode-indent-num)
+;;             (setq js-switch-indent-offset my-js-mode-indent-num)
+;;             (add-to-list 'company-backends 'company-tern)
+;;             (set (make-local-variable 'company-backends)
+;;                  '((company-dabbrev-code company-yasnippet company-tern)))))
+(add-hook 'js2-mode-hook
+          (lambda ()
+            (setq my-js-mode-indent-num 2)
+             (setq js2-basic-offset my-js-mode-indent-num)
+             (setq js-switch-indent-offset my-js-mode-indent-num)
+            ))
+
 (setq company-tern-property-marker "")
 (defun company-tern-depth (candidate)
   "Return depth attribute for CANDIDATE. 'nil' entries are treated as 0."
   (let ((depth (get-text-property 0 'depth candidate)))
     (if (eq depth nil) 0 depth)))
 (add-hook 'js2-mode-hook 'tern-mode) ; 自分が使っているjs用メジャーモードに変える
-(add-to-list 'company-backends 'company-tern) ; backendに追加
-(add-to-list 'company-backends '(company-tern :with company-dabbrev-code))
+;; (add-to-list 'company-backends 'company-tern) ; backendに追加
+;; (add-to-list 'company-backends '(company-tern :with company-dabbrev-code))
+;; (add-hook 'js-mode-hook '(lambda () (setq-local company-backends '((company-web company-css company-tern :with company-yasnippet)))))
+(add-hook 'js-mode-hook
+          '(lambda ()
+             (setq-local company-backends '((company-tern :with company-yasnippet)))))
+(add-hook 'js-mode-hook 'emmet-mode)
 
+;; (add-to-list 'company-backends '(company-yasnippet :with company-dabbrev-code))
 ;; キーバインドを動的に表示 which-key
 ;; http://emacs.rubikitch.com/which-key/
 ;;; 3つの表示方法どれか1つ選ぶ
@@ -1276,8 +1360,6 @@
 ;;;; 入力補助
 ;; (require 'yasnippet)
 ;; (yas-global-mode 1)
-;; 括弧の自動挿入
-(electric-pair-mode 1)
 
 ;;;; バッファーの読み込み
 ;; (defun revert-buffer-no-confirm ()
@@ -1299,11 +1381,52 @@
 (defun php-indent-hook ()
   (setq indent-tabs-mode nil)
   (setq c-basic-offset 4)
-  ;; (c-set-offset 'case-label '+) ; switch文のcaseラベル
+  ;; (setq c-tab-width 8)
+  ;; (setq c-argdecl-indent 0)       ; 関数の引数行のインデント
+                                        ; 但し引数行で明示的にタブを押さない
+  ;;                                       ; 場合は、インデントしない
+  ;; (setq c-indent-level 8)               ; { を書いた後のインデント
+  ;; (setq c-label-offset -4)              ; ラベルの深さ
+  ;; (setq c-tab-always-indent t)          ; タブ記号を押した時にユーザーが
+                                        ; 任意にタブ記号を入れることは不可
+  (c-set-offset 'case-label '+) ; switch文のcaseラベル
   (c-set-offset 'arglist-intro '+) ; 配列の最初の要素が改行した場合
   (c-set-offset 'arglist-close 0)) ; 配列の閉じ括弧
-
 (add-hook 'php-mode-hook 'php-indent-hook)
+(add-hook 'php-mode-hook
+          '(lambda ()
+             (require 'company-php)
+             (require 'cake2)
+             (ac-php-core-eldoc-setup) ;; enable eldoc
+             (set (make-local-variable 'company-backends)
+                  '((company-dabbrev-code company-yasnippet)))
+             (company-mode t)
+             (add-to-list 'company-backends 'company-ac-php-backend t)))
+(require 'react-snippets)
+;;;; yasnippet設定
+(yas-global-mode 1)
+;;; スニペット名をidoで選択する
+(setq yas-prompt-functions '(yas-ido-prompt))
+
+;; phpunit & quickrun
+(defface phpunit-pass
+  '((t (:foreground "white" :background "green" :weight bold))) nil)
+(defface phpunit-fail
+  '((t (:foreground "white" :background "red" :weight bold))) nil)
+
+(defun quickrun/phpunit-outputter ()
+  (save-excursion
+    (goto-char (point-min))
+    (while (replace-regexp "^M" "")
+      nil))
+  (highlight-phrase "^OK.*$" 'phpunit-pass)
+  (highlight-phrase "^FAILURES.*$" 'phpunit-fail))
+
+(quickrun-add-command "phpunit" '((:command . "phpunit")
+                                  (:exec . "%c %s")
+                                  (:outputter . quickrun/phpunit-outputter)))
+(add-to-list 'quickrun-file-alist '("Test\\.php$" . "phpunit"))
+
 ;; スクロール
 (require 'yascroll)
 (global-yascroll-bar-mode 1)
@@ -1319,7 +1442,7 @@
     (elisp-slime-nav-mode . " EN")
     (helm-gtags-mode . " HG")
     ;; (flymake-mode . " Fm")
-    (flycheck-mode . "")
+    ;; (flycheck-mode . "")
     (git-gutter-mode . "")
     (helm-mode . "")
     (which-key-mode . "")
@@ -1330,7 +1453,7 @@
     (auto-revert-mode . "")
     ;; (robe-mode . "")
     (ruby-end-mode . "")
-    (tern-mode . "")
+    ;; (tern-mode . "")
     ;; Major modes
     (lisp-interaction-mode . "Li")
     (python-mode . "Py")
@@ -1387,195 +1510,124 @@
       (kill-new (file-truename fPath)))))
 
 (global-set-key (kbd "C-c 0") 'my/copy-current-path)
+(add-hook 'dired-load-hook (lambda () (load "dired-x")))
+;; beep音を消す
+(defun my-bell-function ()
+  (unless (memq this-command
+        '(isearch-abort abort-recursive-edit exit-minibuffer
+              keyboard-quit mwheel-scroll down up next-line previous-line
+              backward-char forward-char))
+    (ding)))
+(setq ring-bell-function 'my-bell-function)
+;; macのキーボード
+;; (mac-key-mode 1)
 
 ;;; symlink をフォローしない
 (setq-default find-file-visit-truename t)
+;; gtags-mode設定
+
+;; helm-gtags設定
+
+(defun my-eucjp-currentbuffer()
+  (interactive)
+  (universal-coding-system-argument))
+
+(defun set-buffer-correct-coding-system(coding-system &optional force nomodify)
+  "Correct coding system"
+  (interactive
+   (list (read-buffer-file-coding-system)
+         current-prefix-arg))
+  (let ((coding-system-for-read coding-system)
+        (coding-system-for-write coding-system)
+        (coding-system-require-warning t))
+    (find-alternate-file buffer-file-name)))
+(global-set-key (kbd "C-c 1") 'set-buffer-correct-coding-system)
+
+;; (add-hook 'c++-mode-hook
+;;   '(lambda ()
+;;     (define-key c++-mode-map "\t"
+;;       (lambda ()
+;; 	(interactive)
+;; 	(if (looking-back "\s\\|^") (c-indent-command) (command-execute 'dabbrev-expand))))))
+;; Iterm2を開く
+(defun cd-on-iterm ()
+  (interactive)
+  (util/execute-on-iterm
+   (format "cd %s" default-directory)))
+(defun util/execute-on-iterm (command)
+  (interactive "MCommand: ")
+  (do-applescript
+   (format "tell application \"iTerm\"
+              activate
+              tell current session of current window
+                write text \"%s\"
+              end tell
+            end tell"
+           command)))
+
+(global-set-key (kbd "C-c i") 'cd-on-iterm)
+(require 'ag)
+(require 'wgrep-ag)
+
+(global-set-key (kbd "C-c 2") 'camel-to-snake-backward-word)
+(defun camel-to-snake-backward-word ()
+  (interactive)
+  (let ((case-fold-search nil)
+        (s (buffer-substring
+            (point) (save-excursion (forward-word -1) (point)))))
+    (delete-region (point) (progn (forward-word -1) (point)))
+    (insert (funcall (if (= (string-to-char s) (downcase (string-to-char s)))
+                         'downcase 'upcase)
+                     (replace-regexp-in-string
+                      "\\([A-Z]\\)" "_\\1"
+                      (store-substring s 0 (downcase (string-to-char s))))))))
+(require 'helm-dash)
+(setq helm-dash-docsets-path (expand-file-name "~/.docsets"))
+  (with-eval-after-load 'dash
+    (setq helm-dash-browser-func 'browse-url-default-macosx-browser))
+;; (setq browse-url-browser-function 'browse-url-generic
+;;       browse-url-generic-program "/Applications/Google Chrome.app")
+;; (setq helm-dash-browser-func 'browse-url-generic)
+(defun py-doc ()
+  (setq-local helm-dash-docsets '("Python 3" "Pandas" "Matplotlib" "NumPy")))
+
+(defun cpp-doc ()
+  (setq-local helm-dash-docsets '("C++" "Boost")))
+
+(add-hook 'python-mode-hook 'py-doc)
+(add-hook 'c++-mode-hook 'cpp-doc)
+
+(global-set-key (kbd "<f1>") 'help-for-help)
+;; init.elを開く
+(defun my-find-file-init-el()
+  "init.elを開く"
+  (interactive)
+  (find-file "~/.emacs.d/init.el"))
+
+(defun my-find-file-temporary-file-directory (filename)
+  "ディレクトリ `temporary-file-directory'のファイルを開く"
+  (interactive
+   (list (read-file-name "Find files: " temporary-file-directory)))
+  (find-file filename))
+
+(beacon-mode 1)
+
+;; Set your lisp system and, optionally, some contribs
+;; (setq inferior-lisp-program "/opt/sbcl/bin/sbcl")
+(setq inferior-lisp-program "/usr/local/bin/clisp")
+(setq slime-contribs '(slime-fancy))
+
+(setq auto-mode-alist
+(cons (cons "\\.cl$" 'lisp-mode) auto-mode-alist))
+
+(slime-setup '(slime-fancy slime-company))
+(define-key company-active-map (kbd "\C-n") 'company-select-next)
+(define-key company-active-map (kbd "\C-p") 'company-select-previous)
+(define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+(define-key company-active-map (kbd "M-.") 'company-show-location)
 
 
-;;; elscreen-separate-buffer-list-cycle.el
-;;
-;; elscreen-separate-buffer-list 版 BufferSelection の
-;; bs-cycle-previous , bs-cycle-next のようなもの
-;;
-;; Author: garin <garin54@gmail.com>
-;; Version: 0.0.3
-;; Date: 2017.09.10
-;;
-
-;; License:
-;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-;;
-;; == 必要
-;; * elscreen
-;; * elscreen-separate-buffer-list-mode
-;;
-;; == 使い方
-;; ファイルを適当なディレクトリに保存して、
-;; elscreen-separate-buffer-list-mode を読み込んだ後で
-;; (load "/path/to/elscreen-separate-buffer-list-cycle.el")
-;;
-;; === 機能
-;; \C-. : ebc-switch-to-next-buffer
-;; 次のバッファに移動
-;; 最後のバッファの時は最初のバッファに移動
-;;
-;; \C-, :  ebc-switch-to-prev-buffer
-;; 前のバッファに移動
-;; 最初のバッファの時は最後のバッファに移動
-;;
-;; == 解説
-;; elscreen のスクリーンごとにバッファリストをサイクルする
-;;
-;; bs-cycle では buffer-list を対象に移動するので、elscreen で複数のスクリーンを
-;; 使っていてもすべてのスクリーンでバッファリストが共有され
-;; スクリーン B で開いたファイルもスクリーン A でサイクルされていた
-;;
-;; ebc-cycle では elscreen separate の buffer list(ido-buffer-list) を
-;; 使うことでスクリーンごとにバッファのサイクルを制御します
-;;
-;; == bs-cycle
-;; buffer-list 経由なので 全部のスクリーンでバッファリストが共有
-;;
-;; screnA : buffer1 buffer2 buffer3 buffer4 buffer5
-;; screnB : buffer1 buffer2 buffer3 buffer4 buffer5
-;; screnC : buffer1 buffer2 buffer3 buffer4 buffer5
-;;
-;; == ebc-cycle
-;; elscreen separate buffer list (ido-buffer-list) 経由なので
-;; スクリーンごとにバッファリストが独立
-;;
-;; screnA : buffer1 buffer2 buffer4 buffer5
-;; screnB : buffer3 buffer4
-;; screnC : buffer1 buffer2 buffer6
-;;
-;; (独立してるので同じバッファが複数のスクリーンに存在しても問題ない)
-;;
-;; == バグ
-;; * ebc-boring-buffer-regexp-list で除外したバッファがカレントバッファの時にバッファの移動ができない
-;;
-;; == 更新履歴
-;;
-;; == メモ
-;; 似たような機能が探してもなかったので作りました。
-;; もっといい実装してるのがあれば教えてください
-(require 'elscreen-separate-buffer-list)
-
-;; 無視するバッファの正規表現リスト
-(defvar ebc-boring-buffer-regexp-list '())
-;; (setq ebc-boring-buffer-regexp-list '("\\*.*" "ipa_file"))
-(setq ebc-boring-buffer-regexp-list '("\\*.*" "\\*helm.*" "\\*Message" "\\*Compile" "\\Buffer List\\*" "\\*howm" "ipa_file"))
-
-;; swith-buffer のたびに
-;; 1つ前と現在のバッファをリストの先頭に移動
-;; ebc-previous-buffer で直前のバッファに移動できるようにするため
-(defun esbl-add-separate-buffer-list (buffer)
-  "SEPARATE-BUFFER-LIST に BUFFER を加える."
-  (esbl-remove-separate-buffer-list ebc-before-current-buffer)
-  (if (member buffer (esbl-get-separate-buffer-list))
-      (esbl-remove-separate-buffer-list buffer))
-  (setq esbl-separate-buffer-list (append (list ebc-before-current-buffer) (esbl-get-separate-buffer-list)))
-  (setq esbl-separate-buffer-list (append (list buffer) (esbl-get-separate-buffer-list)))
-  (setq esbl-separate-buffer-list (remove-duplicates esbl-separate-buffer-list))
-  (esbl-separate-buffer-list-count-inc buffer))
-
-;; switch-to-buffer する前のカレントバッファを保存
-(defvar ebc-before-current-buffer (current-buffer))
-(defun ebc-get-before-current-buffer (buffer &rest _)
-    (setq ebc-before-current-buffer (current-buffer))
-  )
-(advice-add 'switch-to-buffer :before 'ebc-get-before-current-buffer)
-
-;; ebc 用の switch-buffer
-(defun ebc-switch-to-buffer(buffer)
-  ;; ebc で switch to buffer すの時は ebc-before-current-buffer, esbl-add-separate-buffer-list を実行しない
-  (advice-remove 'switch-to-buffer 'ebc-get-before-current-buffer)
-  (advice-remove 'switch-to-buffer 'esbl-add-separate-buffer-list:advice)
-  (switch-to-buffer buffer)
-  (advice-add 'switch-to-buffer :before 'ebc-get-before-current-buffer)
-  (advice-add 'switch-to-buffer :after 'esbl-add-separate-buffer-list:advice)
-  )
-
-;; バッファ名が ebc-boring-buffer-regexp-list の正規表現に一致すれば t
-(defun ebc-is-boring-buffer(buffer-name)
-  (loop for r in ebc-boring-buffer-regexp-list
-        if (string-match r buffer-name)  return t)
-  )
-
-;; バッファのリストの取得
-(defun ebc-get-buffer-list()
-  (loop for b in (esbl-get-separate-buffer-list)
-        if (not (ebc-is-boring-buffer (buffer-name b))) collect b)
-  )
-
-;; バッファリストを表示
-(defun ebc-show-buffer-list (&optional arg)
-  (interactive "P")
-  (message (format "%s" (ebc-get-buffer-list)))
-  )
-
-;; 現在のバッファが buffer-list のどの位置にあるかを返す
-(defun ebc-current-buffer-nth()
-  (let (buffers)
-    (setq buffers (ebc-get-buffer-list))
-    (loop for i from 0 to (length buffers)
-          if (equal (nth i buffers) (current-buffer)) return i))
-  )
-
-;; 1つ前のバッファを返す
-;; 一番最初のバッファなら最後のバッファを返す
-(defun ebc-previous-buffer()
-  (let (ebc-next-buffer-nth)
-    (if (= (ebc-current-buffer-nth) (- (length (ebc-get-buffer-list)) 1) )
-        (setq ebc-next-buffer-nth 0)
-      (setq ebc-next-buffer-nth (+ (ebc-current-buffer-nth) 1))
-      )
-    ;; (message (format "%s" ebc-next-buffer-nth))
-    ;; (message (format "%s" (ebc-get-buffer-list)))
-    (nth ebc-next-buffer-nth (ebc-get-buffer-list))
-    )
-  )
-
-;; 1つ次のバッファを返す
-;; 一番最後のバッファなら最初のバッファを返す
-(defun ebc-next-buffer()
-  (let (ebc-previous-buffer-nth)
-    (if (< (ebc-current-buffer-nth) 1)
-        (setq ebc-previous-buffer-nth
-              (- (length (ebc-get-buffer-list)) 1))
-      (setq ebc-previous-buffer-nth (- (ebc-current-buffer-nth) 1)))
-    ;; (message (format "%s" ebc-previous-buffer-nth))
-    ;; (message (format "%s" (ebc-get-buffer-list)))
-    (nth ebc-previous-buffer-nth (ebc-get-buffer-list))
-    )
-  )
-
-;; 1つ前のバッファに移動
-(defun ebc-switch-to-previous-buffer (&optional arg)
-  (interactive "P")
-  (ebc-switch-to-buffer (ebc-previous-buffer))
-  )
-
-;; 1つ後のバッファに移動
-(defun ebc-switch-to-next-buffer (&optional arg)
-  (interactive "P")
-  (ebc-switch-to-buffer (ebc-next-buffer))
-  )
-
-;; キーバインド
-(global-set-key [?\C-.] 'ebc-switch-to-next-buffer)
-(global-set-key [?\C-,] 'ebc-switch-to-previous-buffer)
-
-;; (global-set-key (kbd "s-c") 'clipboard-kill-ring-save);コピー
+;; (setenv "PATH" (concat (getenv "HOME") "/.rbenv/shims:"
+;;                        (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
+;; (setq exec-path (cons (concat (getenv "HOME") "/.rbenv/shims")
+;;                       (cons (concat (getenv "HOME") "/.rbenv/bin") exec-path)))

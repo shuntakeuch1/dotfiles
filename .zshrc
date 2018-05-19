@@ -167,7 +167,7 @@ alias ls='ls -F --color=auto'
 esac
 
 # vim:set ft=zsh:
-alias E='emacsclient -t'
+alias EM='emacsclient -t'
 alias kill-emacs="emacsclient -e '(kill-emacs)'"
 PATH="$HOME/.cask/bin:$PATH"
 export PATH=/usr/local/sbin:$PATH #     for Homebrew↲
@@ -179,3 +179,25 @@ eval "$(exenv init -)"
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
+export PATH=$PATH:~/.composer/vendor/bin/
+# gtags設定
+export GTAGSCONF=/usr/local/share/gtags/gtags.conf
+# export GTAGSLABEL=pygments
+alias E="open -a /usr/local/Cellar/emacs-mac/emacs-25.2-z-mac-6.4/Emacs.app"
+export ANDROID_HOME=/Users/takeuchishun/Library/Android/sdk
+#alias ssh='~/bin/ssh-change-bg'
+echo -ne "\033]0;${USER}@${LANG}\007"
+#関数定義(引数3つ)
+tab-color() {
+    echo -ne "\033]6;1;bg;red;brightness;$1\a"
+    echo -ne "\033]6;1;bg;green;brightness;$2\a"
+    echo -ne "\033]6;1;bg;blue;brightness;$3\a"
+}
+
+tab-reset() {
+    echo -ne "\033]6;1;bg;*;default\a"
+}
+
+function chpwd() { ls; echo -ne "\033]0;$(pwd | rev | awk -F \/ '{print "/"$1"/"$2}'| rev)\007"}
+alias top='tab-color 134 200 0; top; tab-reset'
+
