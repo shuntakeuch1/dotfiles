@@ -1,16 +1,20 @@
-# 個人的な「.」から始まる再利用するファイル群
-git clone する
+## Overview
+My configuration file.
+
+### Install
+Execute "sh dotfileLink.sh" after "git clone".
+
 ```
 cd ~ 
 git clone https://github.com/shuntakeuchi/dotfiles.git
-```
-ディレクトリに入りdotfileLink.shの実行
-```
 cd dotfiles
 sh dotfileLink.sh
 ```
-## Emacsの拡張をインストール
+### Emacs setup
+
 ```
+brew install emacs-mac
+brew install cask
 cd .emacs.d
 cask install
 ```
