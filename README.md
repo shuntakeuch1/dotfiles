@@ -1,33 +1,16 @@
-#個人的な「.」から始まる再利用するファイル群
-clone
+# 個人的な「.」から始まる再利用するファイル群
+git clone する
 ```
-https://github.com/shuntakeuchi/dotfiles.git
+cd ~ 
+git clone https://github.com/shuntakeuchi/dotfiles.git
 ```
-ホームディレクトリでdotfileLink.shの実行
+ディレクトリに入りdotfileLink.shの実行
 ```
-cd ~
+cd dotfiles
 sh dotfileLink.sh
 ```
-dein.vimのインストール
+## Emacsの拡張をインストール
 ```
-mkdir -p ~/.vim/dein/repos/github.com/Shougo/dein.vim
-git clone https://github.com/Shougo/dein.vim.git ~/.vim/dein/repos/github.com/Shougo/dein.vim
-```
-7,10行目をユーザ名に合わせて変更
-.vimrc
-```
-"dein Scripts-----------------------------
-if &compatible
-    set nocompatible               " Be iMproved
-    endif
-
-    " Required:
-    set runtimepath^=/Users/{ユーザー名}/.vim/bundle/repos/github.com/Shougo/dein.vim
-
-    " Required:
-    call dein#begin(expand('/Users/{ユーザー名}/.vim/bundle'))
-```
-vim環境のインストール
-```
-:call dein#install()
+cd .emacs.d
+cask install
 ```

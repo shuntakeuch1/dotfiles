@@ -1,0 +1,3 @@
+[submodule ".emacs.d/snippets/yasnippet-ruby-mode"]
+	path = .emacs.d/snippets/yasnippet-ruby-mode
+	url = https://github.com/bmaland/yasnippet-ruby-mode.git

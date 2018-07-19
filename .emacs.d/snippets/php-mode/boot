@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: boot
+# key: boot
+# --
+protected static function boot()
+{
+    parent::boot();
+    static::addGlobalScope(${1:class});$0
+}
