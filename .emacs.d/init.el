@@ -6,6 +6,7 @@
 (require 'cask "~/.cask/cask.el")
 (cask-initialize)
 (require 'pallet)
+(pallet-mode t)
 
 ;;おまじない
 (require 'cl)
@@ -32,7 +33,7 @@
 ;; フルスクリーン
 ;; (set-frame-parameter nil 'fullscreen 'fullboth)
 ;; mac 自動 ローマ字切り替え
-(mac-auto-ascii-mode 1)
+;;(mac-auto-ascii-mode 1)
 ;;;;;;; 不要だけど．．．一応
 (set-language-environment "Japanese")
 ;; (set-default-coding-systems 'euc-japan)
@@ -154,8 +155,8 @@
     ;;(count-lines-region (region-beginning) (region-end))
     ""))
 
-(add-to-list 'default-mode-line-format
-             '(:eval (count-lines-and-chars)))
+;; (add-to-list 'default-mode-line-format
+;;              '(:eval (count-lines-and-chars)))
 
 ;;; タイトルバーにファイルのフルパスを表示
 (setq frame-title-format "%f")
@@ -212,7 +213,7 @@
 ;;; カスタマイズできる項目！
 ;;; これらはload-themeの前に配置すること
 ;; fringeを背景から目立たせる
-(setq solarized-distinct-fringe-background t)
+;;(setq solarized-distinct-fringe-background t)
 ;;
 ;; mode-lineを目立たせる(Fig3)
 ;; (setq solarized-high-contrast-mode-line t)
@@ -326,8 +327,11 @@
 ;; parenのスタイル: expressionは括弧内も強調表示
 (setq show-paren-style 'expression)
 ;; フェイスを変更する
-(set-face-background 'show-paren-match-face nil)
-(set-face-underline-p 'show-paren-match-face "yellow")
+(set-face-attribute 'show-paren-match nil
+      :background 'unspecified
+      :underline "turquoise")
+;; (set-face-background 'show-paren-match-face nil)
+;; (set-face-underline-p 'show-paren-match-face "yellow")
 
 ;; バックアップファイルの作成場所をシステムのTempディレクトリに変更する
 (setq backup-directory-alist
@@ -390,7 +394,22 @@
  '(helm-gtags-auto-update t)
  '(package-selected-packages
    (quote
-    (slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list powerline-evil company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+    (common-lisp-snippets company-lsp company-web swap-buffers helm-ag slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list powerline-evil company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+;; company-mode 色
+(set-face-attribute 'company-tooltip nil
+                    :foreground "black" :background "lightgrey")
+(set-face-attribute 'company-tooltip-common nil
+                    :foreground "black" :background "lightgrey")
+(set-face-attribute 'company-tooltip-common-selection nil
+                    :foreground "white" :background "steelblue")
+(set-face-attribute 'company-tooltip-selection nil
+                    :foreground "black" :background "steelblue")
+(set-face-attribute 'company-preview-common nil
+                    :background nil :foreground "lightgrey" :underline t)
+(set-face-attribute 'company-scrollbar-fg nil
+                    :background "orange")
+(set-face-attribute 'company-scrollbar-bg nil
+                    :background "gray40")
 
 (require 'company)
 (global-company-mode +1)
@@ -434,8 +453,6 @@
             '(:with company-yasnippet))))
 (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
-
-
 ;; ▼要拡張機能インストール▼
 ;;; 編集履歴を記憶する──undohist
 ;; undohistの設定
@@ -458,7 +475,11 @@
   ;;   (define-key elscreen-map (kbd "C-z") 'suspend-emacs))
   )
 ;; プレフィクスキーはC-z elscreen永続化
-;; (add-to-list 'load-path "/usr/local/Cellar/emacs/25.2/share/emacs/site-lisp/elscreen-persist")
+;;(add-to-list 'load-path "/usr/local/Cellar/emacs/25.2/share/emacs/site-lisp/elscreen-persist.el")
+;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/revive.el")
+;; (load "revive")
+;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/elscreen-persist.el")
+;; (load "elscreen-persist")
 (setq elscreen-prefix-key (kbd "C-z"))
 (elscreen-start)
 (require 'elscreen-persist)
@@ -808,12 +829,14 @@
 ;; (add-hook 'helm-minibuffer-set-up-hook
 ;;           'spacemacs//helm-hide-minibuffer-maybe)
 
-                                        ; (setq helm-autoresize-max-height 0)
-                                        ; (setq helm-autoresize-min-height 20)
-(helm-autoresize-mode 1)
+(setq helm-autoresize-max-height 0)
+(setq helm-autoresize-min-height 20)
+;; (helm-autoresize-mode 1)
+
 (global-set-key (kbd "C-x b") 'helm-for-files)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-g") 'helm-ag)
 (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
 ;;(define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
@@ -842,6 +865,7 @@
   (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.blade.php\\'" . web-mode))
   ;;; web-modeのインデント設定用フック
   (defun web-mode-hook ()
   ;;   "Hooks for Web mode."
@@ -973,7 +997,7 @@
 ;;  (add-hook 'mac-selected-keyboard-input-source-change-hook
 ;;            'my-mac-selected-keyboard-input-source-chage-function))
 ;; (when (functionp 'mac-auto-ascii-mode)  ;; ミニバッファに入力時、自動的に英語モード
-;;  (mac-auto-ascii-mode 1))
+(mac-auto-ascii-mode 1)
 
 ;; (defun mac-selected-keyboard-input-source-change-hook-func ()
 ;;   ;; 入力モードが英語の時はカーソルの色をfirebrickに、日本語の時はblackにする
@@ -1510,6 +1534,7 @@
       (kill-new (file-truename fPath)))))
 
 (global-set-key (kbd "C-c 0") 'my/copy-current-path)
+(global-set-key (kbd "C-c 1") 'my/get-curernt-path)
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
 ;; beep音を消す
 (defun my-bell-function ()
@@ -1525,8 +1550,39 @@
 ;;; symlink をフォローしない
 (setq-default find-file-visit-truename t)
 ;; gtags-mode設定
-
+;; (add-to-list 'load-path "/usr/local/share/gtags")
+;; (autoload 'gtags-mode "gtags" "" t)
+;; (setq gtags-mode-hook
+;;     '(lambda ()
+;;         (local-set-key "\M-t" 'gtags-find-tag)    ;関数へジャンプ
+;;         (local-set-key "\M-r" 'gtags-find-rtag)   ;関数の参照元へジャンプ
+;;         (local-set-key "\M-s" 'gtags-find-symbol) ;変数の定義元/参照先へジャンプ
+;;         ;; (local-set-key "\C-t" 'gtags-pop-stack)   ;前のバッファに戻る
+;;         ))
+;; (add-hook 'c-mode-hook 'gtags-mode)
+;; (add-hook 'c++-mode-hook 'gtags-mode)
 ;; helm-gtags設定
+(require 'helm-gtags)
+
+;; Enable helm-gtags-mode
+(add-hook 'go-mode-hook (lambda () (helm-gtags-mode)))
+(add-hook 'python-mode-hook (lambda () (helm-gtags-mode)))
+(add-hook 'ruby-mode-hook (lambda () (helm-gtags-mode)))
+(add-hook 'c-mode-hook (lambda () (helm-gtags-mode)))
+(add-hook 'c++-mode-hook (lambda () (helm-gtags-mode)))
+
+;; gtag setting
+(setq helm-gtags-path-style 'root)
+(setq helm-gtags-auto-update t)
+
+;; key bind
+(add-hook 'helm-gtags-mode-hook
+          '(lambda ()
+             (local-set-key (kbd "M-g") 'helm-gtags-dwim)
+             (local-set-key (kbd "C-c g") 'helm-gtags-select)
+             (local-set-key (kbd "M-s") 'helm-gtags-show-stack)
+             (local-set-key (kbd "M-p") 'helm-gtags-previous-history)
+             (local-set-key (kbd "M-n") 'helm-gtags-next-history)))
 
 (defun my-eucjp-currentbuffer()
   (interactive)
@@ -1541,7 +1597,7 @@
         (coding-system-for-write coding-system)
         (coding-system-require-warning t))
     (find-alternate-file buffer-file-name)))
-(global-set-key (kbd "C-c 1") 'set-buffer-correct-coding-system)
+(global-set-key (kbd "C-c 3") 'set-buffer-correct-coding-system)
 
 ;; (add-hook 'c++-mode-hook
 ;;   '(lambda ()
@@ -1626,8 +1682,22 @@
 (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
 (define-key company-active-map (kbd "M-.") 'company-show-location)
 
-
 ;; (setenv "PATH" (concat (getenv "HOME") "/.rbenv/shims:"
 ;;                        (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
 ;; (setq exec-path (cons (concat (getenv "HOME") "/.rbenv/shims")
 ;;                       (cons (concat (getenv "HOME") "/.rbenv/bin") exec-path)))
+;; php flycheck
+(defun my-php-mode-hook ()
+  "My PHP-mode hook."
+  (require 'flycheck-phpstan)
+  (flycheck-mode t)
+  (flycheck-select-checker 'phpstan))
+
+(add-hook 'php-mode-hook 'my-php-mode-hook)
+
+;; 行数表示のネイティブ実装
+;; (display-line-numbers-mode)
+;; (global-display-line-numbers-mode)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+
+ (add-to-list 'company-backends 'company-web-html)
