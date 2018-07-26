@@ -183,7 +183,7 @@ export PATH=$PATH:~/.composer/vendor/bin/
 # gtags設定
 export GTAGSCONF=/usr/local/share/gtags/gtags.conf
 # export GTAGSLABEL=pygments
-alias E="open -a /usr/local/Cellar/emacs-mac/emacs-25.2-z-mac-6.4/Emacs.app"
+alias E="open -a /usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.1/Emacs.app"
 export ANDROID_HOME=/Users/takeuchishun/Library/Android/sdk
 #alias ssh='~/bin/ssh-change-bg'
 echo -ne "\033]0;${USER}@${LANG}\007"
@@ -201,3 +201,4 @@ tab-reset() {
 function chpwd() { ls; echo -ne "\033]0;$(pwd | rev | awk -F \/ '{print "/"$1"/"$2}'| rev)\007"}
 alias top='tab-color 134 200 0; top; tab-reset'
 
+alias p="ping"

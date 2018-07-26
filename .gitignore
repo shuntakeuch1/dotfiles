@@ -1,4 +1,5 @@
 /.emacs.d/*
+/.emacs.d/snippets/yasnippet-blade-mode
 # Gitで管理したいファイル
 !/.emacs.d/init.el
 !/.emacs.d/script/

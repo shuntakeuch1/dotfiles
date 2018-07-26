@@ -160,16 +160,9 @@
 
 ;;; タイトルバーにファイルのフルパスを表示
 (setq frame-title-format "%f")
-;; 行番号を常に表示する
-;;(global-linum-mode t)
-;; バッファの左側に行番号を表示する linumより早い
-;; (global-nlinum-mode t)
-;; (nlinum-mode t)
-;; ファイルを開いたときのみ番号表示
-;; (add-hook 'find-file-hook 'linum-mode)
-;; (global-set-key [f9] 'linum-mode)
-;; ;; 3 桁分の表示領域を確保する
-;; (setq nlinum-format "%3d")
+;; 行数表示
+;; (global-display-line-numbers-mode) ; 行番号を常に表示する
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
 ;; モードラインに行番号を常に表示させる
 (setq line-number-display-limit-width 10000)
 
@@ -196,16 +189,13 @@
 ;; (add-to-list 'auto-minor-mode-alist `(,(format "^%s/cloudear/highClass/" (getenv "HOME")) . cake2-major-mode))
 
 ;;; 表示テーマの設定
-;; http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz
 ;; (when (require 'color-theme nil t)
 ;;   ;; テーマを読み込むための設定
 ;;   (color-theme-initialize)
-;;   ;; テーマhoberに変更する
-;;   ;;   (color-theme-molokai)) ;; 使うカラーテーマ名
-;;   ;;(color-theme-hover)) ;; 使うカラーテーマ名
-;;   ;; (require 'monokai-theme)
-;;   (when (require 'color-theme-solarized)
-;;     (color-theme-solarized-dark)))
+;;   (load-theme 'sanityinc-solarized-dark t)
+;;   ;; (when (require 'color-theme-solarized)
+;;   ;;   (color-theme-solarized-dark))
+;;   )
 ;; (require 'color-theme-solarized)
 ;; (load-theme 'solarized-dark t)
 ;; (load-theme 'solarizedized-light t)
@@ -395,7 +385,7 @@
  '(helm-gtags-auto-update t)
  '(package-selected-packages
    (quote
-    (ghub helm projectile-rails common-lisp-snippets company-lsp company-web swap-buffers helm-ag slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list powerline-evil company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+    (helm-swoop swiper-helm avy-migemo ghub helm projectile-rails common-lisp-snippets company-lsp company-web swap-buffers helm-ag slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list powerline-evil company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
 ;; company-mode 色
 (set-face-attribute 'company-tooltip nil
                     :foreground "black" :background "lightgrey")
@@ -1579,11 +1569,11 @@
 ;; key bind
 (add-hook 'helm-gtags-mode-hook
           '(lambda ()
-             (local-set-key (kbd "M-g") 'helm-gtags-dwim)
+             (local-set-key (kbd "M-s d") 'helm-gtags-dwim)
              (local-set-key (kbd "C-c g") 'helm-gtags-select)
-             (local-set-key (kbd "M-s") 'helm-gtags-show-stack)
-             (local-set-key (kbd "M-p") 'helm-gtags-previous-history)
-             (local-set-key (kbd "M-n") 'helm-gtags-next-history)))
+             (local-set-key (kbd "M-s s") 'helm-gtags-show-stack)
+             (local-set-key (kbd "M-s p") 'helm-gtags-previous-history)
+             (local-set-key (kbd "M-s n") 'helm-gtags-next-history)))
 
 (defun my-eucjp-currentbuffer()
   (interactive)
@@ -1696,9 +1686,59 @@
 
 (add-hook 'php-mode-hook 'my-php-mode-hook)
 
-;; 行数表示のネイティブ実装
-;; (display-line-numbers-mode)
-;; (global-display-line-numbers-mode)
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(add-to-list 'company-backends 'company-web-html)
 
- (add-to-list 'company-backends 'company-web-html)
+;; インクリメンタルサーチ日本語検索
+(require 'migemo)
+(setq migemo-command "cmigemo")
+(setq migemo-options '("-q" "--emacs"))
+
+(setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
+
+(setq migemo-user-dictionary nil)
+(setq migemo-regex-dictionary nil)
+(setq migemo-coding-system 'utf-8)
+;; (load-library "migemo")
+(migemo-init)
+
+;; 文字ジャンプ 日本語対応版
+(require 'avy-migemo)
+;; `avy-migemo-mode' overrides avy's predefined functions using `advice-add'.
+(avy-migemo-mode 1)
+(global-set-key (kbd "M-g m m") 'avy-migemo-mode)
+(setq avy-timeout-seconds nil)
+(global-set-key (kbd "C-M-;") 'avy-migemo-goto-char-timer)
+
+;;選択カーソルを増やすパッケージ
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+;; 選択項目を徐々に広げるパッケージ
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+;; バッファ内検索
+;;; migemoなしでhelm-swoop
+(helm-migemo-mode t)
+(cl-defun helm-swoop-nomigemo (&key $query ($multiline current-prefix-arg))
+  (interactive)
+  (let (helm-migemo-mode)
+    (helm-swoop :$query $query :$multiline $multiline)))
+
+(defun isearch-forward-or-helm-swoop-or-helm-occur (use-helm-swoop)
+  (interactive "p")
+  (let (current-prefix-arg
+        (helm-swoop-pre-input-function 'ignore))
+    (call-interactively
+     (case use-helm-swoop
+       (1 'isearch-forward)
+       ;; C-u C-sを押した場合
+       ;; 1000000以上のバッファサイズならばhelm-occur、
+       ;; それ以下ならばhelm-swoop
+       (4 (if (< 1000000 (buffer-size)) 'helm-occur 'helm-swoop))
+       ;; C-u C-u C-sでmigemoなしのhelm-swoop
+       (16 'helm-swoop-nomigemo)))))
+(global-set-key (kbd "C-s") 'isearch-forward-or-helm-swoop-or-helm-occur)
