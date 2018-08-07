@@ -7,6 +7,10 @@
 (cask-initialize)
 (require 'pallet)
 (pallet-mode t)
+;;対話的カスタマイズをする際はファイルをわける
+(setq custom-file "~/.emacs.d/user_customize.el")
+(if (file-exists-p custom-file)
+    (load custom-file))
 
 ;;おまじない
 (require 'cl)
@@ -25,9 +29,19 @@
 ;; 括弧の自動挿入
 (electric-pair-mode 1)
 
+;;; Emacs Lispを書くための設定
+;;; 思考錯誤用ファイル
+(require 'open-junk-file)
+(global-set-key (kbd "C-x C-z") 'open-junk-file)
+;;; 括弧の管理
+(require 'paredit)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+;; (add-hook 'lisp-interacton-mode-hook 'enable-paredit-mode)
+;;; find-functionをキー割り当て ソースジャンプが可能 要は定義元ジャンプが可能
+(find-function-setup-keys)
+;;; C言語の情報源
+(setq find-function-C-source-directory "~/Library/Caches/Homebrew/mituharu-emacs-mac-29d742efac38/src/")
 
-;; 複数ウィンドウを禁止する
-(setq ns-pop-up-frames nil)
 ;; スクリーンの最大化
 ;; (set-frame-parameter nil 'fullscreen 'maximized)
 ;; フルスクリーン
@@ -93,11 +107,14 @@
 ;; cocoa 風に変更
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
+;; (setq mac-control-modifier 'control)
 (global-set-key (kbd "s-c") 'clipboard-kill-ring-save);コピー
 (global-set-key (kbd "s-x") 'kill-region);切り取り
 (global-set-key (kbd "s-v") 'clipboard-yank);貼り付け
 (global-set-key (kbd "s-s") 'save-buffer);バッファ保存
 (global-set-key (kbd "s-w") 'kill-buffer);バッファ削除
+
+(global-set-key (kbd "C-M-s-v") 'scroll-other-window-down);次のバッファをM - v
 ;; インデントの行の最初の空白でない文字にポイントを移動
 ;;(global-set-key (kbd "C-a") 'back-to-indentation) ;;本来はM-mに割り当てられている。
 ;; C-mにnewline-and-indentを割り当てる。
@@ -105,13 +122,6 @@
 (global-set-key (kbd "C-m") 'newline-and-indent)
 ;; 折り返しトグルコマンド
 (define-key global-map (kbd "C-c l") 'toggle-truncate-lines)
-
-;; "C-t" でウィンドウを切り替える。初期値はtranspose-chars
-(defun counter-other-window ()
-  (interactive)
-  (other-window -1))
-(global-set-key (kbd "C-t") 'other-window)
-(global-set-key (kbd "C-S-t") 'counter-other-window)
 
 ;; 入力されるキーシーケンスを置き換える
 ;; ?\C-?はDELのキーシケンス
@@ -196,11 +206,10 @@
 ;;   ;; (when (require 'color-theme-solarized)
 ;;   ;;   (color-theme-solarized-dark))
 ;;   )
-;; (require 'color-theme-solarized)
-;; (load-theme 'solarized-dark t)
+(require 'color-theme-solarized)
+(load-theme 'solarized-dark t)
 ;; (load-theme 'solarizedized-light t)
 
-;;; カスタマイズできる項目！
 ;;; これらはload-themeの前に配置すること
 ;; fringeを背景から目立たせる
 ;;(setq solarized-distinct-fringe-background t)
@@ -216,7 +225,7 @@
 ;;
 ;; インジケータの色を減らす (git-gutter, flycheckなど)
 ;; (setq solarized-emphasize-indicators nil)
-(load-theme 'solarized-dark t)
+;; (load-theme 'solarized-dark t)
 ;; (load-theme 'sanityinc-solarized-dark t)
 ;;; フォントの設定
 
@@ -280,11 +289,7 @@
                                         ;                              :height 140)
                                         ;          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Ricty Diminished")))))  ;; 日本語
                                         ;
-;; (add-to-list 'load-path "/usr/local/Cellar/emacs/25.1/share/emacs/site-lisp/skk")
 
-;; (setq skk-tut-file "/usr/local/Cellar/emacs/25.1/share/skk/SKK.tut")
-;; (require 'skk)
-;; (global-set-key "\C-x\C-j" 'skk-mode)
 ;;(setq default-input-method "MacOSX")
 ;; ;; Google日本語入力を使う場合はおすすめ
 ;;(mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `title "あ")
@@ -318,10 +323,8 @@
 (setq show-paren-style 'expression)
 ;; フェイスを変更する
 (set-face-attribute 'show-paren-match nil
-      :background 'unspecified
-      :underline "turquoise")
-;; (set-face-background 'show-paren-match-face nil)
-;; (set-face-underline-p 'show-paren-match-face "yellow")
+                    :background 'unspecified
+                    :underline "turquoise")
 
 ;; バックアップファイルの作成場所をシステムのTempディレクトリに変更する
 (setq backup-directory-alist
@@ -341,51 +344,9 @@
     (setq eldoc-idle-delay 0.2)
     (setq eldoc-echo-area-use-multiline-p t)
     (turn-on-eldoc-mode)))
-
 ;; emacs-lisp-modeのフックをセット
 (add-hook 'emacs-lisp-mode-hook 'elisp-mode-hooks)
 
-;;; Auto Complete 補完機能を利用可能にする
-;; (when (require 'auto-complete-config nil t)
-;;   (add-to-list 'ac-dictionary-directories
-;;                "~/.emacs.d/elisp/ac-dict")
-;;   ;; (define-key ac-mode-map (kbd "TAB") 'auto-complete)
-;;   (ac-config-default)
-;;   (add-to-list 'ac-modes 'text-mode)         ;; text-modeでも自動的に有効にする
-;;   (add-to-list 'ac-modes 'fundamental-mode)  ;; fundamental-mode
-;;   (add-to-list 'ac-modes 'markdown-mode)  ;; fundamental-mode
-;;   ;; (add-to-list 'ac-modes 'org-mode)
-;;   ;; (add-to-list 'ac-modes 'yatex-mode)
-;;   (setq ac-use-menu-map t)       ;; 補完メニュー表示時にC-n/C-pで補完候補選択
-;;   (setq ac-ignore-case nil)
-;;   (setq ac-delay nil)
-;;   (setq ac-auto-show-menu nil)  ;; n秒後に補完メニューを表示
-;;   ;; (setq ac-use-fuzzy t)          ;; 曖昧マッチ
-;;   )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(beacon-blink-when-focused t)
- '(beacon-blink-when-window-changes nil)
- '(beacon-color "magenta")
- '(beacon-mode nil)
- '(company-idle-delay 0.1)
- '(company-quickhelp-mode t)
- '(custom-safe-themes
-   (quote
-    ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
- '(desktop-save-mode t)
- '(flycheck-disabled-checkers (quote (javascript-jshint javascript-jscs)))
- '(git-gutter:added-sign ">")
- '(git-gutter:deleted-sign "x")
- '(git-gutter:modified-sign "*")
- '(global-company-mode t)
- '(helm-gtags-auto-update t)
- '(package-selected-packages
-   (quote
-    (helm-swoop swiper-helm avy-migemo ghub helm projectile-rails common-lisp-snippets company-lsp company-web swap-buffers helm-ag slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list powerline-evil company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe tern-auto-complete js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme airline-themes solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
 ;; company-mode 色
 (set-face-attribute 'company-tooltip nil
                     :foreground "black" :background "lightgrey")
@@ -401,7 +362,6 @@
                     :background "orange")
 (set-face-attribute 'company-scrollbar-bg nil
                     :background "gray40")
-
 (require 'company)
 (global-company-mode +1)
 (setq company-auto-expand t) ;; 1個目を自動的に補完
@@ -485,9 +445,9 @@
 (turn-on-save-visited-files-mode)
 ;; elscreen-separate-buffer-list 版 BufferSelection の
 ;; bs-cycle-previous , bs-cycle-next のようなもの
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/elscreen-separate-buffer-list-cycle.el")
-(load "elscreen-separate-buffer-list-cycle")
-
+;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/elscreen-separate-buffer-list-cycle.el")
+;; (load "elscreen-separate-buffer-list-cycle")
+(require 'elscreen-separate-buffer-list-cycle)
 ;;; メモ書き・ToDo管理 howm
 ;; (package-install 'howm)
 ;; howmメモ保存の場所
@@ -495,7 +455,7 @@
 ;; howm-menuの言語を日本語に
 (setq howm-menu-lang 'ja)
 ;; howmメモを1日1ファイルにする
-; (setq howm-file-name-format "%Y/%m/%Y-%m-%d.howm")
+                                        ; (setq howm-file-name-format "%Y/%m/%Y-%m-%d.howm")
 ;; howm-modeを読み込む
 (when (require 'howm-mode nil t)
   ;; C-c,,でhowm-menuを起動
@@ -557,15 +517,6 @@
 (define-key global-map (kbd "s-d") 'helm-for-document)
 ;;; カーソル位置のファイルパスやアドレスを "C-x C-f" で開く
 (ffap-bindings)
-
-;; バッファを全体をインデント
-(defun indent-whole-buffer ()
-  (interactive)
-  (indent-region (point-min) (point-max)))
-;; C-<f8> でバッファ全体をインデント
-(define-key global-map (kbd "M-<f8>") 'indent-whole-buffer)
-;; (define-key global-map (kbd "C-i") 'indent-region)
-(define-key global-map (kbd "M-i") 'indent-region)
 
 ;;;; whitespace-mode
 (require 'whitespace)
@@ -711,7 +662,7 @@
 
 ;; ;;----- タブの色（CUIの時。GUIの時は後でカラーテーマが適用）
 ;; (set-face-attribute
-;;  'tabbar-default nil
+;;  'tabbar-default niljjj
 ;;  :background "brightblack"
 ;;  :foreground "white"
 ;;  )
@@ -804,8 +755,8 @@
       helm-ff-file-name-history-use-recentf t
       helm-echo-input-in-header-line t
       )
-    (setq-default helm-truncate-lines t
-                  helm-projectile-truncate-lines t)
+(setq-default helm-truncate-lines t
+              helm-projectile-truncate-lines t)
 ;; (defun spacemacs//helm-hide-minibuffer-maybe ()
 ;;   "Hide minibuffer in Helm session if we use the header line as input field."
 ;;   (when (with-helm-buffer helm-echo-input-in-header-line)
@@ -833,18 +784,8 @@
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (require 'helm-config)
 (helm-mode 1)
-;; (defun my-helm ()
-;;   (interactive)
-;;   (helm :sources '(
-;;                    helm-c-source-buffers-list
-;;                    helm-c-source-recentf
-;;                    helm-c-source-files-in-current-dir
-;;                    helm-c-source-mac-spotlight
-;;                    helm-c-source-buffer-not-found)
-;;         :buffer "*my helm*"))
-;; (setq helm-source-locate helm-source-mac-spotlight)
-;; (global-set-key (kbd "C-x b") 'my-helm)
-;; web-mode
+
+; web-mode
 (when (require 'web-mode nil t)
   ;; 自動的にweb-modeを起動したい拡張子を追加する
   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
@@ -859,23 +800,24 @@
   (add-to-list 'auto-mode-alist '("\\.blade.php\\'" . web-mode))
   ;;; web-modeのインデント設定用フック
   (defun web-mode-hook ()
-  ;;   "Hooks for Web mode."
-  ;;   (setq web-mode-markup-indent-offset 2) ; HTMLのインデイント
-  ;;   (setq web-mode-css-indent-offset 2) ; CSSのインデント
+    ;;   "Hooks for Web mode."
+    ;;   (setq web-mode-markup-indent-offset 2) ; HTMLのインデイント
+    ;;   (setq web-mode-css-indent-offset 2) ; CSSのインデント
     (setq web-mode-code-indent-offset 2) ; JS, PHP, Rubyなどのインデント
-  ;;   (setq web-mode-comment-style 2) ; web-mode内のコメントのインデント
+    ;;   (setq web-mode-comment-style 2) ; web-mode内のコメントのインデント
     (setq web-mode-style-padding 1) ; <style>内のインデント開始レベル
     (setq web-mode-script-padding 1) ; <script>内のインデント開始レベル
-     (setq web-mode-engines-alist
-        '(("php"    . "\\.ctp\\'"))
-        )
-  ;;   )
-  (add-hook 'web-mode-hook  'web-mode-hook)
-  ))
+    (setq web-mode-engines-alist
+          '(("php"    . "\\.ctp\\'"))
+          )
+    ;;   )
+    (add-hook 'web-mode-hook  'web-mode-hook)
+    ))
 
 (require 'emmet-mode)
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; マークアップモードで自動的に emmet-mode をたちあげる
 (add-hook 'web-mode-hook 'emmet-mode)
+(add-hook 'php-mode-hook 'emmet-mode)
 (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces
 (setq emmet-move-cursor-between-quotes t) ;; 最初のクオートの中にカーソルをぶちこむ
 (eval-after-load "emmet-mode"
@@ -962,6 +904,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(beacon-fallback-background ((t (:background "magenta"))))
+ '(helm-header ((t (:inherit header-line))))
  '(magit-diff-added ((t (:background "black" :foreground "green"))))
  '(magit-diff-added-highlight ((t (:background "white" :foreground "green"))))
  '(magit-diff-removed ((t (:background "black" :foreground "blue"))))
@@ -1043,15 +986,15 @@
 (set-face-attribute 'powerline-active1 nil
                     :foreground "#000"    ;文字
                     :background "#859900" ;背景
-;;                     :foreground "#FF6699"
+                    ;;                     :foreground "#FF6699"
                     ;; :foreground "#859900"
-;;                     :background "#003366"
+                    ;;                     :background "#003366"
                     :inherit 'mode-line)
 (set-face-attribute 'powerline-active2 nil
                     ;; :foreground "#859900"
-;;                     :foreground "#000"
-;;                     :background "#888888"
-;;                     ;; :background "#ffaeb9"
+                    ;;                     :foreground "#000"
+                    ;;                     :background "#888888"
+                    ;;                     ;; :background "#ffaeb9"
                     :inherit 'mode-line)
 
 ;; (set-face-attribute 'mode-line-inactive nil
@@ -1088,6 +1031,10 @@
 ;; projectileのプレフィックスキーをs-pに変更
 (define-key projectile-mode-map
   (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map
+  (kbd "C-c p") 'projectile-command-map)
+(define-key projectile-mode-map
+  (kbd "s-p s-p s-p") 'projectile-command-map)
 
 ;;;Helmを使って利用する
 ;; Fuzzyマッチを無効にする。
@@ -1129,8 +1076,6 @@
 ;;              '((regexp-quote (system-name)) nil nil))
 ;; magit
 (global-set-key (kbd "C-x g") 'magit-status)
-
-
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
@@ -1144,29 +1089,21 @@
 (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
 (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
 
-;;chrome更新save-rehash
-(defun reload-browser ()"Save and reload browser"
-       (interactive)
-       (save-buffer)
-       (shell-command "osascript ~/.emacs.d/script/reload.scpt")
-       )
+;; (require 'auto-async-byte-compile)
+;; (setq auto-async-byte-compile-exclude-files-regexp "/junk/")
+;; (add-hook 'emacs-lisp-mode-hook 'enable-auto-async-byte-compile-mode)
+(add-to-list 'load-path "~/.emacs.d/")
+
+(require 'initfuncs)
+(global-set-key (kbd "C-t") 'other-window-or-split)
+(global-set-key (kbd "C-S-t") 'counter-other-window)
+(global-set-key (kbd "s-r") 'revert-buffer-no-confirm)
 (global-set-key (kbd "<f5>") 'reload-browser)
+(global-set-key (kbd "C-c 0") 'my/copy-current-path)
+(global-set-key (kbd "C-c 1") 'my/get-curernt-path)
 
-;; PDF出力
-;; (setq my-pdfout-command-format "nkf -e | e2ps -a4 -p -nh | ps2pdf - %s")
-;; (defun my-pdfout-region (begin end)
-;;     (interactive "r")
-;;     (shell-command-on-region begin end (format my-pdfout-command-format (read-from-minibuffer "File name:"))))
-;; (defun my-pdfout-buffer ()
-;;     (interactive)
-;;     (my-pdfout-region (point-min) (point-max)))
-
-;; ドキュメント検索 Dash 連携
-;; dash-at-point
-(global-set-key (kbd "C-c d") 'dash-at-point)
-(global-set-key (kbd "C-c e") 'dash-at-point-with-docset)
-                                        ; web-modeのときのDocsetはhtmlとする
-(add-to-list 'dash-at-point-mode-alist '(web-mode . "html"))
+(define-key global-map (kbd "M-<f8>") 'indent-whole-buffer)
+(define-key global-map (kbd "M-i") 'indent-region)
 
 ;; twitter-mode
 (require 'twittering-mode)
@@ -1268,7 +1205,7 @@
     ;; org-link
     (setq browse-url-browser-function 'eww-browse-url)
     (org-open-at-point)))
-(global-set-key (kbd "C-c p") 'browse-url-with-eww)
+(global-set-key (kbd "C-c c") 'browse-url-with-eww)
 
 (defun eww-disable-images ()
   "eww で画像表示させない"
@@ -1346,8 +1283,8 @@
 (add-hook 'js2-mode-hook
           (lambda ()
             (setq my-js-mode-indent-num 2)
-             (setq js2-basic-offset my-js-mode-indent-num)
-             (setq js-switch-indent-offset my-js-mode-indent-num)
+            (setq js2-basic-offset my-js-mode-indent-num)
+            (setq js-switch-indent-offset my-js-mode-indent-num)
             ))
 
 (setq company-tern-property-marker "")
@@ -1373,20 +1310,9 @@
 ;; (which-key-setup-side-window-right-bottom) ;両方使う
 (which-key-mode 1)
 ;;;; 入力補助
-;; (require 'yasnippet)
-;; (yas-global-mode 1)
+(require 'yasnippet)
+(yas-global-mode 1)
 
-;;;; バッファーの読み込み
-;; (defun revert-buffer-no-confirm ()
-;;     "Revert buffer without confirmation."
-;;     (interactive) (revert-buffer t t))
-
-;; (global-set-key (kbd "C-c C-r") 'revert-buffer-no-confirm)
-;; (global-auto-revert-mode 1)
-
-;; reload buffer
-(global-set-key (kbd "s-r") 'revert-buffer-no-confirm)
-;; (global-set-key "\M-r" 'revert-buffer-no-confirm) ;
 
 ;; 日本語ドキュメントを利用するための設定
 (when (require 'php-mode nil t)
@@ -1455,9 +1381,9 @@
     (abbrev-mode . "")
     (undo-tree-mode . "")
     (elisp-slime-nav-mode . " EN")
-    (helm-gtags-mode . " HG")
+    (helm-gtags-mode . "")
     ;; (flymake-mode . " Fm")
-    ;; (flycheck-mode . "")
+    ;; (flycheck-mode . "FC")
     (git-gutter-mode . "")
     (helm-mode . "")
     (which-key-mode . "")
@@ -1476,6 +1402,8 @@
     (web-mode   . "W")
     (emacs-lisp-mode . "El")
     (js2-mode . "JS2")
+    (helm-migemo-mode . "")
+    (global-whitespace-mode . "")
     (markdown-mode . "Md")))
 
 (defun clean-mode-line ()
@@ -1500,10 +1428,6 @@
 ;; (auto-complete-mode -1)
 
 ;; python 自動補完
-;; auto-complete用
-;; (add-hook 'python-mode-hook 'jedi:setup)
-;; (setq jedi:complete-on-dot t)                 ; optional
-;; (setq jedi:environment-root "~/.emacs.d/var/jedi/env") ;環境が作られる先
 ;; compay-mode
 (require 'jedi-core)
 (setq jedi:complete-on-dot t)
@@ -1511,28 +1435,13 @@
 (add-hook 'python-mode-hook 'jedi:setup)
 (add-to-list 'company-backends 'company-jedi) ; backendに追加
 
-;; ファイル名の取得
-(defun my/get-curernt-path ()
-  (if (equal major-mode 'dired-mode)
-      default-directory
-	(buffer-file-name)))
-
-(defun my/copy-current-path ()
-  (interactive)
-  (let ((fPath (my/get-curernt-path)))
-    (when fPath
-      (message "stored path: %s" fPath)
-      (kill-new (file-truename fPath)))))
-
-(global-set-key (kbd "C-c 0") 'my/copy-current-path)
-(global-set-key (kbd "C-c 1") 'my/get-curernt-path)
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
 ;; beep音を消す
 (defun my-bell-function ()
   (unless (memq this-command
-        '(isearch-abort abort-recursive-edit exit-minibuffer
-              keyboard-quit mwheel-scroll down up next-line previous-line
-              backward-char forward-char))
+                '(isearch-abort abort-recursive-edit exit-minibuffer
+                                keyboard-quit mwheel-scroll down up next-line previous-line
+                                backward-char forward-char))
     (ding)))
 (setq ring-bell-function 'my-bell-function)
 ;; macのキーボード
@@ -1557,10 +1466,12 @@
 
 ;; Enable helm-gtags-mode
 (add-hook 'go-mode-hook (lambda () (helm-gtags-mode)))
+(add-hook 'php-mode-hook (lambda () (helm-gtags-mode)))
 (add-hook 'python-mode-hook (lambda () (helm-gtags-mode)))
 (add-hook 'ruby-mode-hook (lambda () (helm-gtags-mode)))
 (add-hook 'c-mode-hook (lambda () (helm-gtags-mode)))
 (add-hook 'c++-mode-hook (lambda () (helm-gtags-mode)))
+(add-hook 'emacs-lisp-mode-hook (lambda () (helm-gtags-mode)))
 
 ;; gtag setting
 (setq helm-gtags-path-style 'root)
@@ -1613,6 +1524,7 @@
            command)))
 
 (global-set-key (kbd "C-c i") 'cd-on-iterm)
+
 (require 'ag)
 (require 'wgrep-ag)
 
@@ -1628,28 +1540,24 @@
                      (replace-regexp-in-string
                       "\\([A-Z]\\)" "_\\1"
                       (store-substring s 0 (downcase (string-to-char s))))))))
+;;;
 (require 'helm-dash)
 (setq helm-dash-docsets-path (expand-file-name "~/.docsets"))
-  (with-eval-after-load 'dash
-    (setq helm-dash-browser-func 'browse-url-default-macosx-browser))
-;; (setq browse-url-browser-function 'browse-url-generic
-;;       browse-url-generic-program "/Applications/Google Chrome.app")
-;; (setq helm-dash-browser-func 'browse-url-generic)
+(with-eval-after-load 'dash
+  (setq helm-dash-browser-func 'browse-url-default-macosx-browser))
 (defun py-doc ()
   (setq-local helm-dash-docsets '("Python 3" "Pandas" "Matplotlib" "NumPy")))
-
 (defun cpp-doc ()
   (setq-local helm-dash-docsets '("C++" "Boost")))
+(defun ruby-doc ()
+  (setq-local helm-dash-docsets '("Ruby" "Ruby on Rails")))
 
 (add-hook 'python-mode-hook 'py-doc)
+(add-hook 'ruby-mode-hook 'ruby-doc)
 (add-hook 'c++-mode-hook 'cpp-doc)
 
+(global-set-key (kbd "<f9>") 'help-for-help)
 (global-set-key (kbd "<f1>") 'help-for-help)
-;; init.elを開く
-(defun my-find-file-init-el()
-  "init.elを開く"
-  (interactive)
-  (find-file "~/.emacs.d/init.el"))
 
 (defun my-find-file-temporary-file-directory (filename)
   "ディレクトリ `temporary-file-directory'のファイルを開く"
@@ -1665,7 +1573,7 @@
 (setq slime-contribs '(slime-fancy))
 
 (setq auto-mode-alist
-(cons (cons "\\.cl$" 'lisp-mode) auto-mode-alist))
+      (cons (cons "\\.cl$" 'lisp-mode) auto-mode-alist))
 
 (slime-setup '(slime-fancy slime-company))
 (define-key company-active-map (kbd "\C-n") 'company-select-next)
@@ -1742,3 +1650,46 @@
        ;; C-u C-u C-sでmigemoなしのhelm-swoop
        (16 'helm-swoop-nomigemo)))))
 (global-set-key (kbd "C-s") 'isearch-forward-or-helm-swoop-or-helm-occur)
+
+(require 'rainbow-delimiters)
+(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
+;; (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+(require 'google-translate)
+(defvar google-translate-english-chars "[:ascii:]’“”–"
+  "これらの文字が含まれているときは英語とみなす")
+(defun google-translate-enja-or-jaen (&optional string)
+  "regionか、現在のセンテンスを言語自動判別でGoogle翻訳する。"
+  (interactive)
+  (setq string
+        (cond ((stringp string) string)
+              (current-prefix-arg
+               (read-string "Google Translate: "))
+              ((use-region-p)
+               (buffer-substring (region-beginning) (region-end)))
+              (t
+               (save-excursion
+                 (let (s)
+                   (forward-char 1)
+                   (backward-sentence)
+                   (setq s (point))
+                   (forward-sentence)
+                   (buffer-substring s (point)))))))
+  (let* ((asciip (string-match
+                  (format "\\`[%s]+\\'" google-translate-english-chars)
+                  string)))
+    (run-at-time 0.1 nil 'deactivate-mark)
+    (google-translate-translate
+     (if asciip "en" "ja")
+     (if asciip "ja" "en")
+     string)))
+(global-set-key (kbd "C-c t") 'google-translate-enja-or-jaen)
+
+(defun bmi (height weight)
+  "体格指数 = 体重 / (身長*身長)"
+  (/ weight height height))
+(defun bmi-show (height weight)
+  (interactive "n身長(m): \nn体重(kg):")
+  (message "身長 %.2fm 体重 %.1fkg BMI%.1f" height weight (bmi height weight)))
