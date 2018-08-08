@@ -1092,7 +1092,7 @@
 ;; (require 'auto-async-byte-compile)
 ;; (setq auto-async-byte-compile-exclude-files-regexp "/junk/")
 ;; (add-hook 'emacs-lisp-mode-hook 'enable-auto-async-byte-compile-mode)
-(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/script/")
 
 (require 'initfuncs)
 (global-set-key (kbd "C-t") 'other-window-or-split)
