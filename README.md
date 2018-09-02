@@ -18,3 +18,15 @@ brew install cask
 cd .emacs.d
 cask install
 ```
+
+### brew setup
+```
+# install Homebrew
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+ 
+# download my Brewfile
+curl -L https://raw.githubusercontent.com/shuntakeuch1/dotfiles/master/Brewfile > ./Brewfile
+ 
+# execute brew-bundle to install those applications
+brew bundle
+```

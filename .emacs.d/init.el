@@ -36,6 +36,8 @@
 ;;; 括弧の管理
 (require 'paredit)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'lisp-mode-hook 'enable-paredit-mode)
+
 ;; (add-hook 'lisp-interacton-mode-hook 'enable-paredit-mode)
 ;;; find-functionをキー割り当て ソースジャンプが可能 要は定義元ジャンプが可能
 (find-function-setup-keys)
@@ -363,7 +365,9 @@
 (set-face-attribute 'company-scrollbar-bg nil
                     :background "gray40")
 (require 'company)
+(require 'company-quickhelp)
 (global-company-mode +1)
+(company-quickhelp-mode t)
 (setq company-auto-expand t) ;; 1個目を自動的に補完
 (setq company-minimum-prefix-length 2) ; デフォルトは4
 ;; (setq company-idle-delay 0) ; 遅延なしにすぐ表示
@@ -385,9 +389,12 @@
 (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
 ;; (define-key php-mode-map (kbd "C-M-i") 'company-complete)
 ;; クイックヘルプ
-(company-quickhelp-mode +1)
+(eval-after-load 'company
+  '(define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin))
+
 ;; company-mode off
 (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
+(add-hook 'markdown-mode-hook (lambda () (company-mode -1)))
 
 ;; 履歴からソートする
 (require 'company-statistics)
@@ -1429,11 +1436,12 @@
 
 ;; python 自動補完
 ;; compay-mode
+;; (setenv "PYTHONPATH" "~/.pyenv/versions/3.7.0/lib/python3.7/site-packages/bs4/")
 (require 'jedi-core)
 (setq jedi:complete-on-dot t)
 (setq jedi:use-shortcuts t)
 (add-hook 'python-mode-hook 'jedi:setup)
-(add-to-list 'company-backends 'company-jedi) ; backendに追加
+;; (add-to-list 'company-backends 'company-jedi) ; backendに追加
 
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
 ;; beep音を消す
@@ -1467,6 +1475,8 @@
 ;; Enable helm-gtags-mode
 (add-hook 'go-mode-hook (lambda () (helm-gtags-mode)))
 (add-hook 'php-mode-hook (lambda () (helm-gtags-mode)))
+(add-hook 'web-mode-hook (lambda () (helm-gtags-mode)))
+(add-hook 'js2-mode-hook (lambda () (helm-gtags-mode)))
 (add-hook 'python-mode-hook (lambda () (helm-gtags-mode)))
 (add-hook 'ruby-mode-hook (lambda () (helm-gtags-mode)))
 (add-hook 'c-mode-hook (lambda () (helm-gtags-mode)))
@@ -1527,6 +1537,12 @@
 
 (require 'ag)
 (require 'wgrep-ag)
+;;; eでwgrepモードにする
+(setf wgrep-enable-key "e")
+;;; wgrep終了時にバッファを保存
+(setq wgrep-auto-save-buffer t)
+;;; read-only bufferにも変更を適用する
+(setq wgrep-change-readonly-file t)
 
 (global-set-key (kbd "C-c 2") 'camel-to-snake-backward-word)
 (defun camel-to-snake-backward-word ()
@@ -1693,3 +1709,31 @@
 (defun bmi-show (height weight)
   (interactive "n身長(m): \nn体重(kg):")
   (message "身長 %.2fm 体重 %.1fkg BMI%.1f" height weight (bmi height weight)))
+;; なおテーマを切り替えたら，face の設定をリロードしないと期待通りにならない
+(custom-set-faces
+ ;; 変換前入力時の文字列用 face
+ `(mac-ts-converted-text
+   ((((background dark)) :underline "orange"
+     :background ,(face-attribute 'hl-line :background))
+    (t (:underline "orange"
+                   :background ,(face-attribute 'hl-line :background)))))
+ ;; 変換対象の文字列用 face
+ `(mac-ts-selected-converted-text
+   ((((background dark)) :underline "orange"
+     :background ,(face-attribute 'hl-line :background))
+    (t (:underline "orange"
+                   :background ,(face-attribute 'hl-line :background))))))
+;; minibuffer では hl-line の背景色を無効にする
+(when (fboundp 'mac-min--minibuffer-setup) ;; 野良ビルド用パッチの独自関数です．
+  (add-hook 'minibuffer-setup-hook 'mac-min--minibuffer-setup))
+
+;; echo-area でも背景色を無効にする．野良ビルド用パッチの独自変数です．
+(setq mac-win-default-background-echo-area t) ;; *-text の background を無視
+
+;;; 現在のパスを取得
+(defun my-cd-finder ()
+  (interactive)
+  (let ((fpath (shell-command-to-string "pwd")))
+    (kill-new fpath)
+    (message fpath)
+    (shell-command-to-string (concat "open " fpath))))

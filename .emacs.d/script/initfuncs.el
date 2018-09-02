@@ -28,7 +28,7 @@
   (find-file "~/.emacs.d/init.el"))
 
 (defun my/get-curernt-path ()
-  (if (equal major-mode 'diredx-mode)
+  (if (equal major-mode 'dired-mode)
       default-directory
 	(buffer-file-name)))
 

@@ -200,5 +200,5 @@ tab-reset() {
 
 function chpwd() { ls; echo -ne "\033]0;$(pwd | rev | awk -F \/ '{print "/"$1"/"$2}'| rev)\007"}
 alias top='tab-color 134 200 0; top; tab-reset'
-
 alias p="ping"
+alias lem="~/.roswell/bin/lem"
