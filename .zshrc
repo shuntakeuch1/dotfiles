@@ -174,8 +174,8 @@ export PATH=/usr/local/sbin:$PATH #     for Homebrew↲
 export PATH=/usr/local/bin:$PATH  #     for Homebrew↲
 #alias middleman="bundle exec middleman"
 eval "$(rbenv init -)"
-export PATH="$HOME/.exenv/bin:$PATH"
-eval "$(exenv init -)"
+# export PATH="$HOME/.exenv/bin:$PATH"
+# eval "$(exenv init -)"
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
