@@ -440,6 +440,7 @@
 ;; (load "elscreen-persist")
 (setq elscreen-prefix-key (kbd "C-z"))
 (elscreen-start)
+(add-to-list 'load-path "~/.emacs.d/script/")
 (require 'elscreen-persist)
 (elscreen-persist-mode 1)
 (elscreen-separate-buffer-list-mode 1)
@@ -1099,7 +1100,6 @@
 ;; (require 'auto-async-byte-compile)
 ;; (setq auto-async-byte-compile-exclude-files-regexp "/junk/")
 ;; (add-hook 'emacs-lisp-mode-hook 'enable-auto-async-byte-compile-mode)
-(add-to-list 'load-path "~/.emacs.d/script/")
 
 (require 'initfuncs)
 (global-set-key (kbd "C-t") 'other-window-or-split)
