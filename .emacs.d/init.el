@@ -25,7 +25,6 @@
 ;; (use-package dashboard
 ;;   :config
 ;;   (dashboard-setup-startup-hook))
-
 ;; 括弧の自動挿入
 (electric-pair-mode 1)
 
@@ -156,17 +155,16 @@
 ;; (display-time-mode t)
 ;; ;; バッテリー残量を表示
 ;;(display-battery-mode t)
-;; リージョン内の行数と文字数をモードラインに表示する（範囲指定時のみ）
+;; リージョン内の行数と文字数をモードラインに表示する（範囲指定時のみ）powerlineと競合?
 ;; http://d.hatena.ne.jp/sonota88/20110224/1298557375
-(defun count-lines-and-chars ()
-  (if mark-active
-      (format "%d lines,%d chars "
-              (count-lines (region-beginning) (region-end))
-              (- (region-end) (region-beginning)))
-    ;; これだとエコーエリアがチラつく
-    ;;(count-lines-region (region-beginning) (region-end))
-    ""))
-
+;; (defun count-lines-and-chars ()
+;;   (if mark-active
+;;       (format "%d lines,%d chars "
+;;               (count-lines (region-beginning) (region-end))
+;;               (- (region-end) (region-beginning)))
+;;     ;; これだとエコーエリアがチラつく
+;;     ;;(count-lines-region (region-beginning) (region-end))
+;;     ""))
 ;; (add-to-list 'default-mode-line-format
 ;;              '(:eval (count-lines-and-chars)))
 
@@ -627,6 +625,7 @@
                                         ; (setq neo-persist-show t)
 ;; C-x }, C-x { でwindowサイズを変更できるよにする
 (setq neo-window-fixed-size nil)
+(setq neo-window-width 40)
 
 ;; popwin との共存
                                         ; (when neo-persist-show
@@ -1106,16 +1105,28 @@
 (global-set-key (kbd "C-S-t") 'counter-other-window)
 (global-set-key (kbd "s-r") 'revert-buffer-no-confirm)
 (global-set-key (kbd "<f5>") 'reload-browser)
-(global-set-key (kbd "C-c 0") 'my/copy-current-path)
-(global-set-key (kbd "C-c 1") 'my/get-curernt-path)
+(global-set-key (kbd "C-c 1") 'my/copy-current-path)
+(global-set-key (kbd "C-c 4") 'open-finder)
+(global-set-key (kbd "C-c 5") 'open-phpstorm)
 
 (define-key global-map (kbd "M-<f8>") 'indent-whole-buffer)
 (define-key global-map (kbd "M-i") 'indent-region)
 
 ;; twitter-mode
-(require 'twittering-mode)
-(setq twittering-use-master-password t)
-
+(when (require 'twittering-mode nil t)
+  ;; アイコンを表示する
+  (setq twittering-icon-mode nil)
+  ;; タイムラインを300秒ごとに更新する
+  (setq twittering-timer-interval 300)
+  (setq twittering-account-authorization 'authorized)
+  ;; 認証データ
+  (setq twittering-oauth-access-token-alist
+        '(("oauth_token" . "789882624516907008-popBUPdnF8mxeneg2NdIyyIdYGJN3GS")
+          ("oauth_token_secret" . "FjRZXVl2BHPArKUfdlrfs9o3LKTRFDWWjMEpWMGBZOe5r")
+          ("user_id" . "789882624516907008")
+          ("screen_name" . "shuntakeuch1"))
+        )
+)
 ;; nxml-mode
 (use-package nxml-mode
   :mode
@@ -1437,6 +1448,15 @@
 ;; python 自動補完
 ;; compay-mode
 ;; (setenv "PYTHONPATH" "~/.pyenv/versions/3.7.0/lib/python3.7/site-packages/bs4/")
+;;; Virtualenvwrapper:
+;; (require 'virtualenvwrapper)
+;; (venv-initialize-eshell)
+;; (venv-initialize-interactive-shells)
+;; (setq-default mode-line-format (cons '(:exec venv-current-name) mode-line-format))
+(require 'virtualenvwrapper)
+(require 'auto-virtualenvwrapper)
+(add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
+
 (require 'jedi-core)
 (setq jedi:complete-on-dot t)
 (setq jedi:use-shortcuts t)
@@ -1567,10 +1587,16 @@
   (setq-local helm-dash-docsets '("C++" "Boost")))
 (defun ruby-doc ()
   (setq-local helm-dash-docsets '("Ruby" "Ruby on Rails")))
+(defun php-doc ()
+  (setq-local helm-dash-docsets '("PHP" "PHPUnit" "Laravel")))
+(defun el-doc ()
+  (setq-local helm-dash-docsets '("Emacs Lisp")))
 
 (add-hook 'python-mode-hook 'py-doc)
 (add-hook 'ruby-mode-hook 'ruby-doc)
 (add-hook 'c++-mode-hook 'cpp-doc)
+(add-hook 'php-mode-hook 'php-doc)
+(add-hook 'emacs-lisp-mode 'el-doc)
 
 (global-set-key (kbd "<f9>") 'help-for-help)
 (global-set-key (kbd "<f1>") 'help-for-help)
@@ -1602,11 +1628,11 @@
 ;; (setq exec-path (cons (concat (getenv "HOME") "/.rbenv/shims")
 ;;                       (cons (concat (getenv "HOME") "/.rbenv/bin") exec-path)))
 ;; php flycheck
-(defun my-php-mode-hook ()
-  "My PHP-mode hook."
-  (require 'flycheck-phpstan)
-  (flycheck-mode t)
-  (flycheck-select-checker 'phpstan))
+;; (defun my-php-mode-hook ()
+;;   "My PHP-mode hook."
+;;   (require 'flycheck-phpstan)
+;;   (flycheck-mode t)
+;;   (flycheck-select-checker 'phpstan))
 
 (add-hook 'php-mode-hook 'my-php-mode-hook)
 
@@ -1730,10 +1756,44 @@
 ;; echo-area でも背景色を無効にする．野良ビルド用パッチの独自変数です．
 (setq mac-win-default-background-echo-area t) ;; *-text の background を無視
 
-;;; 現在のパスを取得
-(defun my-cd-finder ()
+(require 'docker-tramp-compat)
+(require 'phpunit)
+;;; phpunit リモート実行
+(add-to-list 'auto-mode-alist '("\\.php$'" . phpunit-mode))
+(set-variable 'docker-tramp-use-names t)
+(setq phpunit-root-directory "docker:private-laradock_workspace_1:/var/www/")
+;; ((nil . ((phpunit-root-directory . "/docker:e7beb7e92a87:/var/www/"))))
+(define-key php-mode-map (kbd "C-c u t") 'phpunit-current-test)
+(define-key php-mode-map (kbd "C-c u c") 'phpunit-current-class)
+(define-key php-mode-map (kbd "C-c u p") 'phpunit-current-project)
+
+(setq markdown-command "multimarkdown")
+(defun get-today ()
+  "clipboard copy today "
   (interactive)
-  (let ((fpath (shell-command-to-string "pwd")))
-    (kill-new fpath)
-    (message fpath)
-    (shell-command-to-string (concat "open " fpath))))
+  (kill-new (shell-command-to-string "/bin/date +%Y年%m月%d日")))
+
+;; plantuml.jarへのパスを設定
+(setq org-plantuml-jar-path "/usr/local/Cellar/plantuml/1.2018.10/libexec/plantuml.jar")
+
+;; org-babelで使用する言語を登録
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((plantuml . t)))
+
+;;; インデントと先頭を行き来する
+(defun my-move-beginning-of-line ()
+  (interactive)
+  (if (bolp)
+      (back-to-indentation)
+      (beginning-of-line)))
+
+(global-set-key "\C-a" 'my-move-beginning-of-line)
+
+(require 'plantuml-mode)
+
+(setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2018.10/libexec/plantuml.jar")
+(setq plantuml-output-type "png")
+(add-to-list 'auto-mode-alist '("\\.pu\\'" . plantuml-mode))
+(add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
+(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))

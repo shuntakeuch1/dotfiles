@@ -21,6 +21,13 @@
   (when (one-window-p)
     (split-window-horizontally))
   (other-window 1))
+;; (defun other-window-or-split ()
+;;   "Other Window or split window"
+;;   (interactive)
+;;   (when (neo-global--window-exists-p)
+;;     (when (one-window-p)
+;;      (split-window-horizontally)))
+;;   (other-window 1))
 
 (defun my-find-file-init-el()
   "Open the init.el"
@@ -38,6 +45,18 @@
     (when fPath
       (message "stored path: %s" fPath)
       (kill-new (file-truename fPath)))))
+
+(defun open-finder ()
+  (interactive)
+  (let ((fPath (file-name-directory (my/get-curernt-path))))
+    (when fPath
+      (shell-command-to-string (concat "open " fPath)))))
+
+(defun open-phpstorm ()
+  (interactive)
+  (let ((fPath (my/get-curernt-path)))
+    (when fPath
+      (shell-command-to-string (concat "open -a /Applications/PhpStorm.app " fPath)))))
 
 (defun indent-whole-buffer ()
   "all buffer indent"

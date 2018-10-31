@@ -176,14 +176,14 @@ export PATH=/usr/local/bin:$PATH  #     for Homebrew↲
 eval "$(rbenv init -)"
 # export PATH="$HOME/.exenv/bin:$PATH"
 # eval "$(exenv init -)"
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+# export PYENV_ROOT="$HOME/.pyenv"
+# export PATH="$PYENV_ROOT/bin:$PATH"
+# eval "$(pyenv init -)"
 export PATH=$PATH:~/.composer/vendor/bin/
 # gtags設定
 export GTAGSCONF=/usr/local/share/gtags/gtags.conf
 # export GTAGSLABEL=pygments
-alias E="open -a /usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.1/Emacs.app"
+alias E="open -a /usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.2/Emacs.app"
 export ANDROID_HOME=/Users/takeuchishun/Library/Android/sdk
 #alias ssh='~/bin/ssh-change-bg'
 echo -ne "\033]0;${USER}@${LANG}\007"
@@ -202,3 +202,7 @@ function chpwd() { ls; echo -ne "\033]0;$(pwd | rev | awk -F \/ '{print "/"$1"/"
 alias top='tab-color 134 200 0; top; tab-reset'
 alias p="ping"
 alias lem="~/.roswell/bin/lem"
+
+export PIPENV_VENV_IN_PROJECT=true
+alias emacslink=ln -s /usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.2/Emacs.app /Applications
+export PLANTUML_LIMIT_SIZE=8192
