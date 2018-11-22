@@ -204,5 +204,21 @@ alias p="ping"
 alias lem="~/.roswell/bin/lem"
 
 export PIPENV_VENV_IN_PROJECT=true
-alias emacslink=ln -s /usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.2/Emacs.app /Applications
+alias emacslink=ln -s /usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.2/Emacs.app /Application
 export PLANTUML_LIMIT_SIZE=8192
+
+# sshのログイン･ログアウトでtmuxの背景変更
+# alias ssh="tmux select-pane -P 'fg=colour0,bg=colour152';ssh"
+# alias exit="tmux select-pane -P 'fg=default,bg=default';exit"
+# function cssh() {ssh $*;tmux select-pane -P 'fg=default,bg=default'}
+# alias ssh='cssh '
+GOPATH="$HOME/go"
+export GOPATH
+export GOROOT="/usr/local/bin/go"
+
+# 初回シェル時のみ tmux実行
+if [ $SHLVL = 1 ]; then
+  tmux
+fi
+
+alias dcm='docker-compose'

@@ -1355,12 +1355,12 @@
 (add-hook 'php-mode-hook
           '(lambda ()
              (require 'company-php)
-             (require 'cake2)
-             (ac-php-core-eldoc-setup) ;; enable eldoc
+            (ac-php-core-eldoc-setup) ;; enable eldoc
              (set (make-local-variable 'company-backends)
                   '((company-dabbrev-code company-yasnippet)))
              (company-mode t)
              (add-to-list 'company-backends 'company-ac-php-backend t)))
+
 (require 'react-snippets)
 ;;;; yasnippet設定
 (yas-global-mode 1)
@@ -1581,12 +1581,12 @@
 (setq helm-dash-docsets-path (expand-file-name "~/.docsets"))
 (with-eval-after-load 'dash
   (setq helm-dash-browser-func 'browse-url-default-macosx-browser))
-(defun py-doc ()
-  (setq-local helm-dash-docsets '("Python 3" "Pandas" "Matplotlib" "NumPy")))
-(defun cpp-doc ()
-  (setq-local helm-dash-docsets '("C++" "Boost")))
-(defun ruby-doc ()
-  (setq-local helm-dash-docsets '("Ruby" "Ruby on Rails")))
+;; (defun py-doc ()
+;;   (setq-local helm-dash-docsets '("Python 3" "Pandas" "Matplotlib" "NumPy")))
+;; (defun cpp-doc ()
+;;   (setq-local helm-dash-docsets '("C++" "Boost")))
+;; (defun ruby-doc ()
+;;   (setq-local helm-dash-docsets '("Ruby" "Ruby on Rails")))
 (defun php-doc ()
   (setq-local helm-dash-docsets '("PHP" "PHPUnit" "Laravel")))
 (defun el-doc ()
@@ -1797,3 +1797,29 @@
 (add-to-list 'auto-mode-alist '("\\.pu\\'" . plantuml-mode))
 (add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+
+;;; go lang
+;; Goのパスを通す
+(add-to-list 'exec-path (expand-file-name "/usr/local/go/bin/"))
+;; ;; ;; go get で入れたツールのパスを通す
+(add-to-list 'exec-path (expand-file-name "~/go/bin"))
+
+;; 必要なパッケージのロード
+(require 'go-mode)
+(require 'company-go)
+
+;; 諸々の有効化、設定
+(add-hook 'go-mode-hook 'company-mode)
+(add-hook 'go-mode-hook 'flycheck-mode)
+(add-hook 'go-mode-hook (lambda()
+           (add-hook 'before-save-hook' 'gofmt-before-save)
+           (local-set-key (kbd "M-.") 'godef-jump)
+           (set (make-local-variable 'company-backends) '(company-go))
+           (company-mode)
+           (setq indent-tabs-mode nil)    ; タブを利用
+           (setq c-basic-offset 4)        ; tabサイズを4にする
+           (setq tab-width 4)))
+
+;; (add-to-list 'load-path "/your/path/to/dockerfile-mode/")
+(require 'dockerfile-mode)
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
