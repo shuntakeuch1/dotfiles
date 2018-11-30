@@ -52,12 +52,6 @@
     (when fPath
       (shell-command-to-string (concat "open " fPath)))))
 
-(defun open-phpstorm ()
-  (interactive)
-  (let ((fPath (my/get-curernt-path)))
-    (when fPath
-      (shell-command-to-string (concat "open -a /Applications/PhpStorm.app " fPath)))))
-
 (defun indent-whole-buffer ()
   "all buffer indent"
   (interactive)

@@ -585,6 +585,7 @@
 (when (require 'multi-term nil t)
   ;; 使用するシェルを指定
   (setq multi-term-program "/usr/local/bin/zsh"))
+(setenv "LANG" "ja_JP.UTF-8")
 (global-set-key (kbd "<C-M-return>") 'multi-term)
 
 ;; (setq multi-term-program shell-file-name)
@@ -1823,3 +1824,9 @@
 ;; (add-to-list 'load-path "/your/path/to/dockerfile-mode/")
 (require 'dockerfile-mode)
 (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+
+(defun open-idea ()
+  (interactive)
+  (let ((fPath (my/get-curernt-path)))
+    (when fPath
+      (shell-command-to-string (concat "open -a /Applications/IntelliJ\\ IDEA.app " fPath)))))

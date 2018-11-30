@@ -45,6 +45,7 @@
 (depends-on "deferred")
 (depends-on "diminish")
 (depends-on "direnv")
+(depends-on "docker")
 (depends-on "docker-tramp")
 (depends-on "dockerfile-mode")
 (depends-on "drag-stuff")
