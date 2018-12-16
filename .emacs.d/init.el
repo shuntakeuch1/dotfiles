@@ -1087,6 +1087,10 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
+(setq magit-repository-directories
+      '(("~/yumemi/" . 1)
+        ("~/dev/" . 1)))
+
 ;;;; gitの差分表示
 (when (require 'git-gutter nil t)
   (global-git-gutter-mode t)
@@ -1830,3 +1834,4 @@
   (let ((fPath (my/get-curernt-path)))
     (when fPath
       (shell-command-to-string (concat "open -a /Applications/IntelliJ\\ IDEA.app " fPath)))))
+
