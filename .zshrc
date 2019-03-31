@@ -159,6 +159,8 @@ darwin*)
 #export LSCOLORS=Exfxcxdxbxegedabagacad
 export CLICOLOR=1
 alias ls='ls -G -F'
+# colorls ver
+# alias ls='colorls'
 ;;
 linux*)
 #Linux用の設定
@@ -176,9 +178,9 @@ export PATH=/usr/local/bin:$PATH  #     for Homebrew↲
 eval "$(rbenv init -)"
 # export PATH="$HOME/.exenv/bin:$PATH"
 # eval "$(exenv init -)"
-# export PYENV_ROOT="$HOME/.pyenv"
-# export PATH="$PYENV_ROOT/bin:$PATH"
-# eval "$(pyenv init -)"
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 export PATH=$PATH:~/.composer/vendor/bin/
 # gtags設定
 export GTAGSCONF=/usr/local/share/gtags/gtags.conf
@@ -198,7 +200,7 @@ tab-reset() {
     echo -ne "\033]6;1;bg;*;default\a"
 }
 
-function chpwd() { ls; echo -ne "\033]0;$(pwd | rev | awk -F \/ '{print "/"$1"/"$2}'| rev)\007"}
+function chpwd() { colorls; echo -ne "\033]0;$(pwd | rev | awk -F \/ '{print "/"$1"/"$2}'| rev)\007"}
 alias top='tab-color 134 200 0; top; tab-reset'
 alias p="ping"
 alias lem="~/.roswell/bin/lem"
@@ -212,9 +214,12 @@ export PLANTUML_LIMIT_SIZE=8192
 # alias exit="tmux select-pane -P 'fg=default,bg=default';exit"
 # function cssh() {ssh $*;tmux select-pane -P 'fg=default,bg=default'}
 # alias ssh='cssh '
-GOPATH="$HOME/go"
-export GOPATH
-export GOROOT="/usr/local/bin/go"
+
+# GOPATH="$HOME/go"
+export GOROOT=/usr/local/opt/go/libexec
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+# export GOROOT="/usr/local/bin/go"
 
 # 初回シェル時のみ tmux実行
 # if [ $SHLVL = 1 ]; then
@@ -224,3 +229,33 @@ export GOROOT="/usr/local/bin/go"
 #   export TERM=screen-256color
 # fi
 alias dcm='docker-compose'
+export PATH="$HONE/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+export JMETER_LANGUAGE=" "
+
+# Excel change to UTF-8
+alias change-to-excel-csv='nkf --overwrite --oc=UTF-8-BOM file.csv'
+
+# complete -C aws_completer aws
+
+# フォントの変更
+# https://medium.com/the-code-review/make-your-terminal-more-colourful-and-productive-with-iterm2-and-zsh-11b91607b98c
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+  dir
+  custom_javascript 
+  vcs
+  newline
+  status
+)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
+POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
+
+# Create a custom JavaScript prompt section
+# POWERLEVEL9K_CUSTOM_JAVASCRIPT="echo -n '\ue781' JavaScript"
+# POWERLEVEL9K_CUSTOM_JAVASCRIPT_FOREGROUND="black"
+# POWERLEVEL9K_CUSTOM_JAVASCRIPT_BACKGROUND="yellow"
+
+POWERLEVEL9K_MODE='nerdfont-complete'
+source  ~/powerlevel9k/powerlevel9k.zsh-theme
+
+alias lc='colorls'
