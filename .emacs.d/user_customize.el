@@ -10,9 +10,20 @@
  '(company-backends
    (quote
     (company-web-html company-robe
+                      (company-web-html :with company-yasnippet)
+                      (company-robe :with company-yasnippet)
+                      (company-web-html :with company-yasnippet)
+                      (company-robe :with company-yasnippet)
+                      (company-web-html :with company-yasnippet)
+                      (company-robe :with company-yasnippet)
+                      (company-lsp :with company-yasnippet)
+                      (company-go :with company-yasnippet)
+                      (company-web-html :with company-yasnippet)
+                      (company-web-html :with company-yasnippet)
+                      (company-robe :with company-yasnippet)
+                      (company-web-html :with company-yasnippet)
                       (company-slime :with company-yasnippet)
                       (company-web-html :with company-yasnippet)
-                      (company-jedi :with company-yasnippet)
                       (company-robe :with company-yasnippet)
                       (company-web-html :with company-yasnippet)
                       (company-robe :with company-yasnippet)
@@ -44,16 +55,27 @@
  '(global-company-mode t)
  '(global-whitespace-mode t)
  '(helm-gtags-auto-update t)
+ '(imenu-list-minor-mode t)
  '(kill-ring-max 70)
+ '(livedown-autostart nil)
+ '(livedown-browser nil)
+ '(livedown-open t)
+ '(livedown-port 1337)
+ '(lsp-clients-php (quote ("/usr/")))
+ '(lsp-clients-python-library-directories (quote ("/usr/")))
  '(magit-dispatch-arguments nil)
+ '(minimap-mode t)
  '(package-selected-packages
    (quote
-    (docker dockerfile-mode company-go go-mode go magit-gitflow composer plantuml-mode flycheck-phpstan helm-itunes helm-spotify-plus jetbrains docker-tramp phpunit auto-virtualenvwrapper helm-company elpy company-php jinja2-mode auto-async-byte-compile open-junk-file paredit google-translate php-eldoc rainbow-delimiters helm-swoop swiper-helm avy-migemo ghub helm projectile-rails common-lisp-snippets company-lsp company-web swap-buffers helm-ag slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))))
+    (gradle-mode flycheck-gradle restclient restclient-helm protobuf-mode swift3-mode swift-mode kotlin-mode go-dlv gotest github-browse-file helm-ghq slack dap-mode lsp-ui terraform-mode doom-themes yapfify ace-window hide-mode-line fzf typescript-mode lsp-vue vue-mode bury-successful-compilation all-the-icons-dired helm-phpunit geben editorconfig imenu-list highlight-symbol php-cs-fixer dumb-jump docker dockerfile-mode company-go go-mode go magit-gitflow composer plantuml-mode flycheck-phpstan helm-itunes helm-spotify-plus jetbrains docker-tramp phpunit auto-virtualenvwrapper helm-company elpy company-php jinja2-mode auto-async-byte-compile open-junk-file google-translate php-eldoc rainbow-delimiters helm-swoop swiper-helm avy-migemo ghub helm projectile-rails common-lisp-snippets company-lsp company-web swap-buffers helm-ag slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc)))
+ '(php-cs-fixer-rules-level-part-options (quote ("@PSR2")))
+ '(popwin:popup-window-height 0.3))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(aw-leading-char-face ((t (:foreground "red" :height 4.0 :width normal))))
  '(beacon-fallback-background ((t (:background "magenta"))))
  '(helm-header ((t (:inherit header-line))))
  '(mac-ts-converted-text ((((background dark)) :underline "orange" :background "#073642") (t (:underline "orange" :background "#073642"))))

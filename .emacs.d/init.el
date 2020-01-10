@@ -3,6 +3,7 @@
       '(("gnu" . "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")))
+(setq package-check-signature nil)
 (require 'cask "/usr/local/opt/cask/cask.el")
 (cask-initialize)
 (require 'pallet)
@@ -19,12 +20,6 @@
 ;;スタートアップメッセージを非表示
 (setq inhibit-startup-screen t)
 
-;; (require 'dashboard)
-;; (dashboard-setup-startup-hook)
-;; ;; Or if you use use-package
-;; (use-package dashboard
-;;   :config
-;;   (dashboard-setup-startup-hook))
 ;; 括弧の自動挿入
 (electric-pair-mode 1)
 
@@ -33,9 +28,9 @@
 (require 'open-junk-file)
 (global-set-key (kbd "C-x C-z") 'open-junk-file)
 ;;; 括弧の管理
-(require 'paredit)
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'lisp-mode-hook 'enable-paredit-mode)
+;; (require 'paredit)
+;; (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+;; (add-hook 'lisp-mode-hook 'enable-paredit-mode)
 
 ;; (add-hook 'lisp-interacton-mode-hook 'enable-paredit-mode)
 ;;; find-functionをキー割り当て ソースジャンプが可能 要は定義元ジャンプが可能
@@ -196,7 +191,6 @@
    ((string-match-p "^/other-project-folder")
     (php-eldoc-probe-load "http://localhost/otherproject/probe.php?secret=sesame"))))
 ;; (add-hook 'php-mode-hook 'php-mode-options)
-;; (add-to-list 'auto-minor-mode-alist `(,(format "^%s/cloudear/highClass/" (getenv "HOME")) . cake2-major-mode))
 
 ;;; 表示テーマの設定
 ;; (when (require 'color-theme nil t)
@@ -302,19 +296,6 @@
                                         ;
                                         ; (add-hook 'mac-selected-keyboard-input-source-change-hook
                                         ; 	  'mac-selected-keyboard-input-source-change-hook-func)
-
-;; (defface my-hl-line-face
-;;   ;; 背景がdarpkならば背景色を紺に
-;;   '((((class color) (background dark))
-;;      (:background "NavyBlue" t))
-;;     ;; 背景がlightならば背景色を緑に
-;;     (((class color) (background light))
-;;      (:background "LightGoldenrodYellow" t))
-;;     (t (:bold t)))
-;;  "hl-line's my face")
-;; (setq hl-line-face 'my-hl-line-face)
-;; (global-hl-line-mode t)
-
 ;; 括弧の対応関係のハイライト
 ;; paren-mode：対応する括弧を強調して表示する
 (setq show-paren-delay 0) ; 表示までの秒数。初期値は0.125
@@ -346,6 +327,8 @@
     (turn-on-eldoc-mode)))
 ;; emacs-lisp-modeのフックをセット
 (add-hook 'emacs-lisp-mode-hook 'elisp-mode-hooks)
+(add-to-list 'face-font-rescale-alist '(".*icons.*" . 0.9))
+(add-to-list 'face-font-rescale-alist '(".*FontAwesome.*" . 0.9))
 
 ;; company-mode 色
 (set-face-attribute 'company-tooltip nil
@@ -387,13 +370,15 @@
 (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
 ;; (define-key php-mode-map (kbd "C-M-i") 'company-complete)
 ;; クイックヘルプ
-(eval-after-load 'company
-  '(define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin))
+;; (eval-after-load 'company
+;;   '(define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin))
 
 ;; company-mode off
 (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 (add-hook 'markdown-mode-hook (lambda () (company-mode -1)))
 
+;; (require 'company-box)
+;; (add-hook 'company-mode-hook 'company-box-mode)
 ;; 履歴からソートする
 (require 'company-statistics)
 (company-statistics-mode)
@@ -409,6 +394,112 @@
             '(:with company-yasnippet))))
 (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
+(require 'company-lsp)
+(push 'company-lsp company-backends)
+(require 'lsp-mode)
+;; python company mode
+;; (add-hook 'python-mode-hook #'lsp)
+(custom-set-variables
+ ;; '(lsp-clients-python-library-directories '("docker:django-tutorial-app:/usr/"))
+ '(lsp-clients-python-library-directories '("/usr/"))
+ '(lsp-clients-php '("/usr/"))
+ )
+
+;;; go lang
+;; Goのパスを通す
+;; (add-to-list 'exec-path (expand-file-name "/usr/local/bin/go"))
+;; ;; ;; ;; go get で入れたツールのパスを通す
+;; (add-to-list 'exec-path (expand-file-name "~/go/bin"))
+(add-to-list 'exec-path (expand-file-name "/usr/local/bin/go"))
+;; ;; ;; go get で入れたツールのパスを通す
+(add-to-list 'exec-path (expand-file-name "~/go/bin"))
+(use-package go-mode
+  :commands go-mode
+  :mode (("\\.go?\\'" . go-mode))
+  :defer t
+  :init
+  (add-hook 'go-mode-hook #'lsp)
+  :config
+  ;; インデント関係の設定
+  (setq indent-tabs-mode nil)
+  (setq c-basic-offset 4)
+  (setq tab-width 4)
+  ;; 保存前に lsp-format-buffer
+  (add-hook 'before-save-hook 'lsp-format-buffer))
+;; go test
+(require 'gotest)
+(setq go-test-verbose t) ;; verboseフラグ付きでgotestする
+(define-key go-mode-map (kbd "C-c C-t") 'go-test-current-file)
+(define-key go-mode-map (kbd "C-c t") 'go-test-current-test)
+
+;; (require 'go-mode)
+;; (require 'company-go)
+
+;; ;; 諸々の有効化、設定
+;; (add-hook 'go-mode-hook 'company-mode)
+;; (add-hook 'go-mode-hook 'flycheck-mode)
+;; (add-hook 'go-mode-hook (lambda()
+;;            (add-hook 'before-save-hook' 'gofmt-before-save)
+;;            (local-set-key (kbd "M-.") 'godef-jump)
+;;            (set (make-local-variable 'company-backends) '(company-go))
+;;            (company-mode)
+;;            (setq indent-tabs-mode nil)    ; タブを利用
+;;            (setq c-basic-offset 4)        ; tabサイズを4にする
+;;            (setq tab-width 4)))
+;; (add-hook 'go-mode-hook
+;;             (lambda ()
+;;               (set (make-local-variable 'company-backends)
+;;                    '((company-dabbrev-code company-yasnippet)))))
+
+;; (add-hook 'go-mode-hook #'lsp)
+;; 必要なパッケージのロード
+;; (require 'go-mode)
+;; ;; flycheck-modeを有効化してシンタックスエラーを検知
+;; (add-hook 'go-mode-hook 'flycheck-mode)
+;; (add-hook 'go-mode-hook (lambda()
+;;                           (require 'company-go)
+;;                           (add-hook 'before-save-hook' 'gofmt-before-save)
+;;                           (local-set-key (kbd "M-.") 'godef-jump)
+;;                           (require 'company-go)
+;;                           (set (make-local-variable 'company-backends)
+;;                                '((company-go company-yasnippet)))
+;;                           (company-mode)
+;;                           (set (make-local-variable 'company-backends) '(company-go))
+;;                           (setq indent-tabs-mode nil)    ; タブを利用
+;;                           (setq c-basic-offset 4)    ; tabサイズを4にする
+;;                           (setq tab-width 4)))
+;; (add-hook 'go-mode-hook
+;;           '(lambda ()
+;;              (require 'company-go)
+;;              (set (make-local-variable 'company-backends)
+;;                   '((company-dabbrev-code company-yasnippet)))
+;;              (company-mode t)
+;;              (add-to-list 'company-backends 'company-ac-php-backend t)))
+
+;; (add-hook 'go-mode-hook (lambda()
+;;       (company-mode)
+;;       (setq company-transformers '(company-sort-by-backend-importance)) ;; ソート順
+;;       (setq company-idle-delay 0) ; 遅延なしにすぐ表示
+;;       (setq company-minimum-prefix-length 3) ; デフォルトは4
+;;       (setq company-selection-wrap-around t) ; 候補の最後の次は先頭に戻る
+;;       (setq completion-ignore-case t)
+;;       (setq company-dabbrev-downcase nil)
+;;       (global-set-key (kbd "C-M-i") 'company-complete)
+;;       ;; C-n, C-pで補完候補を次/前の候補を選択
+;;       (define-key company-active-map (kbd "C-n") 'company-select-next)
+;;       (define-key company-active-map (kbd "C-p") 'company-select-previous)
+;;       (define-key company-active-map (kbd "C-s") 'company-filter-candidates) ;; C-sで絞り込む
+;;       (define-key company-active-map [tab] 'company-complete-selection) ;; TABで候補を設定
+;;       (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete) ;; 各種メジャーモードでも C-M-iで company-modeの補完を使う
+;;       ))
+
+;; (setq lsp-clients-php-server-command
+;;       `("php" ,(concat server-dir "/Users/s_takeuchi/yumemi/takashimaya-mydaiz-api/src/vendor/felixfbecker/language-server/bin/php-language-server.php" " --tcp-server=localhost:29543" " --memory-limit=4095M")))
+;; (lsp-register-client
+;;  (make-lsp-client :new-connection (lsp-tcp-connection
+;;                                    (-const lsp-clients-php-server-command) "localhost" 29543)
+;;                   :major-modes '(php-mode)
+;;                   :server-id 'php-ls))
 ;; ▼要拡張機能インストール▼
 ;;; 編集履歴を記憶する──undohist
 ;; undohistの設定
@@ -434,19 +525,38 @@
 ;;(add-to-list 'load-path "/usr/local/Cellar/emacs/25.2/share/emacs/site-lisp/elscreen-persist.el")
 ;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/revive.el")
 ;; (load "revive")
-;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/elscreen-persist.el")
-;; (load "elscreen-persist")
+;; (add-to-list 'load-path "script/elscreen-persist.el")
+;; (load "elscreen-persist)"
 (setq elscreen-prefix-key (kbd "C-z"))
-(elscreen-start)
 (add-to-list 'load-path "~/.emacs.d/script/")
 (require 'elscreen-persist)
 (elscreen-persist-mode 1)
+;; (when (featurep 'elscreen-persist)
+;; elscreen-persist-restore のバグをリカバー
+;; see also https://github.com/robario/elscreen-persist/issues/4#issuecomment-261770364
+(progn
+  (defun advice:elscreen-persist-restore-before-patch (&rest args)
+    "elscreen-persist-restore のバグをリカバーするパッチ"
+    (let ((elscreen-persist-file "~/.emacs.d/elscreen"))
+      (when (file-writable-p elscreen-persist-file)
+        (with-temp-buffer
+          (insert-file-contents-literally elscreen-persist-file)
+          (replace-string "#<" "<")
+          (write-region (point-min) (point-max) elscreen-persist-file)))))
+  (advice-add 'elscreen-persist-restore
+              :before #'advice:elscreen-persist-restore-before-patch))
+;; (elscreen-persist-mode 1)
+;; )
+;;
+
 (elscreen-separate-buffer-list-mode 1)
-(require 'elscreen-multi-term)
+(elscreen-start)
+
 (global-set-key (kbd "M-<right>") 'elscreen-next)
 (global-set-key (kbd "M-<left>") 'elscreen-previous)
 (global-set-key (kbd "s-}") 'elscreen-next)
 (global-set-key (kbd "s-{") 'elscreen-previous)
+
 (setq save-visited-files-ignore-tramp-files t)
 (turn-on-save-visited-files-mode)
 ;; elscreen-separate-buffer-list 版 BufferSelection の
@@ -524,7 +634,12 @@
 ;;; カーソル位置のファイルパスやアドレスを "C-x C-f" で開く
 (ffap-bindings)
 
-;;;; whitespace-mode
+; 最終行に必ず改行を挿入する
+(setq require-final-newline t)
+;; 空白文字を強制表示
+(setq-default show-trailing-whitespace t)
+(set-face-background 'trailing-whitespace "#b14770")
+;;;; whitespace-modeq
 (require 'whitespace)
 ;; 改行やタブを可視化する whitespace-mode
 (setq whitespace-display-mappings
@@ -542,12 +657,12 @@
         newline-mark))
 ;; whitespace-modeで全角スペース文字を可視化　
 (setq whitespace-space-regexp "\\(\x3000+\\)")
-;; 保存前に自動でクリーンアップ
-(setq whitespace-action '(auto-cleanup))
 ;; whitespace-mode をオン
 (global-whitespace-mode t)
-;; F5 で whitespace-mode をトグル
+;; F4 で whitespace-mode をトグル
 (define-key global-map (kbd "<f4>") 'global-whitespace-mode)
+;; ;; 保存前に自動でクリーンアップ
+(setq whitespace-action '(auto-cleanup))
 ;; 保存前に空白と行末を削除
 (defvar delete-trailing-whitespece-before-save t)
 (make-variable-buffer-local 'delete-trailing-whitespece-before-save)
@@ -557,7 +672,11 @@
 (add-hook 'markdown-mode-hook
           '(lambda ()
              (set (make-local-variable 'whitespace-action) nil)))
-;;;;
+;; (add-hook 'php-mode-hook
+;;           '(lambda ()
+;;              (set (make-local-variable 'whitespace-action) nil)))
+;;; バッファの最後でnewlineで新規行を追加するのを禁止する
+;; (setq next-line-add-newlines nil)
 
 ;;; Mac でファイルを開いたときに、新たなフレームを作らない
 ;; (setq ns-pop-up-frames nil)
@@ -612,6 +731,8 @@
 
 ;;neo-tree設定
 (require 'all-the-icons)
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+
 (require 'neotree)
 ;; 隠しファイルをデフォルトで表示
 (setq neo-show-hidden-files t)
@@ -821,6 +942,7 @@
     ;;   )
     (add-hook 'web-mode-hook  'web-mode-hook)
     ))
+;; (add-to-list '(web-mode-indentation-params) '("lineup-calls" . nil))
 
 (require 'emmet-mode)
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; マークアップモードで自動的に emmet-mode をたちあげる
@@ -1091,6 +1213,12 @@
       '(("~/yumemi/" . 1)
         ("~/dev/" . 1)))
 
+(setq magit-status-buffer-switch-function 'switch-to-buffer)
+;; magitでinitした時は個人用のgithubに保存するようにしたい
+;; [user]
+;; 	name = shuntakeuch1
+;; 	email = takeuchishun89@gmail.com
+
 ;;;; gitの差分表示
 (when (require 'git-gutter nil t)
   (global-git-gutter-mode t)
@@ -1110,6 +1238,7 @@
 (global-set-key (kbd "C-S-t") 'counter-other-window)
 (global-set-key (kbd "s-r") 'revert-buffer-no-confirm)
 (global-set-key (kbd "<f5>") 'reload-browser)
+;; (global-set-key (kbd "<f5>") 'reload-curl-client)
 (global-set-key (kbd "C-c 1") 'my/copy-current-path)
 (global-set-key (kbd "C-c 4") 'open-finder)
 (global-set-key (kbd "C-c 5") 'open-phpstorm)
@@ -1118,13 +1247,14 @@
 (define-key global-map (kbd "M-i") 'indent-region)
 
 ;; twitter-mode
+;; (load "twit-init.el")
 (when (require 'twittering-mode nil t)
   ;; アイコンを表示する
   (setq twittering-icon-mode nil)
   ;; タイムラインを300秒ごとに更新する
   (setq twittering-timer-interval 300)
+  ;; ;; 認証データ
   (setq twittering-account-authorization 'authorized)
-  ;; 認証データ
   (setq twittering-oauth-access-token-alist
         '(("oauth_token" . "789882624516907008-popBUPdnF8mxeneg2NdIyyIdYGJN3GS")
           ("oauth_token_secret" . "FjRZXVl2BHPArKUfdlrfs9o3LKTRFDWWjMEpWMGBZOe5r")
@@ -1132,6 +1262,7 @@
           ("screen_name" . "shuntakeuch1"))
         )
 )
+
 ;; nxml-mode
 (use-package nxml-mode
   :mode
@@ -1339,24 +1470,27 @@
 
 ;; 日本語ドキュメントを利用するための設定
 (when (require 'php-mode nil t)
+  (setq php-mode-coding-style 'psr2)
   (setq php-site-url "https://secure.php.net/"
         php-manual-url 'ja))
+
 ;; php-modeのインデント設定
-(defun php-indent-hook ()
-  (setq indent-tabs-mode nil)
-  (setq c-basic-offset 4)
-  ;; (setq c-tab-width 8)
-  ;; (setq c-argdecl-indent 0)       ; 関数の引数行のインデント
-                                        ; 但し引数行で明示的にタブを押さない
-  ;;                                       ; 場合は、インデントしない
-  ;; (setq c-indent-level 8)               ; { を書いた後のインデント
-  ;; (setq c-label-offset -4)              ; ラベルの深さ
-  ;; (setq c-tab-always-indent t)          ; タブ記号を押した時にユーザーが
-                                        ; 任意にタブ記号を入れることは不可
-  (c-set-offset 'case-label '+) ; switch文のcaseラベル
-  (c-set-offset 'arglist-intro '+) ; 配列の最初の要素が改行した場合
-  (c-set-offset 'arglist-close 0)) ; 配列の閉じ括弧
-(add-hook 'php-mode-hook 'php-indent-hook)
+;; (defun php-indent-hook ()
+;;   (setq indent-tabs-mode nil)
+;;   (setq c-basic-offset 4)
+;;   ;; (setq c-tab-width 8)
+;;   ;; (setq c-argdecl-indent 0)       ; 関数の引数行のインデント
+;;                                         ; 但し引数行で明示的にタブを押さない
+;;   ;;                                       ; 場合は、インデントしない
+;;   ;; (setq c-indent-level 8)               ; { を書いた後のインデント
+;;   ;; (setq c-label-offset -4)              ; ラベルの深さ
+;;   ;; (setq c-tab-always-indent t)          ; タブ記号を押した時にユーザーが
+;;                                         ; 任意にタブ記号を入れることは不可
+;;   (c-set-offset 'case-label '+) ; switch文のcaseラベル
+;;   (c-set-offset 'arglist-intro '+) ; 配列の最初の要素が改行した場合
+;;   (c-set-offset 'arglist-close 0)) ; 配列の閉じ括弧
+;; (add-hook 'php-mode-hook 'php-indent-hook)
+
 (add-hook 'php-mode-hook
           '(lambda ()
              (require 'company-php)
@@ -1365,12 +1499,13 @@
                   '((company-dabbrev-code company-yasnippet)))
              (company-mode t)
              (add-to-list 'company-backends 'company-ac-php-backend t)))
+(add-hook 'php-mode-hook 'php-enable-psr2-coding-style)
 
 (require 'react-snippets)
 ;;;; yasnippet設定
 (yas-global-mode 1)
 ;;; スニペット名をidoで選択する
-(setq yas-prompt-functions '(yas-ido-prompt))
+;; (setq yas-prompt-functions '(yas-ido-prompt))
 
 ;; phpunit & quickrun
 (defface phpunit-pass
@@ -1407,6 +1542,7 @@
     (helm-gtags-mode . "")
     ;; (flymake-mode . " Fm")
     ;; (flycheck-mode . "FC")
+    (flyspell-mode . "")
     (git-gutter-mode . "")
     (helm-mode . "")
     (which-key-mode . "")
@@ -1427,7 +1563,10 @@
     (js2-mode . "JS2")
     (helm-migemo-mode . "")
     (global-whitespace-mode . "")
-    (markdown-mode . "Md")))
+    (markdown-mode . "Md")
+    (editorconfig-mode . "")
+    (auto-highlight-symbol-mode . "")
+    ))
 
 (defun clean-mode-line ()
   (interactive)
@@ -1447,26 +1586,6 @@
 ;; (cl-loop for x in (reverse
 ;;                 (split-string (substring (shell-command-to-string "echo $PATH") 0 -1) ":"))
 ;;       do (add-to-list 'exec-path x))
-;; オートコンプリートオフ
-;; (auto-complete-mode -1)
-
-;; python 自動補完
-;; compay-mode
-;; (setenv "PYTHONPATH" "~/.pyenv/versions/3.7.0/lib/python3.7/site-packages/bs4/")
-;;; Virtualenvwrapper:
-;; (require 'virtualenvwrapper)
-;; (venv-initialize-eshell)
-;; (venv-initialize-interactive-shells)
-;; (setq-default mode-line-format (cons '(:exec venv-current-name) mode-line-format))
-(require 'virtualenvwrapper)
-(require 'auto-virtualenvwrapper)
-(add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate)
-
-(require 'jedi-core)
-(setq jedi:complete-on-dot t)
-(setq jedi:use-shortcuts t)
-(add-hook 'python-mode-hook 'jedi:setup)
-;; (add-to-list 'company-backends 'company-jedi) ; backendに追加
 
 (add-hook 'dired-load-hook (lambda () (load "dired-x")))
 ;; beep音を消す
@@ -1595,7 +1714,7 @@
 (defun php-doc ()
   (setq-local helm-dash-docsets '("PHP" "PHPUnit" "Laravel")))
 (defun el-doc ()
-  (setq-local helm-dash-docsets '("Emacs Lisp")))
+  (setq-local helm-dash-docsets '("Emacs\\ Lisp")))
 
 (add-hook 'python-mode-hook 'py-doc)
 (add-hook 'ruby-mode-hook 'ruby-doc)
@@ -1611,7 +1730,9 @@
   (interactive
    (list (read-file-name "Find files: " temporary-file-directory)))
   (find-file filename))
+(global-set-key (kbd "s-,") 'my-find-file-init-el)
 
+;; バッファ移動をわかりやすく
 (beacon-mode 1)
 
 ;; Set your lisp system and, optionally, some contribs
@@ -1632,12 +1753,12 @@
 ;;                        (getenv "HOME") "/.rbenv/bin:" (getenv "PATH")))
 ;; (setq exec-path (cons (concat (getenv "HOME") "/.rbenv/shims")
 ;;                       (cons (concat (getenv "HOME") "/.rbenv/bin") exec-path)))
-;; php flycheck
-;; (defun my-php-mode-hook ()
-;;   "My PHP-mode hook."
-;;   (require 'flycheck-phpstan)
-;;   (flycheck-mode t)
-;;   (flycheck-select-checker 'phpstan))
+;;php flycheck
+(defun my-php-mode-hook ()
+  "My PHP-mode hook."
+  (require 'flycheck-phpstan)
+  (flycheck-mode t)
+  (flycheck-select-checker 'phpstan))
 
 (add-hook 'php-mode-hook 'my-php-mode-hook)
 
@@ -1657,12 +1778,12 @@
 (migemo-init)
 
 ;; 文字ジャンプ 日本語対応版
-(require 'avy-migemo)
-;; `avy-migemo-mode' overrides avy's predefined functions using `advice-add'.
-(avy-migemo-mode 1)
-(global-set-key (kbd "M-g m m") 'avy-migemo-mode)
-(setq avy-timeout-seconds nil)
-(global-set-key (kbd "C-M-;") 'avy-migemo-goto-char-timer)
+;; (require 'avy-migemo)
+;; ;; `avy-migemo-mode' overrides avy's predefined functions using `advice-add'.
+;; (avy-migemo-mode 1)
+;; (global-set-key (kbd "M-g m m") 'avy-migemo-mode)
+;; (setq avy-timeout-seconds nil)
+;; (global-set-key (kbd "C-M-;") 'avy-migemo-goto-char-timer)
 
 ;;選択カーソルを増やすパッケージ
 (require 'multiple-cursors)
@@ -1803,27 +1924,6 @@
 (add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
 (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
 
-;;; go lang
-;; Goのパスを通す
-(add-to-list 'exec-path (expand-file-name "/usr/local/go/bin/"))
-;; ;; ;; go get で入れたツールのパスを通す
-(add-to-list 'exec-path (expand-file-name "~/go/bin"))
-
-;; 必要なパッケージのロード
-(require 'go-mode)
-(require 'company-go)
-
-;; 諸々の有効化、設定
-(add-hook 'go-mode-hook 'company-mode)
-(add-hook 'go-mode-hook 'flycheck-mode)
-(add-hook 'go-mode-hook (lambda()
-           (add-hook 'before-save-hook' 'gofmt-before-save)
-           (local-set-key (kbd "M-.") 'godef-jump)
-           (set (make-local-variable 'company-backends) '(company-go))
-           (company-mode)
-           (setq indent-tabs-mode nil)    ; タブを利用
-           (setq c-basic-offset 4)        ; tabサイズを4にする
-           (setq tab-width 4)))
 
 ;; (add-to-list 'load-path "/your/path/to/dockerfile-mode/")
 (require 'dockerfile-mode)
@@ -1835,3 +1935,118 @@
     (when fPath
       (shell-command-to-string (concat "open -a /Applications/IntelliJ\\ IDEA.app " fPath)))))
 
+(add-hook 'prog-mode-hook 'flyspell-mode)
+
+;; ispell の後継である aspell を使う。
+;; CamelCase でもいい感じに spellcheck してくれる設定を追加
+;; See: https://stackoverflow.com/a/24878128/8888451
+(setq-default ispell-program-name "aspell")
+(setq-default ispell-dictionary "english")
+(eval-after-load "ispell"
+  '(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+")))
+(setq ispell-program-name "aspell"
+  ispell-extra-args
+  '("--sug-mode=ultra" "--lang=en_US" "--run-together" "--run-together-limit=5" "--run-together-min=2"))
+
+;;; phpコード修正
+;; (add-to-list 'load-path "~/.composer/vendor/bin//php-cs-fixer")
+;; (require 'php-cs-fixer)
+;; (add-hook 'before-save-hook 'php-cs-fixer-before-save)
+(defun php-cs-fixer ()
+  (interactive)
+  (setq filename (buffer-file-name (current-buffer)))
+  (call-process "php-cs-fixer" nil nil nil "fix" filename )
+  (revert-buffer t t)
+  )
+;; 変数ハイライト
+(require 'auto-highlight-symbol)
+(global-auto-highlight-symbol-mode t)
+
+(global-set-key (kbd "C-'") #'imenu-list-smart-toggle)
+
+;; imenu-list
+;; (with-eval-after-load "imenu-list"
+;;   (define-key imenu-list-major-mode-map (kbd "j") 'next-line)
+;;   (define-key imenu-list-major-mode-map (kbd "k") 'previous-line))
+;; (setq imenu-list-size 0.2)
+;;; 選択範囲をisearch
+(defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
+  (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+      (progn
+        (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+        (deactivate-mark)
+        ad-do-it
+        (if (not forward)
+            (isearch-repeat-backward)
+          (goto-char (mark))
+          (isearch-repeat-forward)))
+    ad-do-it))
+
+
+(global-set-key (kbd "C-c s") 'helm-swoop)
+;; editorconfig モードの有効化
+(editorconfig-mode 1)
+
+(global-set-key (kbd "M-.") 'dumb-jump-go)
+
+(if (require 'popwin nil t)
+    (progn
+      ;; (setq display-buffer-function 'popwin:display-buffer)
+      ;; (setq popwin:popup-window-height 0.2)
+      ;; (push '("\*Go Test\*" :regexp t :stick t :noselect t) popwin:special-display-config)
+      ;; (push "*Shell Command Output*" popwin:special-display-config)
+      ;; (push '(" *undo-tree*" :width 0.3 :position right) popwin:special-display-config)
+      ;; 初期化コード
+      (setq special-display-function 'popwin:special-display-popup-window)
+      ;; popwinするbufferを明示的に指定
+      (setq special-display-buffer-names '("\*Go Test\*","*compilation*","*quickrun*","*twittering-edit-buffer*","*eshell*"))
+      )
+  )
+
+;; quickrun.el
+;; https://github.com/syohex/emacs-quickrun
+(require 'quickrun)
+;; (push '("*quickrun*") popwin:special-display-config)
+(global-set-key (kbd "<f7>") 'quickrun)
+
+(global-auto-revert-mode 1)
+;;コンバイルが正常終了したときにウインドウを自動で閉じるようにする
+(bury-successful-compilation 1)
+;; markdown puml livepreview
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-livedown"))
+(require 'livedown)
+(custom-set-variables
+ '(livedown-autostart nil) ; automatically open preview when opening markdown files
+ '(livedown-open t)        ; automatically open the browser window
+ '(livedown-port 1337)     ; port for livedown server
+ '(livedown-browser nil))  ; browser to use
+;; (global-set-key (kbd "C-M-m") 'livedown-preview)
+
+(defun open ()
+  "Open current buffer for OSX command"
+  (interactive)
+  (shell-command (concat "open " (buffer-file-name))))
+
+;; (require 'lsp-mode)
+;; (require 'vue-mode)
+;; (require 'lsp-vue)
+;; (add-hook 'vue-mode-hook #'lsp-vue-mmm-enable)
+;; (add-hook 'major-mode-hook #'lsp-vue-enable)
+;; (setq vetur.validation.template t)
+
+
+(semantic-mode 1)
+;; (add-hook ‘python-mode-hook
+;; (lambda ()
+;; (setq imenu-create-index-function ‘python-imenu-create-index)))
+
+;; (set-window-margins (selected-window) 20 20)
+
+;; (global-set-key (kbd "C-c q") 'ace-window)
+(global-set-key (kbd "M-o") 'ace-window)
+(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+;; (setq aw-leading-char-style )
+
+(global-set-key (kbd "<f10>") 'repeat-complex-command)
+
+(put 'set-goal-column 'disabled nil)

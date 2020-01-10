@@ -6,6 +6,13 @@
        (shell-command "osascript ~/.emacs.d/script/reload.scpt")
        (message "complete! Reload Browser!!"))
 
+(defun reload-curl-client ()
+  "Save and reload curl client for Paw"
+       (interactive)
+       (save-buffer)
+       (shell-command "osascript ~/.emacs.d/script/paw_reload.scpt")
+       (message "complete! Reload Curl Client!!"))
+
 (defun revert-buffer-no-confirm ()
     "Revert buffer without confirmation."
     (interactive) (revert-buffer t t))
@@ -37,7 +44,7 @@
 (defun my/get-curernt-path ()
   (if (equal major-mode 'dired-mode)
       default-directory
-	(buffer-file-name)))
+    (buffer-file-name)))
 
 (defun my/copy-current-path ()
   (interactive)

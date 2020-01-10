@@ -27,7 +27,6 @@ SAVEHIST=1000000
 PROMPT="%{${fg[green]}%}[%n@%m]%{${reset_color}%} %~
 %# "
 
-
 # 単語の区切り文字を指定する
 autoload -Uz select-word-style
 select-word-style default
@@ -215,11 +214,16 @@ export PLANTUML_LIMIT_SIZE=8192
 # function cssh() {ssh $*;tmux select-pane -P 'fg=default,bg=default'}
 # alias ssh='cssh '
 
-# GOPATH="$HOME/go"
-export GOROOT=/usr/local/opt/go/libexec
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
+export PATH="$HOME/.goenv/bin:$PATH"
+# export GOENV_DISABLE_GOPATH=1
+eval "$(goenv init -)"
+# export GOROOT=/usr/local/opt/go/libexec
+# export GOPATH=$HOME/go
+# export PATH=$PATH:$GOPATH/bin
 # export GOROOT="/usr/local/bin/go"
+# export GO111MODULE=on
 
 # 初回シェル時のみ tmux実行
 # if [ $SHLVL = 1 ]; then
@@ -242,7 +246,7 @@ alias change-to-excel-csv='nkf --overwrite --oc=UTF-8-BOM file.csv'
 # https://medium.com/the-code-review/make-your-terminal-more-colourful-and-productive-with-iterm2-and-zsh-11b91607b98c
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
   dir
-  custom_javascript 
+  custom_javascript
   vcs
   newline
   status
@@ -259,3 +263,7 @@ POWERLEVEL9K_MODE='nerdfont-complete'
 source  ~/powerlevel9k/powerlevel9k.zsh-theme
 
 alias lc='colorls'
+
+export EDITOR="vim"
+eval "$(direnv hook zsh)"
+
