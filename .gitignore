@@ -1,6 +1,8 @@
 /.emacs.d/*
 /.emacs.d/snippets/yasnippet-blade-mode
-# Gitで管理したいファイル
+/.emacs.d/script/twit-init.el
+
+### Gitで管理したいファイル
 !/.emacs.d/init.el
 !/.emacs.d/script/
 !/.emacs.d/snippets/
