@@ -405,101 +405,17 @@
  '(lsp-clients-php '("/usr/"))
  )
 
-;;; go lang
-;; Goのパスを通す
-;; (add-to-list 'exec-path (expand-file-name "/usr/local/bin/go"))
-;; ;; ;; ;; go get で入れたツールのパスを通す
-;; (add-to-list 'exec-path (expand-file-name "~/go/bin"))
-(add-to-list 'exec-path (expand-file-name "/usr/local/bin/go"))
-;; ;; ;; go get で入れたツールのパスを通す
-(add-to-list 'exec-path (expand-file-name "~/go/bin"))
-(use-package go-mode
-  :commands go-mode
-  :mode (("\\.go?\\'" . go-mode))
-  :defer t
-  :init
-  (add-hook 'go-mode-hook #'lsp)
-  :config
-  ;; インデント関係の設定
-  (setq indent-tabs-mode nil)
-  (setq c-basic-offset 4)
-  (setq tab-width 4)
-  ;; 保存前に lsp-format-buffer
-  (add-hook 'before-save-hook 'lsp-format-buffer))
+;;; Go lang settings
+(add-to-list 'exec-path (expand-file-name "/usr/local/bin/go")) ;; Goのパスを通す
+(add-to-list 'exec-path (expand-file-name "~/go/bin")) ;; ツールのパス
+;; go-modeのときlspする
+(add-hook 'go-mode-hook #'lsp-deferred)
 ;; go test
 (require 'gotest)
 (setq go-test-verbose t) ;; verboseフラグ付きでgotestする
 (define-key go-mode-map (kbd "C-c C-t") 'go-test-current-file)
 (define-key go-mode-map (kbd "C-c t") 'go-test-current-test)
 
-;; (require 'go-mode)
-;; (require 'company-go)
-
-;; ;; 諸々の有効化、設定
-;; (add-hook 'go-mode-hook 'company-mode)
-;; (add-hook 'go-mode-hook 'flycheck-mode)
-;; (add-hook 'go-mode-hook (lambda()
-;;            (add-hook 'before-save-hook' 'gofmt-before-save)
-;;            (local-set-key (kbd "M-.") 'godef-jump)
-;;            (set (make-local-variable 'company-backends) '(company-go))
-;;            (company-mode)
-;;            (setq indent-tabs-mode nil)    ; タブを利用
-;;            (setq c-basic-offset 4)        ; tabサイズを4にする
-;;            (setq tab-width 4)))
-;; (add-hook 'go-mode-hook
-;;             (lambda ()
-;;               (set (make-local-variable 'company-backends)
-;;                    '((company-dabbrev-code company-yasnippet)))))
-
-;; (add-hook 'go-mode-hook #'lsp)
-;; 必要なパッケージのロード
-;; (require 'go-mode)
-;; ;; flycheck-modeを有効化してシンタックスエラーを検知
-;; (add-hook 'go-mode-hook 'flycheck-mode)
-;; (add-hook 'go-mode-hook (lambda()
-;;                           (require 'company-go)
-;;                           (add-hook 'before-save-hook' 'gofmt-before-save)
-;;                           (local-set-key (kbd "M-.") 'godef-jump)
-;;                           (require 'company-go)
-;;                           (set (make-local-variable 'company-backends)
-;;                                '((company-go company-yasnippet)))
-;;                           (company-mode)
-;;                           (set (make-local-variable 'company-backends) '(company-go))
-;;                           (setq indent-tabs-mode nil)    ; タブを利用
-;;                           (setq c-basic-offset 4)    ; tabサイズを4にする
-;;                           (setq tab-width 4)))
-;; (add-hook 'go-mode-hook
-;;           '(lambda ()
-;;              (require 'company-go)
-;;              (set (make-local-variable 'company-backends)
-;;                   '((company-dabbrev-code company-yasnippet)))
-;;              (company-mode t)
-;;              (add-to-list 'company-backends 'company-ac-php-backend t)))
-
-;; (add-hook 'go-mode-hook (lambda()
-;;       (company-mode)
-;;       (setq company-transformers '(company-sort-by-backend-importance)) ;; ソート順
-;;       (setq company-idle-delay 0) ; 遅延なしにすぐ表示
-;;       (setq company-minimum-prefix-length 3) ; デフォルトは4
-;;       (setq company-selection-wrap-around t) ; 候補の最後の次は先頭に戻る
-;;       (setq completion-ignore-case t)
-;;       (setq company-dabbrev-downcase nil)
-;;       (global-set-key (kbd "C-M-i") 'company-complete)
-;;       ;; C-n, C-pで補完候補を次/前の候補を選択
-;;       (define-key company-active-map (kbd "C-n") 'company-select-next)
-;;       (define-key company-active-map (kbd "C-p") 'company-select-previous)
-;;       (define-key company-active-map (kbd "C-s") 'company-filter-candidates) ;; C-sで絞り込む
-;;       (define-key company-active-map [tab] 'company-complete-selection) ;; TABで候補を設定
-;;       (define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete) ;; 各種メジャーモードでも C-M-iで company-modeの補完を使う
-;;       ))
-
-;; (setq lsp-clients-php-server-command
-;;       `("php" ,(concat server-dir "/Users/s_takeuchi/yumemi/takashimaya-mydaiz-api/src/vendor/felixfbecker/language-server/bin/php-language-server.php" " --tcp-server=localhost:29543" " --memory-limit=4095M")))
-;; (lsp-register-client
-;;  (make-lsp-client :new-connection (lsp-tcp-connection
-;;                                    (-const lsp-clients-php-server-command) "localhost" 29543)
-;;                   :major-modes '(php-mode)
-;;                   :server-id 'php-ls))
 ;; ▼要拡張機能インストール▼
 ;;; 編集履歴を記憶する──undohist
 ;; undohistの設定

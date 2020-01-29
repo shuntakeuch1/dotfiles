@@ -208,30 +208,12 @@ export PIPENV_VENV_IN_PROJECT=true
 alias emacslink=ln -s /usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.2/Emacs.app /Application
 export PLANTUML_LIMIT_SIZE=8192
 
-# sshのログイン･ログアウトでtmuxの背景変更
-# alias ssh="tmux select-pane -P 'fg=colour0,bg=colour152';ssh"
-# alias exit="tmux select-pane -P 'fg=default,bg=default';exit"
-# function cssh() {ssh $*;tmux select-pane -P 'fg=default,bg=default'}
-# alias ssh='cssh '
-
 export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-export PATH="$HOME/.goenv/bin:$PATH"
-# export GOENV_DISABLE_GOPATH=1
-eval "$(goenv init -)"
-# export GOROOT=/usr/local/opt/go/libexec
-# export GOPATH=$HOME/go
-# export PATH=$PATH:$GOPATH/bin
-# export GOROOT="/usr/local/bin/go"
-# export GO111MODULE=on
+export GOROOT="$(brew --prefix golang)/libexec"
 
-# 初回シェル時のみ tmux実行
-# if [ $SHLVL = 1 ]; then
-#   tmux
-# fi
-# if [ "$EMACS" ];then
-#   export TERM=screen-256color
-# fi
+export PATH=$PATH:$GOPATH/bin
+export GO111MODULE=on
+
 alias dcm='docker-compose'
 export PATH="$HONE/.jenv/bin:$PATH"
 eval "$(jenv init -)"
