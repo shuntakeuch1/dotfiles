@@ -1924,6 +1924,20 @@
 (require 'quickrun)
 ;; (push '("*quickrun*") popwin:special-display-config)
 (global-set-key (kbd "<f7>") 'quickrun)
+(quickrun-add-command "kotlin"
+  '((:command . "kotlin")
+    (:exec    . ("kotlinc %o %s" "%c %NKt %a"))
+    (:remove  . ("%nKt.class"))
+    (:tempfile . nil)
+    (:description . "Compile Kotlin file and execute")
+    )
+  :mode 'kotlin-mode)
+    ;; ("kotlin" . ((:command . "kotlin")
+    ;;            (:compile-only . "kotlinc -Werror %o %s")
+    ;;            (:exec    . ("kotlinc %o %s" "%c %NKt %a"))
+    ;;            (:remove  . ("%nKt.class"))
+    ;;            (:tempfile . nil)
+    ;;            (:description . "Compile Kotlin file and execute")))
 
 (global-auto-revert-mode 1)
 ;;コンバイルが正常終了したときにウインドウを自動で閉じるようにする
