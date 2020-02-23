@@ -846,7 +846,7 @@
   ;;; web-modeのインデント設定用フック
   (defun web-mode-hook ()
     ;;   "Hooks for Web mode."
-    ;;   (setq web-mode-markup-indent-offset 2) ; HTMLのインデイント
+    (setq web-mode-markup-indent-offset 2) ; HTMLのインデイント
     ;;   (setq web-mode-css-indent-offset 2) ; CSSのインデント
     (setq web-mode-code-indent-offset 2) ; JS, PHP, Rubyなどのインデント
     ;;   (setq web-mode-comment-style 2) ; web-mode内のコメントのインデント
@@ -855,9 +855,9 @@
     (setq web-mode-engines-alist
           '(("php"    . "\\.ctp\\'"))
           )
-    ;;   )
+      )
     (add-hook 'web-mode-hook  'web-mode-hook)
-    ))
+    )
 ;; (add-to-list '(web-mode-indentation-params) '("lineup-calls" . nil))
 
 (require 'emmet-mode)
