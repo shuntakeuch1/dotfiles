@@ -19,6 +19,10 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 ;;スタートアップメッセージを非表示
 (setq inhibit-startup-screen t)
+;; ビープ音を消す
+(setq visible-bell t)
+;; ビープ音&フラッシュを消す
+;; (setq ring-bell-function 'ignore)
 
 ;; 括弧の自動挿入
 (electric-pair-mode 1)
