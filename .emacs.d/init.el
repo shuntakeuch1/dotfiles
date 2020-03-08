@@ -1984,3 +1984,26 @@
 (global-set-key (kbd "<f10>") 'repeat-complex-command)
 
 (put 'set-goal-column 'disabled nil)
+
+;; terraform command
+(defun tf-version ()
+  "terraform version"
+  (interactive)
+  (let* ((buffer-name "*tfcmd*"))
+    (with-output-to-temp-buffer buffer-name
+      (shell-command "terraform version" buffer-name "*Messages*")
+      (pop-to-buffer buffer-name))))
+(defun tf-plan ()
+  "terraform plan"
+  (interactive)
+  (let* ((buffer-name "*tfcmd*"))
+    (with-output-to-temp-buffer buffer-name
+      (shell-command "terraform plan" buffer-name)
+      (pop-to-buffer buffer-name))))
+(global-set-key (kbd "C-c u v") 'tf-version)
+(global-set-key (kbd "C-c u p") 'tf-plan)
+
+;;  project direnv
+(require 'projectile)
+(require 'projectile-direnv)
+(add-hook 'projectile-mode-hook 'projectile-direnv-export-variables)
