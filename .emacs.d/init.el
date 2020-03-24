@@ -1998,8 +1998,9 @@
   (interactive)
   (let* ((buffer-name "*tfcmd*"))
     (with-output-to-temp-buffer buffer-name
-      (shell-command "terraform plan" buffer-name)
-      (pop-to-buffer buffer-name))))
+      (shell-command "terraform plan" buffer-name "*stderr*")
+      (pop-to-buffer buffer-name)
+      )))
 (global-set-key (kbd "C-c u v") 'tf-version)
 (global-set-key (kbd "C-c u p") 'tf-plan)
 
@@ -2007,3 +2008,8 @@
 (require 'projectile)
 (require 'projectile-direnv)
 (add-hook 'projectile-mode-hook 'projectile-direnv-export-variables)
+
+;; 動的な文字サイスの変更 +- text-scale-adust C-x C-0
+(global-set-key (kbd "s-+") 'text-scale-increase)
+(global-set-key (kbd "s-_") 'text-scale-decrease)
+
