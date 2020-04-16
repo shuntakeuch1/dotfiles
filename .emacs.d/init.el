@@ -312,11 +312,16 @@
                     :underline "turquoise")
 
 ;; バックアップファイルの作成場所をシステムのTempディレクトリに変更する
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-;; オートセーブファイルの作成場所をシステムのTempディレクトリに変更する
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+;; (setq backup-directory-alist
+;;       `((".*" . ,temporary-file-directory)))
+;; ;; オートセーブファイルの作成場所をシステムのTempディレクトリに変更する
+;; (setq auto-save-file-name-transforms
+;;       `((".*" ,temporary-file-directory t)))
+
+;; バックアップファイルを作成しない
+(setq make-backup-files nil)
+;; オートセーブファイルを作らない
+(setq auto-save-default nil)
 
 ;; ファイルが #! から始まる場合、+xを付けて保存する
 (add-hook 'after-save-hook
@@ -513,11 +518,10 @@
 (cua-mode t) ; cua-modeをオン
 (setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
 
-;; TRAMPでバックアップファイルを作成しない
-(add-to-list 'backup-directory-alist
-             (cons tramp-file-name-regexp nil))
 ;;TRAMPでinvalid base64 エラー回避
 (setq tramp-copy-size-limit nil)
+;; hang対策 zshを使用しない
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
 ;;; Emacs版manビューア（WoMan）の利用
 ;; キャッシュを作成
@@ -2001,6 +2005,14 @@
       (shell-command "terraform plan" buffer-name "*stderr*")
       (pop-to-buffer buffer-name)
       )))
+
+(defun tf-apply ()
+  "Save and terraform apply"
+       (interactive)
+       (save-buffer)
+       (shell-command "osascript ~/.emacs.d/script/iterm.scpt"))
+
+(global-set-key (kbd "C-c u a") 'tf-apply)
 (global-set-key (kbd "C-c u v") 'tf-version)
 (global-set-key (kbd "C-c u p") 'tf-plan)
 
