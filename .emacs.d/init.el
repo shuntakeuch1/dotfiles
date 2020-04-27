@@ -312,16 +312,16 @@
                     :underline "turquoise")
 
 ;; バックアップファイルの作成場所をシステムのTempディレクトリに変更する
-;; (setq backup-directory-alist
-;;       `((".*" . ,temporary-file-directory)))
-;; ;; オートセーブファイルの作成場所をシステムのTempディレクトリに変更する
-;; (setq auto-save-file-name-transforms
-;;       `((".*" ,temporary-file-directory t)))
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+;; オートセーブファイルの作成場所をシステムのTempディレクトリに変更する
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 ;; バックアップファイルを作成しない
-(setq make-backup-files nil)
+;; (setq make-backup-files nil)
 ;; オートセーブファイルを作らない
-(setq auto-save-default nil)
+;; (setq auto-save-default nil)
 
 ;; ファイルが #! から始まる場合、+xを付けて保存する
 (add-hook 'after-save-hook
@@ -1932,20 +1932,6 @@
 (require 'quickrun)
 ;; (push '("*quickrun*") popwin:special-display-config)
 (global-set-key (kbd "<f7>") 'quickrun)
-(quickrun-add-command "kotlin"
-  '((:command . "kotlin")
-    (:exec    . ("kotlinc %o %s" "%c %NKt %a"))
-    (:remove  . ("%nKt.class"))
-    (:tempfile . nil)
-    (:description . "Compile Kotlin file and execute")
-    )
-  :mode 'kotlin-mode)
-    ;; ("kotlin" . ((:command . "kotlin")
-    ;;            (:compile-only . "kotlinc -Werror %o %s")
-    ;;            (:exec    . ("kotlinc %o %s" "%c %NKt %a"))
-    ;;            (:remove  . ("%nKt.class"))
-    ;;            (:tempfile . nil)
-    ;;            (:description . "Compile Kotlin file and execute")))
 
 (global-auto-revert-mode 1)
 ;;コンバイルが正常終了したときにウインドウを自動で閉じるようにする
