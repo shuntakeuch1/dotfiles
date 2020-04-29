@@ -1976,6 +1976,9 @@
 (put 'set-goal-column 'disabled nil)
 
 ;; terraform command
+(require 'terraform-mode)
+(add-hook 'terraform-mode-hook #'terraform-format-on-save-mode)
+
 (defun tf-version ()
   "terraform version"
   (interactive)
