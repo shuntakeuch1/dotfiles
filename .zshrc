@@ -256,3 +256,28 @@ export SDKMAN_DIR="/Users/s_takeuchi/.sdkman"
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/Cellar/tfenv/1.0.2/versions/0.12.5/terraform terraform
+
+
+export CARGO_HOME="$HOME/.cargo"
+export PATH="$CARGO_HOME/bin:$PATH"s
+
+peco-src () {
+    local repo=$(ghq list | peco --query "$LBUFFER")
+    if [ -n "$repo" ]; then
+        repo=$(ghq list --full-path --exact $repo)
+        BUFFER="cd ${repo}"
+        zle accept-line
+    fi
+    zle clear-screen
+}
+zle -N peco-src
+bindkey '^]' peco-src
+
+
+open-remote-url () {
+    open $(git config remote.origin.url)
+}
+zle -N open-remote-url
+bindkey '^q' open-remote-url
+
+function de { docker exec -it $(docker ps | tail -n +2 | peco | cut -d " " -f1) bash }
