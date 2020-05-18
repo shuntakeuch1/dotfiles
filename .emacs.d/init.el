@@ -149,9 +149,9 @@
    ((string-match-p "^/other-project-folder")
     (php-eldoc-probe-load "http://localhost/otherproject/probe.php?secret=sesame"))))
 ;; (add-hook 'php-mode-hook 'php-mode-options)
-
-(require 'color-theme-solarized)
-(load-theme 'solarized-dark t)
+(use-package color-theme-solarized
+  :config
+  (load-theme 'solarized-dark t))
 ;;; フォントの設定
 (set-face-attribute 'default nil
                     :family "Ricty Diminished"
