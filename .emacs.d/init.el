@@ -125,7 +125,6 @@
 ;;; タイトルバーにファイルのフルパスを表示
 (setq frame-title-format "%f")
 ;; 行数表示
-;; (global-display-line-numbers-mode) ; 行番号を常に表示する
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 ;; モードラインに行番号を常に表示させる
 (setq line-number-display-limit-width 10000)
