@@ -15,7 +15,6 @@
     (load custom-file))
 
 ;;おまじない
-;; (require 'cl)
 (use-package cl)
 ;;emacsからの質問をy/nで回答する
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -39,10 +38,6 @@
 ;;; C言語の情報源
 (setq find-function-C-source-directory "~/Library/Caches/Homebrew/mituharu-emacs-mac-29d742efac38/src/")
 
-;; スクリーンの最大化
-;; (set-frame-parameter nil 'fullscreen 'maximized)
-;; フルスクリーン
-;; (set-frame-parameter nil 'fullscreen 'fullboth)
 ;; mac 自動 ローマ字切り替え
 ;;(mac-auto-ascii-mode 1)
 ;;;;;;; 不要だけど．．．一応
