@@ -44,7 +44,8 @@
 (prefer-coding-system 'utf-8)
 
 ;; 最近開いたファイルのリストを自動保存する
-(when (require 'recentf nil t)
+(use-package recentf
+  :config
   (setq recentf-max-saved-items 2000)
   (setq recentf-exclude '(".recentf"))
   (setq recentf-auto-cleanup 10)
