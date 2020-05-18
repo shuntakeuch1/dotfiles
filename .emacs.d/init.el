@@ -121,24 +121,6 @@
 (column-number-mode t)
 ;; ファイルサイズを表示
 (size-indication-mode nil)
-;; 時計を表示（好みに応じてフォーマットを変更可能）
-;; (setq display-time-day-and-date t) ; 曜日・月・日を表示
-;; (setq display-time-24hr-format t) ; 24時表示
-;; (display-time-mode t)
-;; ;; バッテリー残量を表示
-;;(display-battery-mode t)
-;; リージョン内の行数と文字数をモードラインに表示する（範囲指定時のみ）powerlineと競合?
-;; http://d.hatena.ne.jp/sonota88/20110224/1298557375
-;; (defun count-lines-and-chars ()
-;;   (if mark-active
-;;       (format "%d lines,%d chars "
-;;               (count-lines (region-beginning) (region-end))
-;;               (- (region-end) (region-beginning)))
-;;     ;; これだとエコーエリアがチラつく
-;;     ;;(count-lines-region (region-beginning) (region-end))
-;;     ""))
-;; (add-to-list 'default-mode-line-format
-;;              '(:eval (count-lines-and-chars)))
 
 ;;; タイトルバーにファイルのフルパスを表示
 (setq frame-title-format "%f")
