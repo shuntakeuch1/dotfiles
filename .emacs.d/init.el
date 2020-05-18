@@ -150,100 +150,13 @@
     (php-eldoc-probe-load "http://localhost/otherproject/probe.php?secret=sesame"))))
 ;; (add-hook 'php-mode-hook 'php-mode-options)
 
-;;; 表示テーマの設定
-;; (when (require 'color-theme nil t)
-;;   ;; テーマを読み込むための設定
-;;   (color-theme-initialize)
-;;   (load-theme 'sanityinc-solarized-dark t)
-;;   ;; (when (require 'color-theme-solarized)
-;;   ;;   (color-theme-solarized-dark))
-;;   )
 (require 'color-theme-solarized)
 (load-theme 'solarized-dark t)
-;; (load-theme 'solarizedized-light t)
-
-;;; これらはload-themeの前に配置すること
-;; fringeを背景から目立たせる
-;;(setq solarized-distinct-fringe-background t)
-;;
-;; mode-lineを目立たせる(Fig3)
-;; (setq solarized-high-contrast-mode-line t)
-;;
-;; bold度を減らす
-;; (setq solarized-use-less-bold t)
-;;
-;; italicを増やす
-;; (setq solarized-use-more-italic t)
-;;
-;; インジケータの色を減らす (git-gutter, flycheckなど)
-;; (setq solarized-emphasize-indicators nil)
-;; (load-theme 'solarized-dark t)
-;; (load-theme 'sanityinc-solarized-dark t)
 ;;; フォントの設定
-
-                                        ; (when (eq window-system 'ns)
-                                        ;   ;; asciiフォント
 (set-face-attribute 'default nil
                     :family "Ricty Diminished"
                     :height 130)
-                                        ;   ;; 日本語フォントをヒラギノ明朝 Proに
-                                        ;   (set-fontset-font
-                                        ;    nil 'japanese-jisx0208
-                                        ;    ;; 英語名の場合
-                                        ;    ;; (font-spec :family "Hiragino Mincho Pro"))
-                                        ;    (font-spec :family "ヒラギノ明朝 Pro"))
-                                        ;   ;; ひらがなとカタカナをモトヤシーダに
-                                        ;   ;; U+3000-303F	CJKの記号および句読点
-                                        ;   ;; U+3040-309F	ひらがな
-                                        ;   ;; U+30A0-30FF	カタカナ
-                                        ;   (set-fontset-font
-                                        ;    nil '(#x3040 . #x30ff)
-                                        ;    (font-spec :family "NfMotoyaCedar"))
-                                        ;   ;; フォントの横幅を調節する
-                                        ;   (setq face-font-rescale-alist
-                                        ;         '((".*Menlo.*" . 1.0)
-                                        ;           (".*Hiragino_Mincho_Pro.*" . 1.2)
-                                        ;           (".*nfmotoyacedar-bold.*" . 1.2)
-                                        ;           (".*nfmotoyacedar-medium.*" . 1.2)
-                                        ;           ("-cdac$" . 1.3))))
-                                        ;
-                                        ; (when (eq system-type 'windows-nt)
-                                        ;   ;; asciiフォントをConsolasに
-                                        ;   (set-face-attribute 'default nil
-                                        ;                       :family "Consolas"
-                                        ;                       :height 120)
-                                        ;   ;; 日本語フォントをメイリオに
-                                        ;   (set-fontset-font
-                                        ;    nil
-                                        ;    'japanese-jisx0208
-                                        ;    (font-spec :family "メイリオ"))
-                                        ;   ;; フォントの横幅を調節する
-                                        ;   (setq face-font-rescale-alist
-                                        ;         '((".*Consolas.*" . 1.0)
-                                        ;           (".*メイリオ.*" . 1.15)
-                                        ;           ("-cdac$" . 1.3))))
-
-
-;; (set-fontset-font
-;;     nil 'japanese-jisx0208
-;;     (font-spec :family "Ricty Diminished"))
-;; (set-face-font 'default "Ricty Diminished-14")
-
-                                        ; (let ((ws window-system))
-                                        ;   (cond ((eq ws 'w32)
-                                        ;          (set-face-attribute 'default nil
-                                        ;                              :family "Meiryo"  ;; 英数
-                                        ;                              :height 100)
-                                        ;          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Meiryo")))  ;; 日本語
-                                        ;         ((eq ws 'ns)
-                                        ;          (set-face-attribute 'default nil
-                                        ;                              :family "Ricty"  ;; 英数
-                                        ;                              :height 140)
-                                        ;          (set-fontset-font nil 'japanese-jisx0208 (font-spec :family "Ricty Diminished")))))  ;; 日本語
-                                        ;
-
-;;(setq default-input-method "MacOSX")
-;; ;; Google日本語入力を使う場合はおすすめ
+;; Google日本語入力を使う場合はおすすめ
 ;;(mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `title "あ")
 ;;(require 'auto-complete)
 
