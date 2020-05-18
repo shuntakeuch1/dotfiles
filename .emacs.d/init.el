@@ -6,15 +6,17 @@
 (setq package-check-signature nil)
 (require 'cask "/usr/local/opt/cask/cask.el")
 (cask-initialize)
-(require 'pallet)
-(pallet-mode t)
+(use-package pallet
+  :config
+  (pallet-mode t))
 ;;対話的カスタマイズをする際はファイルをわける
 (setq custom-file "~/.emacs.d/user_customize.el")
 (if (file-exists-p custom-file)
     (load custom-file))
 
 ;;おまじない
-(require 'cl)
+;; (require 'cl)
+(use-package cl)
 ;;emacsからの質問をy/nで回答する
 (fset 'yes-or-no-p 'y-or-n-p)
 ;;スタートアップメッセージを非表示
@@ -29,8 +31,9 @@
 
 ;;; Emacs Lispを書くための設定
 ;;; 思考錯誤用ファイル
-(require 'open-junk-file)
-(global-set-key (kbd "C-x C-z") 'open-junk-file)
+(use-package open-junk-file
+  :config
+  (global-set-key (kbd "C-x C-z") 'open-junk-file))
 ;;; 括弧の管理
 ;; (require 'paredit)
 ;; (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
@@ -54,6 +57,8 @@
 ;; (set-terminal-coding-system 'euc-japan)
 ;;; 文字コードを指定する
 (prefer-coding-system 'utf-8)
+;; (setq default-process-coding-system 'utf-8)
+
 ;; (prefer-coding-system 'euc-japan)
 
 ;; for window system 半透明化
@@ -1365,12 +1370,12 @@
             (setq js-switch-indent-offset my-js-mode-indent-num)
             ))
 
-(setq company-tern-property-marker "")
-(defun company-tern-depth (candidate)
-  "Return depth attribute for CANDIDATE. 'nil' entries are treated as 0."
-  (let ((depth (get-text-property 0 'depth candidate)))
-    (if (eq depth nil) 0 depth)))
-(add-hook 'js2-mode-hook 'tern-mode) ; 自分が使っているjs用メジャーモードに変える
+;; (setq company-tern-property-marker "")
+;; (defun company-tern-depth (candidate)
+;;   "Return depth attribute for CANDIDATE. 'nil' entries are treated as 0."
+;;   (let ((depth (get-text-property 0 'depth candidate)))
+;;     (if (eq depth nil) 0 depth)))
+;; (add-hook 'js2-mode-hook 'tern-mode) ; 自分が使っているjs用メジャーモードに変える
 ;; (add-to-list 'company-backends 'company-tern) ; backendに追加
 ;; (add-to-list 'company-backends '(company-tern :with company-dabbrev-code))
 ;; (add-hook 'js-mode-hook '(lambda () (setq-local company-backends '((company-web company-css company-tern :with company-yasnippet)))))
@@ -1933,6 +1938,13 @@
 ;; (push '("*quickrun*") popwin:special-display-config)
 (global-set-key (kbd "<f7>") 'quickrun)
 
+(quickrun-add-command "c++/c1z"
+  '((:command . "g++")
+    (:exec    . ("%c -std=c++1z %o -o %e %s"
+                 "%e %a"))
+    (:remove  . ("%e")))
+  :default "c++")
+
 (global-auto-revert-mode 1)
 ;;コンバイルが正常終了したときにウインドウを自動で閉じるようにする
 (bury-successful-compilation 1)
@@ -2014,3 +2026,22 @@
 (global-set-key (kbd "s-+") 'text-scale-increase)
 (global-set-key (kbd "s-_") 'text-scale-decrease)
 
+
+;; (add-to-list 'lsp-language-id-configuration '(terraform-mode . "terraform"))
+
+;; (lsp-register-client
+;;  (make-lsp-client :new-connection (lsp-stdio-connection '("~/dev/terraform-lsp/terraform-lsp" "-enable-log-file"))
+;;                   :major-modes '(terraform-mode)
+;;                   :server-id 'terraform-ls))
+
+;; (add-hook 'terraform-mode-hook #'lsp)
+
+;; (require company-terra)
+
+(require 'clang-format)
+(global-set-key (kbd "C-c i") 'clang-format-region)
+(global-set-key (kbd "C-c u") 'clang-format-buffer)
+
+(setq clang-format-style-option "llvm")
+
+(add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
