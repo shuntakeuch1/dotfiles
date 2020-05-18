@@ -43,21 +43,6 @@
 ;;; 文字コードを指定する
 (prefer-coding-system 'utf-8)
 
-;; for window system 半透明化
-;; (if window-system
-;;     (progn
-;;       (set-frame-parameter nil 'alpha 100)))
-;; (defun ik:toggle-opacity ()
-;;   (interactive)
-;;   (when window-system
-;;     (ignore-errors
-;;       (if (= (assoc-default 'alphna (frame-parameters)) 100)
-;;           (set-frame-parameter nil 'alpha 80)
-;;         (set-frame-parameter nil 'alpha 100)))))
-;;起動時だけウインドウ最大化してみる
-;; (require 'maxframe)
-;; (add-hook 'window-setup-hook 'maximize-frame t)
-
 ;; 最近開いたファイルのリストを自動保存する
 (when (require 'recentf nil t)
   (setq recentf-max-saved-items 2000)
