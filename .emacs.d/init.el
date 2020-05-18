@@ -38,17 +38,10 @@
 ;;; C言語の情報源
 (setq find-function-C-source-directory "~/Library/Caches/Homebrew/mituharu-emacs-mac-29d742efac38/src/")
 
-;; mac 自動 ローマ字切り替え
-;;(mac-auto-ascii-mode 1)
 ;;;;;;; 不要だけど．．．一応
 (set-language-environment "Japanese")
-;; (set-default-coding-systems 'euc-japan)
-;; (set-terminal-coding-system 'euc-japan)
 ;;; 文字コードを指定する
 (prefer-coding-system 'utf-8)
-;; (setq default-process-coding-system 'utf-8)
-
-;; (prefer-coding-system 'euc-japan)
 
 ;; for window system 半透明化
 ;; (if window-system
