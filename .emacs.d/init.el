@@ -34,12 +34,6 @@
 (use-package open-junk-file
   :config
   (global-set-key (kbd "C-x C-z") 'open-junk-file))
-;;; 括弧の管理
-;; (require 'paredit)
-;; (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-;; (add-hook 'lisp-mode-hook 'enable-paredit-mode)
-
-;; (add-hook 'lisp-interacton-mode-hook 'enable-paredit-mode)
 ;;; find-functionをキー割り当て ソースジャンプが可能 要は定義元ジャンプが可能
 (find-function-setup-keys)
 ;;; C言語の情報源
