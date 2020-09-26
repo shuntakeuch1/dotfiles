@@ -28,6 +28,9 @@
 ;; 括弧の自動挿入
 (electric-pair-mode 1)
 
+;; dired
+(setq dired-listing-switches "-alth")
+
 ;;; Emacs Lispを書くための設定
 ;;; 思考錯誤用ファイル
 (use-package open-junk-file
@@ -280,6 +283,21 @@
  '(lsp-clients-python-library-directories '("/usr/"))
  '(lsp-clients-php '("/usr/"))
  )
+
+;; (with-eval-after-load 'lsp-mode
+;;   (require 'lsp-intellij)
+;;   (add-hook 'java-mode-hook #'lsp-intellij-enable))
+
+(require 'lsp-ui)
+(add-hook 'lsp-after-open-hook #'lsp-ui-mode)
+
+(require 'company-lsp)
+(setq company-lsp-enable-snippet t
+      company-lsp-cache-candidates t)
+(push 'company-lsp company-backends)
+
+;; (push 'java-mode company-global-modes)
+;; (push 'kotlin-mode company-global-modes) ;; if using Kotlin
 
 ;;; Go lang settings
 (add-to-list 'exec-path (expand-file-name "/usr/local/bin/go")) ;; Goのパスを通す

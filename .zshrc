@@ -280,4 +280,8 @@ open-remote-url () {
 zle -N open-remote-url
 bindkey '^q' open-remote-url
 
-function de { docker exec -it $(docker ps | tail -n +2 | peco | cut -d " " -f1) bash }
+function de {
+    local shell=${1:-bash}
+    docker exec -it $(docker ps | tail -n +2 | peco | cut -d " " -f1) $shell
+}
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"
