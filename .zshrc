@@ -177,14 +177,11 @@ export PATH=/usr/local/bin:$PATH  #     for Homebrew↲
 eval "$(rbenv init -)"
 # export PATH="$HOME/.exenv/bin:$PATH"
 # eval "$(exenv init -)"
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
 export PATH=$PATH:~/.composer/vendor/bin/
 # gtags設定
 export GTAGSCONF=/usr/local/share/gtags/gtags.conf
 # export GTAGSLABEL=pygments
-alias E="open -a /usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.2/Emacs.app"
+alias E="open -a /usr/local/Cellar/emacs-mac/emacs-27.2-mac-8.2/Emacs.app"
 export ANDROID_HOME=/Users/takeuchishun/Library/Android/sdk
 #alias ssh='~/bin/ssh-change-bg'
 echo -ne "\033]0;${USER}@${LANG}\007"
@@ -205,14 +202,9 @@ alias p="ping"
 alias lem="~/.roswell/bin/lem"
 
 export PIPENV_VENV_IN_PROJECT=true
-alias emacslink=ln -s /usr/local/Cellar/emacs-mac/emacs-26.1-z-mac-7.2/Emacs.app /Application
+alias emacslink=ln -s /usr/local/Cellar/emacs-mac/emacs-27.2-mac-8.2/Emacs.app /Applications
 export PLANTUML_LIMIT_SIZE=8192
 
-export GOPATH=$HOME/go
-export GOROOT="$(brew --prefix golang)/libexec"
-
-export PATH=$PATH:$GOPATH/bin
-export GO111MODULE=on
 
 alias dcm='docker-compose'
 export PATH="$HONE/.jenv/bin:$PATH"
@@ -285,3 +277,32 @@ function de {
     docker exec -it $(docker ps | tail -n +2 | peco | cut -d " " -f1) $shell
 }
 export PATH="/usr/local/opt/mysql-client/bin:$PATH"
+
+
+function peco-history-selection() {
+    BUFFER=`history -n 1 | tail -r  | awk '!a[$0]++' | peco`
+    CURSOR=$#BUFFER
+    zle reset-prompt
+}
+
+zle -N peco-history-selection
+bindkey '^R' peco-history-selection
+
+# export GOPATH=$HOME/go
+# export GOROOT="$(brew --prefix golang)/libexec"
+
+# export PATH=$PATH:$GOPATH/bin
+export GO111MODULE=on
+
+export GOENV_ROOT="$HOME/.goenv"
+export PATH="$GOENV_ROOT/bin:$PATH"
+eval "$(goenv init -)"
+export PATH="$GOROOT/bin:$PATH"
+export PATH="$PATH:$GOPATH/bin"
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi

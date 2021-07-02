@@ -1,11 +1,23 @@
-(package-initialize)
+(require 'package)
+;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;;(add-to-list 'package-archives
+;;             '("melpa" . "http://melpa.org/packages/") t)
+;;(add-to-list 'package-archives
+;;             '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+;;(add-to-list 'package-archives
+;;	     '("marmalade" . "https://marmalade-repo.org/packages/") t)
+;;(add-to-list 'package-archives
+;;             '("gnu elpa" . "https://elpa.gnu.org/packages/") t)
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")))
 (setq package-check-signature nil)
+(package-initialize)
 (require 'cask "/usr/local/opt/cask/cask.el")
+;;(require 'cask "~/.cask/cask.el")
 (cask-initialize)
+(setq warning-suppress-log-types '((package reinitialization)))
 (use-package pallet
   :config
   (pallet-mode t))
@@ -152,9 +164,32 @@
    ((string-match-p "^/other-project-folder")
     (php-eldoc-probe-load "http://localhost/otherproject/probe.php?secret=sesame"))))
 ;; (add-hook 'php-mode-hook 'php-mode-options)
-(use-package color-theme-solarized
-  :config
-  (load-theme 'solarized-dark t))
+
+;; Don't change the font for some headings and titles
+;; (setq solarized-use-variable-pitch nil)
+
+;; ;; make the modeline high contrast
+;; (setq solarized-high-contrast-mode-line t)
+
+;; ;; Use less bolding
+;; (setq solarized-use-less-bold t)
+
+;; ;; Use more italics
+;; (setq solarized-use-more-italic t)
+
+;; ;; Use less colors for indicators such as git:gutter, flycheck and similar
+;; (setq solarized-emphasize-indicators nil)
+
+;; ;; Don't change size of org-mode headlines (but keep other size-changes)
+;; (setq solarized-scale-org-headlines nil)
+
+;; ;; Avoid all font-size changes
+;; (setq solarized-height-minus-1 1.0)
+;; (setq solarized-height-plus-1 1.0)
+;; (setq solarized-height-plus-2 1.0)
+;; (setq solarized-height-plus-3 1.0)
+;; (setq solarized-height-plus-4 1.0)
+(load-theme 'solarized-dark t)
 ;;; フォントの設定
 (set-face-attribute 'default nil
                     :family "Ricty Diminished"
@@ -256,6 +291,7 @@
 (add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
 (add-hook 'markdown-mode-hook (lambda () (company-mode -1)))
 
+(add-hook 'markdown-mode-hook (lambda () (goto-address-mode t)))
 ;; (require 'company-box)
 ;; (add-hook 'company-mode-hook 'company-box-mode)
 ;; 履歴からソートする
@@ -273,8 +309,8 @@
             '(:with company-yasnippet))))
 (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
-(require 'company-lsp)
-(push 'company-lsp company-backends)
+;; (require 'company-lsp)
+;; (push 'company-lsp company-backends)
 (require 'lsp-mode)
 ;; python company mode
 ;; (add-hook 'python-mode-hook #'lsp)
@@ -291,10 +327,10 @@
 (require 'lsp-ui)
 (add-hook 'lsp-after-open-hook #'lsp-ui-mode)
 
-(require 'company-lsp)
-(setq company-lsp-enable-snippet t
-      company-lsp-cache-candidates t)
-(push 'company-lsp company-backends)
+;; (require 'company-lsp)
+;; (setq company-lsp-enable-snippet t
+;;       company-lsp-cache-candidates t)
+;; (push 'company-lsp company-backends)
 
 ;; (push 'java-mode company-global-modes)
 ;; (push 'kotlin-mode company-global-modes) ;; if using Kotlin
@@ -1899,8 +1935,8 @@
 
 ;;  project direnv
 (require 'projectile)
-(require 'projectile-direnv)
-(add-hook 'projectile-mode-hook 'projectile-direnv-export-variables)
+;; (require 'projectile-direnv)
+;; (add-hook 'projectile-mode-hook 'projectile-direnv-export-variables)
 
 ;; 動的な文字サイスの変更 +- text-scale-adust C-x C-0
 (global-set-key (kbd "s-+") 'text-scale-increase)
@@ -1925,3 +1961,18 @@
 (setq clang-format-style-option "llvm")
 
 (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
+
+(eval-after-load "sql"
+  '(load-library "sql-indent"))
+
+
+(defun projectile-run-vterm ()
+  (interactive)
+  (let* ((project (projectile-ensure-project (projectile-project-root)))
+        (buffer "vterm"))
+    (require 'vterm)
+    (if (buffer-live-p (get-buffer buffer))
+        (switch-to-buffer buffer)
+      (vterm))
+    (vterm-send-string (concat "cd " project))
+    (vterm-send-return)))

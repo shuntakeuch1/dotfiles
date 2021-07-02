@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: aws_ssm_parameter
+# key: aw_ssm_parameter
+# --
+
+resource "aws_ssm_parameter" "${1:name}" {
+  name        = "${2:name}"
+  value       = "${3:value}"
+  type        = "${4:type}"
+  description = "${5:description}"
+}
+
