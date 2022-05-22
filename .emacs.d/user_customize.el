@@ -8,8 +8,7 @@
  '(beacon-color "magenta")
  '(beacon-mode nil)
  '(company-backends
-   (quote
-    (company-web-html company-robe company-lsp
+   '(company-web-html company-robe company-lsp
                       (company-web-html :with company-yasnippet)
                       (company-terraform :with company-yasnippet)
                       (company-robe :with company-yasnippet)
@@ -44,14 +43,13 @@
                       (company-files :with company-yasnippet)
                       (company-dabbrev-code company-gtags company-etags company-keywords :with company-yasnippet)
                       (company-oddmuse :with company-yasnippet)
-                      (company-dabbrev :with company-yasnippet))))
+                      (company-dabbrev :with company-yasnippet)))
  '(company-idle-delay 0.1)
  '(company-quickhelp-mode t)
  '(custom-safe-themes
-   (quote
-    ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+   '("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
  '(desktop-save-mode t)
- '(flycheck-disabled-checkers (quote (javascript-jshint javascript-jscs)))
+ '(flycheck-disabled-checkers '(javascript-jshint javascript-jscs))
  '(git-gutter:added-sign ">")
  '(git-gutter:deleted-sign "x")
  '(git-gutter:modified-sign "*")
@@ -64,14 +62,13 @@
  '(livedown-browser nil)
  '(livedown-open t)
  '(livedown-port 1337)
- '(lsp-clients-php (quote ("/usr/")))
- '(lsp-clients-python-library-directories (quote ("/usr/")))
+ '(lsp-clients-php '("/usr/"))
+ '(lsp-clients-python-library-directories '("/usr/"))
  '(magit-dispatch-arguments nil)
  '(minimap-mode t)
  '(package-selected-packages
-   (quote
-    (vterm sql-indent helm-jira lsp-intellij esqlite clang-format lsp-treemacs helm-lsp company-terraform jsonl rust-mode projectile-direnv dotenv-mode terraform-doc lua-mode gradle-mode flycheck-gradle restclient restclient-helm protobuf-mode swift3-mode swift-mode kotlin-mode go-dlv gotest github-browse-file helm-ghq slack dap-mode lsp-ui terraform-mode doom-themes yapfify ace-window hide-mode-line fzf typescript-mode lsp-vue vue-mode bury-successful-compilation all-the-icons-dired helm-phpunit geben editorconfig imenu-list highlight-symbol php-cs-fixer dumb-jump docker dockerfile-mode company-go go-mode go magit-gitflow composer plantuml-mode flycheck-phpstan helm-itunes helm-spotify-plus jetbrains docker-tramp phpunit auto-virtualenvwrapper helm-company elpy company-php jinja2-mode auto-async-byte-compile open-junk-file google-translate php-eldoc rainbow-delimiters helm-swoop swiper-helm avy-migemo ghub helm projectile-rails common-lisp-snippets company-lsp company-web swap-buffers helm-ag slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc)))
- '(php-cs-fixer-rules-level-part-options (quote ("@PSR2")))
+   '(modus-themes auto-sudoedit vterm sql-indent helm-jira lsp-intellij esqlite clang-format lsp-treemacs helm-lsp company-terraform jsonl rust-mode projectile-direnv dotenv-mode terraform-doc lua-mode gradle-mode flycheck-gradle restclient restclient-helm protobuf-mode swift3-mode swift-mode kotlin-mode go-dlv gotest github-browse-file helm-ghq slack dap-mode lsp-ui terraform-mode doom-themes yapfify ace-window hide-mode-line fzf typescript-mode lsp-vue vue-mode bury-successful-compilation all-the-icons-dired helm-phpunit geben editorconfig imenu-list highlight-symbol php-cs-fixer dumb-jump docker dockerfile-mode company-go go-mode go magit-gitflow composer plantuml-mode flycheck-phpstan helm-itunes helm-spotify-plus jetbrains docker-tramp phpunit auto-virtualenvwrapper helm-company elpy company-php jinja2-mode auto-async-byte-compile open-junk-file google-translate php-eldoc rainbow-delimiters helm-swoop swiper-helm avy-migemo ghub helm projectile-rails common-lisp-snippets company-lsp company-web swap-buffers helm-ag slime-company slime beacon ansible wgrep-ag ag dashboard cake2 rjsx-mode auto-yasnippet react-snippets helm-c-yasnippet yasnippet-snippets php-auto-yasnippets helm-gtags company-ansible company-tern company-statistics company-jedi save-visited-files helm-elscreen rotate direnv rspec-mode elscreen-multi-term elscreen-separate-buffer-list company-quickhelp rvm yasnippet company helm-robe yascroll color-theme-sanityinc-solarized quickrun php-mode maxframe js2-mode which-key helm-projectile zenburn-theme git-gutter abyss-theme visual-regexp wgrep color-theme-solarized package-utils helm-themes helm-dash twittering-mode dash-at-point pdf-tools emmet-mode smart-mode-line-powerline-theme solarized-theme helm-describe-modes helm-package helm-descbinds coffee-mode haskell-mode json-mode scala-mode tuareg yaml-mode counsel-projectile projectil-rails flycheck-color-mode-line web-mode vagrant-tramp use-package undohist undo-tree tabbar smex smartparens ruby-electric ruby-end prodigy popwin pallet nyan-mode nlinum neotree multiple-cursors multi-term markdown-mode magit idle-highlight-mode htmlize howm helm-rdefs flycheck-cask expand-region exec-path-from-shell elscreen drag-stuff color-theme auto-highlight-symbol all-the-icons ac-mozc))
+ '(php-cs-fixer-rules-level-part-options '("@PSR2"))
  '(popwin:popup-window-height 0.3))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

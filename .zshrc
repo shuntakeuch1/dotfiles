@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # 少し凝った zshrc
 # License : MIT
 # http://mollifier.mit-license.org/
@@ -216,26 +223,6 @@ alias change-to-excel-csv='nkf --overwrite --oc=UTF-8-BOM file.csv'
 
 # complete -C aws_completer aws
 
-# フォントの変更
-# https://medium.com/the-code-review/make-your-terminal-more-colourful-and-productive-with-iterm2-and-zsh-11b91607b98c
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
-  dir
-  custom_javascript
-  vcs
-  newline
-  status
-)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
-POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
-
-# Create a custom JavaScript prompt section
-# POWERLEVEL9K_CUSTOM_JAVASCRIPT="echo -n '\ue781' JavaScript"
-# POWERLEVEL9K_CUSTOM_JAVASCRIPT_FOREGROUND="black"
-# POWERLEVEL9K_CUSTOM_JAVASCRIPT_BACKGROUND="yellow"
-
-POWERLEVEL9K_MODE='nerdfont-complete'
-source  ~/powerlevel9k/powerlevel9k.zsh-theme
-
 alias lc='colorls'
 
 export EDITOR="vim"
@@ -247,8 +234,6 @@ export SDKMAN_DIR="/Users/s_takeuchi/.sdkman"
 [[ -s "/Users/s_takeuchi/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/s_takeuchi/.sdkman/bin/sdkman-init.sh"
 
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/local/Cellar/tfenv/1.0.2/versions/0.12.5/terraform terraform
-
 
 export CARGO_HOME="$HOME/.cargo"
 export PATH="$CARGO_HOME/bin:$PATH"s
@@ -267,7 +252,8 @@ bindkey '^]' peco-src
 
 
 open-remote-url () {
-    open $(git config remote.origin.url)
+    open "$(git config remote.origin.url | sed 's!//.*@!//!')"
+    # open $(git config remote.origin.url)
 }
 zle -N open-remote-url
 bindkey '^q' open-remote-url
@@ -306,3 +292,12 @@ eval "$(pyenv init --path)"
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
+
+complete -o nospace -C /usr/local/Cellar/tfenv/2.2.2/versions/0.12.30/terraform terraform
+export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
+
+
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

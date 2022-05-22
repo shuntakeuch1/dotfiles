@@ -9,3 +9,5 @@ export SDKMAN_DIR="/Users/s_takeuchi/.sdkman"
 complete -C /usr/local/Cellar/tfenv/1.0.2/versions/0.12.5/terraform terraform
 
 export PATH="$HOME/.cargo/bin:$PATH"
+
+complete -C /usr/local/Cellar/tfenv/2.2.2/versions/0.12.30/terraform terraform

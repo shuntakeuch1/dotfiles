@@ -190,6 +190,7 @@
 ;; (setq solarized-height-plus-3 1.0)
 ;; (setq solarized-height-plus-4 1.0)
 (load-theme 'solarized-dark t)
+
 ;;; フォントの設定
 (set-face-attribute 'default nil
                     :family "Ricty Diminished"
@@ -1747,6 +1748,37 @@
 ;; plantuml.jarへのパスを設定
 (setq org-plantuml-jar-path "/usr/local/Cellar/plantuml/1.2018.10/libexec/plantuml.jar")
 
+;; Org modeの設定
+(setq org-directory "~/Dropbox/org/")
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c a") 'org-agenda)
+;; org-captureで2種類のメモを扱うようにする
+(setq org-capture-templates
+      '(("t" "New TODO" entry
+         (file+headline "~/Dropbox/org/todo.org" "予定")
+         "* TODO %?\n  %i\n  %a")
+        ("m" "Memo" entry
+         (file+headline "~/Dropbox/org/memo.org" "メモ")
+         "* %U%?\n%i\n%a")
+        ("p" "Protocol" entry
+         (file+headline "~/Dropbox/org/notes.org" "Inbox")
+         "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+        ("L" "Protocol Link" entry (file+headline "~/Dropbox/org/notes.org" "Inbox")
+         "* %? [[%:link][%:description]] \nCaptured On: %U")
+        ))
+;; org-agendaでaを押したら予定表とTODOリストを表示
+(setq org-agenda-custom-commands
+      '(("a" "Agenda and TODO"
+         ((agenda "")
+          (alltodo "")))))
+;; org-agendaで扱うファイルは複数可だが、
+;; TODO・予定用のファイルのみ指定
+(setq org-agenda-files '("~/Dropbox/org/todo.org"))
+;; TODOリストに日付つきTODOを表示しない
+(setq org-agenda-todo-ignore-with-date t)
+;; 今日から予定を表示させる
+(setq org-agenda-start-on-weekday nil)
+
 ;; org-babelで使用する言語を登録
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -1865,14 +1897,14 @@
 ;;コンバイルが正常終了したときにウインドウを自動で閉じるようにする
 (bury-successful-compilation 1)
 ;; markdown puml livepreview
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-livedown"))
-(require 'livedown)
-(custom-set-variables
- '(livedown-autostart nil) ; automatically open preview when opening markdown files
- '(livedown-open t)        ; automatically open the browser window
- '(livedown-port 1337)     ; port for livedown server
- '(livedown-browser nil))  ; browser to use
-;; (global-set-key (kbd "C-M-m") 'livedown-preview)
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-livedown"))
+;; (require 'livedown)
+;; (custom-set-variables
+;;  '(livedown-autostart nil) ; automatically open preview when opening markdown files
+;;  '(livedown-open t)        ; automatically open the browser window
+;;  '(livedown-port 1337)     ; port for livedown server
+;;  '(livedown-browser nil))  ; browser to use
+;; ;; (global-set-key (kbd "C-M-m") 'livedown-preview)
 
 (defun open ()
   "Open current buffer for OSX command"
@@ -1976,3 +2008,57 @@
       (vterm))
     (vterm-send-string (concat "cd " project))
     (vterm-send-return)))
+
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+
+(require 'ansi-color)
+(defun display-ansi-colors ()
+  (interactive)
+  (ansi-color-apply-on-region (point-min) (point-max)))
+
+;; auto-insert
+(auto-insert-mode 1)
+(setq auto-insert-directory "~/templates/")
+;; (define-auto-insert "abc.sql" "abc.sql")
+;; 採用コードチェックテンプレート
+(define-auto-insert "\\.n.org$" "new-graduates.md") ;新卒
+(define-auto-insert "\\.m.org$" "mid-career.md") ;中途
+;; 面接テンプレート
+(define-auto-insert "\\.i.org$" "interview.org") ;面接
+
+(defun getfilename ()
+  (interactive)
+  (file-name-nondirectory
+   (buffer-file-name)))
+
+(defun insert-current-time()
+  (interactive)
+  (format-time-string "%Y%m%d" (current-time)))
+
+(defun date-prefix-rename-file-buffer ()
+  (interactive)
+  (let ((now-name (buffer-file-name)))
+    (rename-file (getfilename) (concat (insert-current-time) "_" (getfilename)))
+    (rename-buffer (concat (insert-current-time) "_" (getfilename)))
+    (set-visited-file-name (concat (insert-current-time) "_" (getfilename)))
+    (set-buffer-modified-p nil)
+    ;; (delete-file now-name)
+    ))
+
+;; (global-set-key (kbd "C-c r") 'rename-file-buffer)
+
+(defun rename-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not filename)
+        (message "Buffer '%s' is not visiting a file!" name)
+      (if (get-buffer new-name)
+          (message "A buffer named '%s' already exists!" new-name)
+        (progn
+          (rename-file name new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil))))))
