@@ -1,0 +1,21 @@
+(undo-tree-save-format-version . 1)
+"5039c000d5dab1e03e4093a33506bc6b96636db8"
+[nil nil nil nil (25238 45784 661616 0) 0 nil]
+([nil nil ((nil rear-nonsticky nil 1076 . 1077) (nil fontified nil 1 . 1077) (1 . 1077) (t 25238 45711 997996 548000)) nil (25238 45784 661615 0) 0 nil])
+([nil nil ((1077 . 1078)) nil (25238 45784 661611 0) 0 nil])
+([nil nil ((1 . 2) (t 25238 45784 748644 464000)) nil (25238 46388 853436 0) 0 nil])
+([nil nil ((nil rear-nonsticky nil 1678 . 1679) (nil fontified nil 1 . 1679) (1 . 1679)) nil (25238 46423 604954 0) 0 nil])
+([nil nil ((apply -24 1680 1966 undo--wrap-and-run-primitive-undo 1680 1966 ((1947 . 1950) (1902 . 1905) (1858 . 1861) (1814 . 1817) (1772 . 1775) (1741 . 1744) (1707 . 1710) (1680 . 1683) 1930))) nil (25238 46495 162511 0) 0 nil] [nil nil ((1704 . 1705)) ((#("n" 0 1 (fontified t)) . 1704) (undo-tree-id12 . -1) (undo-tree-id13 . -1) (undo-tree-id14 . 1)) (25238 46423 604784 0) 0 nil] [nil nil ((#("
+" 0 1 (fontified t)) . -1703) (undo-tree-id0 . -1) (undo-tree-id1 . -1) (undo-tree-id2 . -1) (undo-tree-id3 . -1) (undo-tree-id4 . -1) (undo-tree-id5 . -1) (undo-tree-id6 . -1) (undo-tree-id7 . -1) (undo-tree-id8 . -1) (undo-tree-id9 . -1) (undo-tree-id10 . -1) (undo-tree-id11 . -1) 1704) ((1703 . 1704)) (25238 46388 853432 0) 0 nil])
+([nil nil ((apply -72 1 1752 undo--wrap-and-run-primitive-undo 1 1752 ((1646 . 1649) (1541 . 1544) (1436 . 1439) (1331 . 1334) (1226 . 1229) (1121 . 1124) (1016 . 1019) (911 . 914) (806 . 809) (769 . 772) (763 . 766) (699 . 702) (634 . 637) (569 . 572) (504 . 507) (439 . 442) (374 . 377) (309 . 312) (244 . 247) (179 . 182) (114 . 117) (49 . 52) (36 . 39) (1 . 4) 1679)) (t 25238 46495 163949 395000)) nil (25238 46583 950990 0) 0 nil])
+nil
+nil
+([nil nil ((apply 24 1752 2002 undo--wrap-and-run-primitive-undo 1752 2002 ((#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -1998) (#<marker at 2271 in init.lua> . -1) (#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -1956) (#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -1915) (#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -1874) (#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -1835) (#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -1807) (#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -1776) (#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -1752) 2026))) nil (25238 46583 950986 0) 0 nil])
+([nil nil ((1751 . 1752) (t 25238 46583 952742 874000)) nil (25238 46666 816386 0) 0 nil])
+([nil nil ((nil rear-nonsticky nil 2001 . 2002) (nil fontified nil 1752 . 2002) (1752 . 2002)) nil (25238 46666 816385 0) 0 nil])
+([nil nil ((apply -6 2003 2064 undo--wrap-and-run-primitive-undo 2003 2064 ((2030 . 2033) (2003 . 2006) 2057))) nil (25238 46666 816381 0) 0 nil])
+([nil nil ((1752 . 1753) (t 25238 46666 818062 301000)) nil (25238 46725 298860 0) 0 nil])
+([nil nil ((apply -21 1752 2025 undo--wrap-and-run-primitive-undo 1752 2025 ((1962 . 1965) (1956 . 1959) (1931 . 1934) (1890 . 1893) (1825 . 1828) (1785 . 1788) (1752 . 1755) 2003)) (t 25238 46673 185815 751000)) nil (25238 46819 800664 0) 0 nil] [nil nil ((nil rear-nonsticky nil 1829 . 1830) (nil fontified nil 1781 . 1830) (1781 . 1830) (t 25238 46673 185815 751000)) ((#("https://github.com/peterklijn/hammerspoon-shiftit" 0 48 (fontified nil) 48 49 (fontified nil rear-nonsticky nil)) . 1781) (undo-tree-id15 . -49) (undo-tree-id16 . 49) (undo-tree-id17 . -5) (undo-tree-id18 . -49) (undo-tree-id19 . -49) (nil rear-nonsticky t 1829 . 1830)) (25238 46725 298404 0) 0 nil])
+([nil current ((apply 6 2025 2079 undo--wrap-and-run-primitive-undo 2025 2079 ((#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -2049) (#("-- " 0 3 (fontified t face font-lock-comment-delimiter-face)) . -2025) 2085))) nil (25238 46819 800660 0) 0 nil])
+nil
+nil

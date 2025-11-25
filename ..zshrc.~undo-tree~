@@ -1,0 +1,10 @@
+(undo-tree-save-format-version . 1)
+"30140c03ee08cd3c7ae2cbc097d5681ba7fb0036"
+[nil nil nil nil (25240 44966 211887 0) 0 nil]
+([nil nil (("e" . -4520) ("x" . -4521) ("a" . -4522) 4523 (t 25239 19591 711054 563000)) nil (25240 44966 280773 0) 0 nil])
+([nil nil ((4520 . 4522)) nil (25240 44966 280772 0) 0 nil])
+([nil nil ((#("2" 0 1 (fontified t)) . -6833) (undo-tree-id0 . -1) (undo-tree-id1 . -1) 6834 (t 25239 19619 884886 646000)) nil (25240 44966 280770 0) 0 nil])
+([nil nil ((6833 . 6834)) nil (25240 44966 280739 0) 0 nil])
+([nil nil ((#("/usr/local/Cellar/tfenv" 0 23 (fontified t)) . 6805) (undo-tree-id2 . -23) (undo-tree-id3 . -23) (undo-tree-id4 . 22) (undo-tree-id5 . -4) (undo-tree-id6 . -1) (undo-tree-id7 . -2) (undo-tree-id8 . -3) (undo-tree-id9 . -4) (undo-tree-id10 . -5) (undo-tree-id11 . -6) (undo-tree-id12 . -7) (undo-tree-id13 . -8) (undo-tree-id14 . -9) (undo-tree-id15 . -10) (undo-tree-id16 . -11) (undo-tree-id17 . -12) (undo-tree-id18 . -13) (undo-tree-id19 . -14) (undo-tree-id20 . -15) (undo-tree-id21 . -16) (undo-tree-id22 . -17) (undo-tree-id23 . 5) (undo-tree-id24 . -23) (undo-tree-id25 . -18) (undo-tree-id26 . -19) (undo-tree-id27 . -20) (undo-tree-id28 . -21) (undo-tree-id29 . -22) (undo-tree-id30 . -23) (undo-tree-id31 . -23) 6827 (t 25240 44966 284751 782000)) nil (25240 44996 308273 0) 0 nil])
+([nil current ((nil rear-nonsticky nil 6827 . 6828) (nil fontified nil 6805 . 6828) (6805 . 6828)) nil (25240 44996 308247 0) 0 nil])
+nil

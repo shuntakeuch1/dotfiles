@@ -43,3 +43,18 @@ chmod +x .macos
 ./.macos
 ```
 **Note**: 一部の設定は再起動後に反映されます。
+
+### Karabiner & Hammerspoon
+```
+# dotfilesLink.sh実行時に自動的にシンボリックリンクが作成されます
+# Karabiner: ~/.config/karabiner/karabiner.json
+# Hammerspoon: ~/.hammerspoon
+```
+
+### Alfred
+Alfredの設定は同期フォルダを指定することで管理できます：
+1. Alfred Preferences → Advanced → Syncing
+2. "Set preferences folder" で任意のフォルダ（例: Dropbox）を指定
+3. 複数PC間で自動的に同期されます
+
+**Note**: Alfred Powerparkライセンスが必要です。
