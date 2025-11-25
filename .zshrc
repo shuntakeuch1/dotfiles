@@ -16,8 +16,9 @@ export LC_CTYPE=ja_JP.UTF-8
 export LC_ALL=ja_JP.UTF-8
 
 # 色を使用出来るようにする
-autoload -Uz colors
-colors
+# autoload -Uz colors
+# colors
+alias exa=' exa -Fh --group-directories-first --git --icons --time-style=long-iso'
 
 # emacs 風キーバインドにする
 bindkey -e
@@ -114,8 +115,8 @@ setopt hist_ignore_space
 # ヒストリに保存するときに余分なスペースを削除する
 setopt hist_reduce_blanks
 
-# 高機能なワイルドカード展開を使用する
-setopt extended_glob
+# # 高機能なワイルドカード展開を使用する
+# setopt extended_glob
 
 ########################################
 # キーバインド
@@ -164,7 +165,8 @@ darwin*)
 #Mac用の設定
 #export LSCOLORS=Exfxcxdxbxegedabagacad
 export CLICOLOR=1
-alias ls='ls -G -F'
+alias ls='ls -G -F -ltr'
+# alias ls='exa'
 # colorls ver
 # alias ls='colorls'
 ;;
@@ -178,8 +180,10 @@ esac
 alias EM='emacsclient -t'
 alias kill-emacs="emacsclient -e '(kill-emacs)'"
 PATH="$HOME/.cask/bin:$PATH"
-export PATH=/usr/local/sbin:$PATH #     for Homebrew↲
-export PATH=/usr/local/bin:$PATH  #     for Homebrew↲
+# export PATH=/usr/local/sbin:$PATH #     for Homebrew↲
+# export PATH=/usr/local/bin:$PATH  #     for Homebrew↲
+export PATH=/opt/homebrew/bin:$PATH
+
 #alias middleman="bundle exec middleman"
 eval "$(rbenv init -)"
 # export PATH="$HOME/.exenv/bin:$PATH"
@@ -188,7 +192,7 @@ export PATH=$PATH:~/.composer/vendor/bin/
 # gtags設定
 export GTAGSCONF=/usr/local/share/gtags/gtags.conf
 # export GTAGSLABEL=pygments
-alias E="open -a /usr/local/Cellar/emacs-mac/emacs-27.2-mac-8.2/Emacs.app"
+alias E="open -a /Applications/Emacs.app"
 export ANDROID_HOME=/Users/takeuchishun/Library/Android/sdk
 #alias ssh='~/bin/ssh-change-bg'
 echo -ne "\033]0;${USER}@${LANG}\007"
@@ -203,7 +207,7 @@ tab-reset() {
     echo -ne "\033]6;1;bg;*;default\a"
 }
 
-function chpwd() { colorls; echo -ne "\033]0;$(pwd | rev | awk -F \/ '{print "/"$1"/"$2}'| rev)\007"}
+function chpwd() { ls; echo -ne "\033]0;$(pwd | rev | awk -F \/ '{print "/"$1"/"$2}'| rev)\007"}
 alias top='tab-color 134 200 0; top; tab-reset'
 alias p="ping"
 alias lem="~/.roswell/bin/lem"
@@ -214,8 +218,6 @@ export PLANTUML_LIMIT_SIZE=8192
 
 
 alias dcm='docker-compose'
-export PATH="$HONE/.jenv/bin:$PATH"
-eval "$(jenv init -)"
 export JMETER_LANGUAGE=" "
 
 # Excel change to UTF-8
@@ -223,7 +225,7 @@ alias change-to-excel-csv='nkf --overwrite --oc=UTF-8-BOM file.csv'
 
 # complete -C aws_completer aws
 
-alias lc='colorls'
+alias lc='exa'
 
 export EDITOR="vim"
 eval "$(direnv hook zsh)"
@@ -250,9 +252,12 @@ peco-src () {
 zle -N peco-src
 bindkey '^]' peco-src
 
-
 open-remote-url () {
-    open "$(git config remote.origin.url | sed 's!//.*@!//!')"
+    repository=$(basename `git rev-parse --show-toplevel`);
+    open "https://spdlybra.nintendo.co.jp/bitbucket/projects/ENTRY/repos/${repository}/browse/"
+    # echo $repository
+    open "https://spdlybra.nintendo.co.jp/bitbucket/projects/ENTRY/repos/${repository}/browse/$1"
+    # open "$(git config remote.origin.url | sed 's!//.*@!//!')"
     # open $(git config remote.origin.url)
 }
 zle -N open-remote-url
@@ -274,17 +279,17 @@ function peco-history-selection() {
 zle -N peco-history-selection
 bindkey '^R' peco-history-selection
 
-# export GOPATH=$HOME/go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
 # export GOROOT="$(brew --prefix golang)/libexec"
 
-# export PATH=$PATH:$GOPATH/bin
 export GO111MODULE=on
 
-export GOENV_ROOT="$HOME/.goenv"
-export PATH="$GOENV_ROOT/bin:$PATH"
-eval "$(goenv init -)"
-export PATH="$GOROOT/bin:$PATH"
-export PATH="$PATH:$GOPATH/bin"
+# export GOENV_ROOT="$HOME/.goenv"
+# export PATH="$GOENV_ROOT/bin:$PATH"
+# eval "$(goenv init -)"
+# export PATH="$GOROOT/bin:$PATH"
+# export PATH="$PATH:$GOPATH/bin"
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
@@ -293,11 +298,25 @@ if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
 
-complete -o nospace -C /usr/local/Cellar/tfenv/2.2.2/versions/0.12.30/terraform terraform
+if type terraform &> /dev/null; then
+    complete -C terraform terraform
+fi
+# complete -o nospace -C /opt/homebrew/Cellar/tfenv/2.2.3/versions/1.2.0/terraform terraform
 export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
-
-
+TFENV_ARCH=amd64
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+export POWERLEVEL9K_INSTANT_PROMPT=off
+
+
+# alias python= "python3"
+export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
+
+export PATH=$HOME/bitbucket-open:$PATH
+
+
+export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh

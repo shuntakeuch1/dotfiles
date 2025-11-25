@@ -13,14 +13,20 @@
         ("melpa" . "http://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")))
 (setq package-check-signature nil)
-(package-initialize)
-(require 'cask "/usr/local/opt/cask/cask.el")
-;;(require 'cask "~/.cask/cask.el")
-(cask-initialize)
 (setq warning-suppress-log-types '((package reinitialization)))
-(use-package pallet
-  :config
-  (pallet-mode t))
+(package-initialize)
+
+;; cocoa 風に変更
+(setq mac-option-modifier 'meta)
+(setq mac-command-modifier 'super)
+(setq byte-compile-warnings '(cl-functions))
+;; (setq mac-control-modifier 'control)
+(global-set-key (kbd "s-c") 'clipboard-kill-ring-save);コピー
+(global-set-key (kbd "s-x") 'kill-region);切り取り
+(global-set-key (kbd "s-v") 'clipboard-yank);貼り付け
+(global-set-key (kbd "s-s") 'save-buffer);バッファ保存
+(global-set-key (kbd "s-w") 'kill-buffer);バッファ削除
+
 ;;対話的カスタマイズをする際はファイルをわける
 (setq custom-file "~/.emacs.d/user_customize.el")
 (if (file-exists-p custom-file)
@@ -34,9 +40,10 @@
 (setq inhibit-startup-screen t)
 ;; ビープ音を消す
 (setq visible-bell t)
-;; ビープ音&フラッシュを消す
-;; (setq ring-bell-function 'ignore)
-
+;;; *.~ とかのバックアップファイルを作らない
+(setq make-backup-files nil)
+;;; .#* とかのバックアップファイルを作らない
+(setq auto-save-default nil)
 ;; 括弧の自動挿入
 (electric-pair-mode 1)
 
@@ -92,16 +99,6 @@
   ;; menu-barを非表示
   (menu-bar-mode 0))
 
-;; cocoa 風に変更
-(setq mac-option-modifier 'meta)
-(setq mac-command-modifier 'super)
-;; (setq mac-control-modifier 'control)
-(global-set-key (kbd "s-c") 'clipboard-kill-ring-save);コピー
-(global-set-key (kbd "s-x") 'kill-region);切り取り
-(global-set-key (kbd "s-v") 'clipboard-yank);貼り付け
-(global-set-key (kbd "s-s") 'save-buffer);バッファ保存
-(global-set-key (kbd "s-w") 'kill-buffer);バッファ削除
-
 (global-set-key (kbd "C-M-s-v") 'scroll-other-window-down);次のバッファをM - v
 ;; インデントの行の最初の空白でない文字にポイントを移動
 ;;(global-set-key (kbd "C-a") 'back-to-indentation) ;;本来はM-mに割り当てられている。
@@ -114,14 +111,23 @@
 ;; 入力されるキーシーケンスを置き換える
 ;; ?\C-?はDELのキーシケンス
 (keyboard-translate ?\C-h ?\C-?)
+;; (setq exec-path (cons "/opt/homebrew/bin" exec-path))
 
-;;; パスの設定
+;;パスの設定
 (add-to-list 'exec-path "/opt/local/bin")
 (add-to-list 'exec-path "/usr/local/bin")
 (add-to-list 'exec-path "~/bin")
 ;; パスの引継ぎ
 (setq exec-path-from-shell-check-startup-files nil) ;メッセージを無視する
+(setq exec-path-from-shell-shell-name "/bin/zsh")   ;m1 macに変更簿上手く読み込めなかったため
 (exec-path-from-shell-initialize)
+
+;; (let* ((zshpath (shell-command-to-string
+;;          "/usr/bin/env zsh -c 'printenv PATH'"))
+;;        (pathlst (split-string zshpath ":")))
+;;   (setq exec-path pathlst)
+;;   (setq eshell-path-env zshpath)
+;;   (setenv "PATH" zshpath))
 
 ;;; ファイル名の扱い
 ;; Mac OS Xの場合のファイル名の設定
@@ -132,170 +138,6 @@
 ;; バッファの終端を明示する
 (setq-default indicate-empty-lines t)
 
-;; カラム番号も表示
-(column-number-mode t)
-;; ファイルサイズを表示
-(size-indication-mode nil)
-
-;;; タイトルバーにファイルのフルパスを表示
-(setq frame-title-format "%f")
-;; 行数表示
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
-;; モードラインに行番号を常に表示させる
-(setq line-number-display-limit-width 10000)
-
-;; TABの表示幅。初期値は8
-(setq-default tab-width 4)
-;; インデントにタブ文字を使用しない タブをスペースにする
-(setq-default indent-tabs-mode nil)
-;; php-modeのみタブを利用しない
-;; (add-hook 'php-mode-hook
-;;           '(lambda ()
-;;             (setq indent-tabs-mode nil)))
-;; C、C++、JAVA、PHPなどのインデント
-;; (add-hook 'c-mode-common-hook
-;;           '(lambda ()
-;;              (c-set-style "linux")))
-(defun php-mode-options ()
-  (php-eldoc-enable)
-  (cond
-   ((string-match-p "^/my-project-folder")
-    (php-eldoc-probe-load "http://my-project.com/probe.php?secret=sesame"))
-   ((string-match-p "^/other-project-folder")
-    (php-eldoc-probe-load "http://localhost/otherproject/probe.php?secret=sesame"))))
-;; (add-hook 'php-mode-hook 'php-mode-options)
-
-;; Don't change the font for some headings and titles
-;; (setq solarized-use-variable-pitch nil)
-
-;; ;; make the modeline high contrast
-;; (setq solarized-high-contrast-mode-line t)
-
-;; ;; Use less bolding
-;; (setq solarized-use-less-bold t)
-
-;; ;; Use more italics
-;; (setq solarized-use-more-italic t)
-
-;; ;; Use less colors for indicators such as git:gutter, flycheck and similar
-;; (setq solarized-emphasize-indicators nil)
-
-;; ;; Don't change size of org-mode headlines (but keep other size-changes)
-;; (setq solarized-scale-org-headlines nil)
-
-;; ;; Avoid all font-size changes
-;; (setq solarized-height-minus-1 1.0)
-;; (setq solarized-height-plus-1 1.0)
-;; (setq solarized-height-plus-2 1.0)
-;; (setq solarized-height-plus-3 1.0)
-;; (setq solarized-height-plus-4 1.0)
-(load-theme 'solarized-dark t)
-
-;;; フォントの設定
-(set-face-attribute 'default nil
-                    :family "Ricty Diminished"
-                    :height 130)
-;; Google日本語入力を使う場合はおすすめ
-;;(mac-set-input-method-parameter "com.google.inputmethod.Japanese.base" `title "あ")
-;;(require 'auto-complete)
-
-                                        ; (defun mac-selected-keyboard-input-source-change-hook-func ()
-                                        ;   ;; 入力モードが英語の時はカーソルの色をfirebrickに、日本語の時はblackにする
-                                        ;   (set-cursor-color (if (string-match "\\.US$" (mac-input-source))
-                                        ; 			"firebrick" "black")))
-                                        ;
-                                        ; (add-hook 'mac-selected-keyboard-input-source-change-hook
-                                        ; 	  'mac-selected-keyboard-input-source-change-hook-func)
-;; 括弧の対応関係のハイライト
-;; paren-mode：対応する括弧を強調して表示する
-(setq show-paren-delay 0) ; 表示までの秒数。初期値は0.125
-(show-paren-mode t) ; 有効化
-;; parenのスタイル: expressionは括弧内も強調表示
-(setq show-paren-style 'expression)
-;; フェイスを変更する
-(set-face-attribute 'show-paren-match nil
-                    :background 'unspecified
-                    :underline "turquoise")
-
-;; バックアップファイルの作成場所をシステムのTempディレクトリに変更する
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-;; オートセーブファイルの作成場所をシステムのTempディレクトリに変更する
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-;; バックアップファイルを作成しない
-;; (setq make-backup-files nil)
-;; オートセーブファイルを作らない
-;; (setq auto-save-default nil)
-
-;; ファイルが #! から始まる場合、+xを付けて保存する
-(add-hook 'after-save-hook
-          'executable-make-buffer-file-executable-if-script-p)
-
-;; emacs-lisp-mode-hook用の関数を定義
-(defun elisp-mode-hooks ()
-  "lisp-mode-hooks"
-  (when (require 'eldoc nil t)
-    (setq eldoc-idle-delay 0.2)
-    (setq eldoc-echo-area-use-multiline-p t)
-    (turn-on-eldoc-mode)))
-;; emacs-lisp-modeのフックをセット
-(add-hook 'emacs-lisp-mode-hook 'elisp-mode-hooks)
-(add-to-list 'face-font-rescale-alist '(".*icons.*" . 0.9))
-(add-to-list 'face-font-rescale-alist '(".*FontAwesome.*" . 0.9))
-
-;; company-mode 色
-(set-face-attribute 'company-tooltip nil
-                    :foreground "black" :background "lightgrey")
-(set-face-attribute 'company-tooltip-common nil
-                    :foreground "black" :background "lightgrey")
-(set-face-attribute 'company-tooltip-common-selection nil
-                    :foreground "white" :background "steelblue")
-(set-face-attribute 'company-tooltip-selection nil
-                    :foreground "black" :background "steelblue")
-(set-face-attribute 'company-preview-common nil
-                    :background nil :foreground "lightgrey" :underline t)
-(set-face-attribute 'company-scrollbar-fg nil
-                    :background "orange")
-(set-face-attribute 'company-scrollbar-bg nil
-                    :background "gray40")
-(require 'company)
-(require 'company-quickhelp)
-(global-company-mode +1)
-(company-quickhelp-mode t)
-(setq company-auto-expand t) ;; 1個目を自動的に補完
-(setq company-minimum-prefix-length 2) ; デフォルトは4
-;; (setq company-idle-delay 0) ; 遅延なしにすぐ表示
-(setq company-selection-wrap-around t) ; 候補の最後の次は先頭に戻る
-(setq completion-ignore-case t)
-(setq company-dabbrev-downcase nil)
-(global-set-key (kbd "C-M-i") 'company-complete)
-;; C-n, C-pで補完候補を次/前の候補を選
-(define-key company-active-map (kbd "C-n") 'company-select-next)
-(define-key company-active-map (kbd "C-p") 'company-select-previous)
-(define-key company-search-map (kbd "C-n") 'company-select-next)
-(define-key company-search-map (kbd "C-p") 'company-select-previous)
-;; C-sで絞り込む
-(define-key company-active-map (kbd "C-s") 'company-filter-candidates)
-;; C-M-iで候補を設定
-(define-key company-active-map (kbd "TAB") 'company-complete-selection)
-;; (define-key company-active-map (kbd "C-M-i") 'company-complete-selection)
-;; 各種メジャーモードでも C-M-iで company-modeの補完を使う
-(define-key emacs-lisp-mode-map (kbd "C-M-i") 'company-complete)
-;; (define-key php-mode-map (kbd "C-M-i") 'company-complete)
-;; クイックヘルプ
-;; (eval-after-load 'company
-;;   '(define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin))
-
-;; company-mode off
-(add-hook 'eshell-mode-hook (lambda () (company-mode -1)))
-(add-hook 'markdown-mode-hook (lambda () (company-mode -1)))
-
-(add-hook 'markdown-mode-hook (lambda () (goto-address-mode t)))
-;; (require 'company-box)
-;; (add-hook 'company-mode-hook 'company-box-mode)
-;; 履歴からソートする
 (require 'company-statistics)
 (company-statistics-mode)
 (setq company-transformers '(company-sort-by-statistics company-sort-by-backend-importance))
@@ -347,17 +189,32 @@
 (define-key go-mode-map (kbd "C-c C-t") 'go-test-current-file)
 (define-key go-mode-map (kbd "C-c t") 'go-test-current-test)
 
+
+;; undo-histの代わりにに入れたがundo-treeが使えるので
+;; (use-package undo-fu
+;;   :config
+;;   (global-unset-key (kbd "C-z"))
+;;   (global-set-key (kbd "C-z")   'undo-fu-only-undo)
+;;   (global-set-key (kbd "C-S-z") 'undo-fu-only-redo))
+(use-package undo-fu-session
+  :config
+  (undo-fu-session-global-mode)
+  )
 ;; ▼要拡張機能インストール▼
 ;;; 編集履歴を記憶する──undohist
 ;; undohistの設定
-(when (require 'undohist nil t)
-  (undohist-initialize))
-
+(use-package undo-hist
+  :config
+  (undohist-initialize)
+   (setq undo-tree-auto-save-history nil)
+  )
 ;; ▼要拡張機能インストール▼
 ;;; アンドゥの分岐履歴──undo-tree
 ;; undo-treeの設定
 (when (require 'undo-tree nil t)
-  (global-undo-tree-mode))
+  (global-undo-tree-mode)
+  ;; (setq undo-tree-auto-save-history nil)
+  )
 
 ;; ElScreenのプレフィックスキーを変更する（初期値はC-z）
 ;; (setq elscreen-prefix-key (kbd "C-t"))
@@ -411,6 +268,8 @@
 ;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/elscreen-separate-buffer-list-cycle.el")
 ;; (load "elscreen-separate-buffer-list-cycle")
 (require 'elscreen-separate-buffer-list-cycle)
+
+
 ;;; メモ書き・ToDo管理 howm
 ;; (package-install 'howm)
 ;; howmメモ保存の場所
@@ -454,31 +313,31 @@
                       "/usr/local/share/man/ja"))
 ;;; Helmによるman検索
 ;; 既存のソースを読み込む
-(require 'helm-elisp)
-(require 'helm-man)
-;; 基本となるソースを定義
-(setq helm-for-document-sources
-      '(helm-source-info-elisp
-        helm-source-info-cl
-        helm-source-info-pages
-        helm-source-man-pages))
-;; helm-for-documentコマンドを定義
-(defun helm-for-document ()
-  "Preconfigured `helm' for helm-for-document."
-  (interactive)
-  (let ((default (thing-at-point 'symbol)))
-    (helm :sources
-          (nconc
-           (mapcar (lambda (func)
-                     (funcall func default))
-                   helm-apropos-function-list)
-           helm-for-document-sources)
-          :buffer "*helm for docuemont*")))
+;; (require 'helm-elisp)
+;; (require 'helm-man)
+;; ;; 基本となるソースを定義
+;; (setq helm-fo-rdocument-sources
+;;       '(helm-source-info-elisp
+;;         helm-source-info-cl
+;;         helm-source-info-pages
+;;         helm-source-man-pages))
+;; ;; helm-for-documentコマンドを定義
+;; (defun helm-for-document ()
+;;   "Preconfigured `helm' for helm-for-document."
+;;   (interactive)
+;;   (let ((default (thing-at-point 'symbol)))
+;;     (helm :sources
+;;           (nconc
+;;            (mapcar (lambda (func)
+;;                      (funcall func default))
+;;                    helm-apropos-function-list)
+;;            helm-for-document-sources)
+;;           :buffer "*helm for docuemont*")))
 
-;; s-dにhelm-for-documentを割り当て
-(define-key global-map (kbd "s-d") 'helm-for-document)
-;;; カーソル位置のファイルパスやアドレスを "C-x C-f" で開く
-(ffap-bindings)
+;; ;; s-dにhelm-for-documentを割り当て
+;; (define-key global-map (kbd "s-d") 'helm-for-document)
+;; ;;; カーソル位置のファイルパスやアドレスを "C-x C-f" で開く
+;; (ffap-bindings)
 
 ; 最終行に必ず改行を挿入する
 (setq require-final-newline t)
@@ -705,62 +564,63 @@
 ;;                 (buffer-list))))
 ;; (setq tabbar-buffer-list-function 'my-tabbar-buffer-list)
 
-(require 'helm)
-(require 'helm-config)
-(require 'helm-themes)
+;; (require 'helm)
+;; (require 'helm-config)
+;; (require 'helm-themes)
 
-;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
+;; ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+;; ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+;; ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
+;; (global-unset-key (kbd "C-x c"))
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-(define-key helm-map (kbd "C-h") 'delete-backward-char)
+;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
+;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+;; (define-key helm-map (kbd "C-h") 'delete-backward-char)
 
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
+;; (when (executable-find "curl")
+;;   (setq helm-google-suggest-use-curl-p t))
 
-(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t
-      helm-echo-input-in-header-line t
-      )
-(setq-default helm-truncate-lines t
-              helm-projectile-truncate-lines t)
-;; (defun spacemacs//helm-hide-minibuffer-maybe ()
-;;   "Hide minibuffer in Helm session if we use the header line as input field."
-;;   (when (with-helm-buffer helm-echo-input-in-header-line)
-;;     (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-;;       (overlay-put ov 'window (selected-window))
-;;       (overlay-put ov 'face
-;;                    (let ((bg-color (face-background 'default nil)))
-;;                      `(:background ,bg-color :foreground ,bg-color)))
-;;       (setq-local cursor-type nil))))
+;; (setq helm-split-window-inside-p           t ; open helm buffer inside current window, not occupy whole other window
+;;       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+;;       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+;;       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+;;       helm-ff-file-name-history-use-recentf t
+;;       helm-echo-input-in-header-line t
+;;       )
+;; (setq-default helm-truncate-lines t
+;;               helm-projectile-truncate-lines t)
+;; ;; (defun spacemacs//helm-hide-minibuffer-maybe ()
+;; ;;   "Hide minibuffer in Helm session if we use the header line as input field."
+;; ;;   (when (with-helm-buffer helm-echo-input-in-header-line)
+;; ;;     (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+;; ;;       (overlay-put ov 'window (selected-window))
+;; ;;       (overlay-put ov 'face
+;; ;;                    (let ((bg-color (face-background 'default nil)))
+;; ;;                      `(:background ,bg-color :foreground ,bg-color)))
+;; ;;       (setq-local cursor-type nil))))
 
 
-;; (add-hook 'helm-minibuffer-set-up-hook
-;;           'spacemacs//helm-hide-minibuffer-maybe)
+;; ;; (add-hook 'helm-minibuffer-set-up-hook
+;; ;;           'spacemacs//helm-hide-minibuffer-maybe)
 
-(setq helm-autoresize-max-height 0)
-(setq helm-autoresize-min-height 20)
-;; (helm-autoresize-mode 1)
+;; (setq helm-autoresize-max-height 0)
+;; (setq helm-autoresize-min-height 20)
+;; ;; (helm-autoresize-mode 1)
 
-(global-set-key (kbd "C-x b") 'helm-for-files)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-g") 'helm-ag)
-(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
-;;(define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(require 'helm-config)
-(helm-mode 1)
+;; (global-set-key (kbd "C-x b") 'helm-for-files)
+;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
+;; (global-set-key (kbd "M-x") 'helm-M-x)
+;; (global-set-key (kbd "C-x C-g") 'helm-ag)
+;; (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+;; ;;(define-key helm-find-files-map (kbd "TAB") 'helm-execute-persistent-action)
+;; (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+;; (require 'helm-config)
+;; (helm-mode 1)
 
 ; web-mode
+(use-package web-mode)
 (when (require 'web-mode nil t)
   ;; 自動的にweb-modeを起動したい拡張子を追加する
   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
@@ -813,19 +673,19 @@
 (setq ruby-deep-indent-paren-style nil) ;Railsのインデント
 (add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
 
-(require 'ruby-end)
-(add-hook 'ruby-mode-hook
-          '(lambda ()
-             (abbrev-mode 1)
-             (electric-pair-mode t)
-             (electric-indent-mode t)
-             (electric-layout-mode t)))
+;; (require 'ruby-end)
+;; (add-hook 'ruby-mode-hook
+;;           '(lambda ()
+;;              (abbrev-mode 1)
+;;              (electric-pair-mode t)
+;;              (electric-indent-mode t)
+;;              (electric-layout-mode t)))
 ;; robe
-(add-hook 'ruby-mode-hook 'robe-mode)
-(eval-after-load 'company
-  '(push 'company-robe company-backends))
-(defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
-  (rvm-activate-corresponding-ruby))
+;; (add-hook 'ruby-mode-hook 'robe-mode)
+;; (eval-after-load 'company
+;;   '(push 'company-robe company-backends))
+;; (defadvice inf-ruby-console-auto (before activate-rvm-for-robe activate)
+;;   (rvm-activate-corresponding-ruby))
 ;; ;; riなどのエスケープシーケンスを処理し、色付けする
 ;; (add-hook 'inf-ruby-mode-hook 'ansi-color-for-comint-mode-on)
 ;; (autoload 'robe-mode "robe" "Code navigation, documentation lookup and completion for Ruby" t nil)
@@ -880,7 +740,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(beacon-fallback-background ((t (:background "magenta"))))
- '(helm-header ((t (:inherit header-line))))
+ ;; '(helm-header ((t (:inherit header-line))))
  '(magit-diff-added ((t (:background "black" :foreground "green"))))
  '(magit-diff-added-highlight ((t (:background "white" :foreground "green"))))
  '(magit-diff-removed ((t (:background "black" :foreground "blue"))))
@@ -1014,11 +874,11 @@
 
 ;;;Helmを使って利用する
 ;; Fuzzyマッチを無効にする。
-(setq helm-projectile-fuzzy-match nil)
-(when (require 'helm-projectile nil t)
-  (setq projectile-completion-system 'helm)
-  )
-(add-hook 'helm-mode-hook (lambda () (setq truncate-lines t)))
+;; (setq helm-projectile-fuzzy-match nil)
+;; (when (require 'helm-projectile nil t)
+;;   (setq projectile-completion-system 'helm)
+;;   )
+;; (add-hook 'helm-mode-hook (lambda () (setq truncate-lines t)))
 
 ;; railsサポート
 ;; (require 'projectile-rails)
@@ -1135,10 +995,12 @@
    '(nxml-name-face ((t (:foreground "rosy brown"))))
    '(nxml-tag-slash-face ((t (:inherit nxml-name-face :foreground "grey")))))
   )
-(setq-default case-fold-search nil) ;大文字小文字を区別する
+(setq-default case-fold-search nil)
+                                        ;; 大文字小文字を区別する
 ;; (setq-default case-fold-search t)   ;大文字小文字を区別しない
 ;; 正規表現置換
 ;; (setq-default case-replace nil)
+(use-package visual-regexp)
 (global-set-key (kbd "M-%") 'vr/query-replace)
 ;; テキストブラウザ eww
 (defvar eww-disable-colorize t)
@@ -1258,34 +1120,34 @@
 ;; React（JSX）を使う場合はこちら
 ;; (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 
-(eval-after-load 'flycheck
-  '(custom-set-variables
-    '(flycheck-disabled-checkers '(javascript-jshint javascript-jscs))))
-(defun my-js-mode-hook ()
-  (setq-local electric-layout-rules
-              '((?\{ . after) (?\} . before))))
-(use-package js2-mode
-  :mode
-  (("\.js$" . js2-mode))
-  :config
-  )
-(add-hook 'js-mode-hook 'my-js-mode-hook)
-(setq js2-strict-missing-semi-warning nil)
-(setq js2-missing-semi-one-line-override nil)
+;; (eval-after-load 'flycheck
+;;   '(custom-set-variables
+;;     '(flycheck-disabled-checkers '(javascript-jshint javascript-jscs))))
+;; (defun my-js-mode-hook ()
+;;   (setq-local electric-layout-rules
+;;               '((?\{ . after) (?\} . before))))
+;; (use-package js2-mode
+;;   :mode
+;;   (("\.js$" . js2-mode))
+;;   :config
+;;   )
+;; (add-hook 'js-mode-hook 'my-js-mode-hook)
+;; (setq js2-strict-missing-semi-warning nil)
+;; (setq js2-missing-semi-one-line-override nil)
+;; ;; (add-hook 'js2-mode-hook
+;; ;;           (lambda ()
+;; ;;             (setq my-js-mode-indent-num 2)
+;; ;;             (setq js2-basic-offset my-js-mode-indent-num)
+;; ;;             (setq js-switch-indent-offset my-js-mode-indent-num)
+;; ;;             (add-to-list 'company-backends 'company-tern)
+;; ;;             (set (make-local-variable 'company-backends)
+;; ;;                  '((company-dabbrev-code company-yasnippet company-tern)))))
 ;; (add-hook 'js2-mode-hook
 ;;           (lambda ()
 ;;             (setq my-js-mode-indent-num 2)
 ;;             (setq js2-basic-offset my-js-mode-indent-num)
 ;;             (setq js-switch-indent-offset my-js-mode-indent-num)
-;;             (add-to-list 'company-backends 'company-tern)
-;;             (set (make-local-variable 'company-backends)
-;;                  '((company-dabbrev-code company-yasnippet company-tern)))))
-(add-hook 'js2-mode-hook
-          (lambda ()
-            (setq my-js-mode-indent-num 2)
-            (setq js2-basic-offset my-js-mode-indent-num)
-            (setq js-switch-indent-offset my-js-mode-indent-num)
-            ))
+;;             ))
 
 ;; (setq company-tern-property-marker "")
 ;; (defun company-tern-depth (candidate)
@@ -1296,19 +1158,19 @@
 ;; (add-to-list 'company-backends 'company-tern) ; backendに追加
 ;; (add-to-list 'company-backends '(company-tern :with company-dabbrev-code))
 ;; (add-hook 'js-mode-hook '(lambda () (setq-local company-backends '((company-web company-css company-tern :with company-yasnippet)))))
-(add-hook 'js-mode-hook
-          '(lambda ()
-             (setq-local company-backends '((company-tern :with company-yasnippet)))))
-(add-hook 'js-mode-hook 'emmet-mode)
+;; (add-hook 'js-mode-hook
+;;           '(lambda ()
+;;              (setq-local company-backends '((company-tern :with company-yasnippet)))))
+;; (add-hook 'js-mode-hook 'emmet-mode)
 
 ;; (add-to-list 'company-backends '(company-yasnippet :with company-dabbrev-code))
 ;; キーバインドを動的に表示 which-key
 ;; http://emacs.rubikitch.com/which-key/
 ;;; 3つの表示方法どれか1つ選ぶ
-(which-key-setup-side-window-bottom)    ;ミニバッファ
-;; (which-key-setup-side-window-right)     ;右端
-;; (which-key-setup-side-window-right-bottom) ;両方使う
-(which-key-mode 1)
+;; (which-key-setup-side-window-bottom)    ;ミニバッファ
+;; ;; (which-key-setup-side-window-right)     ;右端
+;; ;; (which-key-setup-side-window-right-bottom) ;両方使う
+;; (which-key-mode 1)
 ;;;; 入力補助
 (require 'yasnippet)
 (yas-global-mode 1)
@@ -1347,7 +1209,7 @@
              (add-to-list 'company-backends 'company-ac-php-backend t)))
 (add-hook 'php-mode-hook 'php-enable-psr2-coding-style)
 
-(require 'react-snippets)
+;; (require 'react-snippets)
 ;;;; yasnippet設定
 (yas-global-mode 1)
 ;;; スニペット名をidoで選択する
@@ -1385,12 +1247,12 @@
     (abbrev-mode . "")
     (undo-tree-mode . "")
     (elisp-slime-nav-mode . " EN")
-    (helm-gtags-mode . "")
+    ;; (helm-gtags-mode . "")
     ;; (flymake-mode . " Fm")
     ;; (flycheck-mode . "FC")
     (flyspell-mode . "")
     (git-gutter-mode . "")
-    (helm-mode . "")
+    ;; (helm-mode . "")
     (which-key-mode . "")
     (company-mode . "")
     (auto-complete-mode . "")
@@ -1407,7 +1269,7 @@
     (web-mode   . "W")
     (emacs-lisp-mode . "El")
     (js2-mode . "JS2")
-    (helm-migemo-mode . "")
+    ;; (helm-migemo-mode . "")
     (global-whitespace-mode . "")
     (markdown-mode . "Md")
     (editorconfig-mode . "")
@@ -1416,7 +1278,7 @@
 
 (defun clean-mode-line ()
   (interactive)
-  (loop for (mode . mode-str) in mode-line-cleaner-alist
+  (cl-loop for (mode . mode-str) in mode-line-cleaner-alist
         do
         (let ((old-mode-str (cdr (assq mode minor-mode-alist))))
           (when old-mode-str
@@ -1460,31 +1322,31 @@
 ;; (add-hook 'c-mode-hook 'gtags-mode)
 ;; (add-hook 'c++-mode-hook 'gtags-mode)
 ;; helm-gtags設定
-(require 'helm-gtags)
+;; (require 'helm-gtags)
 
-;; Enable helm-gtags-mode
-(add-hook 'go-mode-hook (lambda () (helm-gtags-mode)))
-(add-hook 'php-mode-hook (lambda () (helm-gtags-mode)))
-(add-hook 'web-mode-hook (lambda () (helm-gtags-mode)))
-(add-hook 'js2-mode-hook (lambda () (helm-gtags-mode)))
-(add-hook 'python-mode-hook (lambda () (helm-gtags-mode)))
-(add-hook 'ruby-mode-hook (lambda () (helm-gtags-mode)))
-(add-hook 'c-mode-hook (lambda () (helm-gtags-mode)))
-(add-hook 'c++-mode-hook (lambda () (helm-gtags-mode)))
-(add-hook 'emacs-lisp-mode-hook (lambda () (helm-gtags-mode)))
+;; ;; Enable helm-gtags-mode
+;; (add-hook 'go-mode-hook (lambda () (helm-gtags-mode)))
+;; (add-hook 'php-mode-hook (lambda () (helm-gtags-mode)))
+;; (add-hook 'web-mode-hook (lambda () (helm-gtags-mode)))
+;; (add-hook 'js2-mode-hook (lambda () (helm-gtags-mode)))
+;; (add-hook 'python-mode-hook (lambda () (helm-gtags-mode)))
+;; (add-hook 'ruby-mode-hook (lambda () (helm-gtags-mode)))
+;; (add-hook 'c-mode-hook (lambda () (helm-gtags-mode)))
+;; (add-hook 'c++-mode-hook (lambda () (helm-gtags-mode)))
+;; (add-hook 'emacs-lisp-mode-hook (lambda () (helm-gtags-mode)))
 
 ;; gtag setting
-(setq helm-gtags-path-style 'root)
-(setq helm-gtags-auto-update t)
+;; (setq helm-gtags-path-style 'root)
+;; (setq helm-gtags-auto-update t)
 
 ;; key bind
-(add-hook 'helm-gtags-mode-hook
-          '(lambda ()
-             (local-set-key (kbd "M-s d") 'helm-gtags-dwim)
-             (local-set-key (kbd "C-c g") 'helm-gtags-select)
-             (local-set-key (kbd "M-s s") 'helm-gtags-show-stack)
-             (local-set-key (kbd "M-s p") 'helm-gtags-previous-history)
-             (local-set-key (kbd "M-s n") 'helm-gtags-next-history)))
+;; (add-hook 'helm-gtags-mode-hook
+;;           '(lambda ()
+;;              (local-set-key (kbd "M-s d") 'helm-gtags-dwim)
+;;              (local-set-key (kbd "C-c g") 'helm-gtags-select)
+;;              (local-set-key (kbd "M-s s") 'helm-gtags-show-stack)
+;;              (local-set-key (kbd "M-s p") 'helm-gtags-previous-history)
+;;              (local-set-key (kbd "M-s n") 'helm-gtags-next-history)))
 
 (defun my-eucjp-currentbuffer()
   (interactive)
@@ -1547,20 +1409,20 @@
                       "\\([A-Z]\\)" "_\\1"
                       (store-substring s 0 (downcase (string-to-char s))))))))
 ;;;
-(require 'helm-dash)
-(setq helm-dash-docsets-path (expand-file-name "~/.docsets"))
-(with-eval-after-load 'dash
-  (setq helm-dash-browser-func 'browse-url-default-macosx-browser))
-;; (defun py-doc ()
-;;   (setq-local helm-dash-docsets '("Python 3" "Pandas" "Matplotlib" "NumPy")))
-;; (defun cpp-doc ()
-;;   (setq-local helm-dash-docsets '("C++" "Boost")))
-;; (defun ruby-doc ()
-;;   (setq-local helm-dash-docsets '("Ruby" "Ruby on Rails")))
-(defun php-doc ()
-  (setq-local helm-dash-docsets '("PHP" "PHPUnit" "Laravel")))
-(defun el-doc ()
-  (setq-local helm-dash-docsets '("Emacs\\ Lisp")))
+;; (require 'helm-dash)
+;; (setq helm-dash-docsets-path (expand-file-name "~/.docsets"))
+;; (with-eval-after-load 'dash
+;;   (setq helm-dash-browser-func 'browse-url-default-macosx-browser))
+;; ;; (defun py-doc ()
+;; ;;   (setq-local helm-dash-docsets '("Python 3" "Pandas" "Matplotlib" "NumPy")))
+;; ;; (defun cpp-doc ()
+;; ;;   (setq-local helm-dash-docsets '("C++" "Boost")))
+;; ;; (defun ruby-doc ()
+;; ;;   (setq-local helm-dash-docsets '("Ruby" "Ruby on Rails")))
+;; (defun php-doc ()
+;;   (setq-local helm-dash-docsets '("PHP" "PHPUnit" "Laravel")))
+;; (defun el-doc ()
+;;   (setq-local helm-dash-docsets '("Emacs\\ Lisp")))
 
 (add-hook 'python-mode-hook 'py-doc)
 (add-hook 'ruby-mode-hook 'ruby-doc)
@@ -1589,7 +1451,7 @@
 (setq auto-mode-alist
       (cons (cons "\\.cl$" 'lisp-mode) auto-mode-alist))
 
-(slime-setup '(slime-fancy slime-company))
+;; (slime-setup '(slime-fancy slime-company))
 (define-key company-active-map (kbd "\C-n") 'company-select-next)
 (define-key company-active-map (kbd "\C-p") 'company-select-previous)
 (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
@@ -1608,14 +1470,14 @@
 
 (add-hook 'php-mode-hook 'my-php-mode-hook)
 
-(add-to-list 'company-backends 'company-web-html)
+;; (add-to-list 'company-backends 'company-web-html)
 
 ;; インクリメンタルサーチ日本語検索
 (require 'migemo)
-(setq migemo-command "cmigemo")
+(setq migemo-command "/opt/homebrew/bin/cmigemo")
 (setq migemo-options '("-q" "--emacs"))
 
-(setq migemo-dictionary "/usr/local/share/migemo/utf-8/migemo-dict")
+(setq migemo-dictionary "/opt/homebrew/share/migemo/utf-8/migemo-dict")
 
 (setq migemo-user-dictionary nil)
 (setq migemo-regex-dictionary nil)
@@ -1639,31 +1501,31 @@
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 ;; 選択項目を徐々に広げるパッケージ
-(require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
+;; (require 'expand-region)
+;; (global-set-key (kbd "C-=") 'er/expand-region)
 
 ;; バッファ内検索
 ;;; migemoなしでhelm-swoop
-(helm-migemo-mode t)
-(cl-defun helm-swoop-nomigemo (&key $query ($multiline current-prefix-arg))
-  (interactive)
-  (let (helm-migemo-mode)
-    (helm-swoop :$query $query :$multiline $multiline)))
+;; (helm-migemo-mode t)
+;; (cl-defun helm-swoop-nomigemo (&key $query ($multiline current-prefix-arg))
+;;   (interactive)
+;;   (let (helm-migemo-mode)
+;;     (helm-swoop :$query $query :$multiline $multiline)))
 
-(defun isearch-forward-or-helm-swoop-or-helm-occur (use-helm-swoop)
-  (interactive "p")
-  (let (current-prefix-arg
-        (helm-swoop-pre-input-function 'ignore))
-    (call-interactively
-     (case use-helm-swoop
-       (1 'isearch-forward)
-       ;; C-u C-sを押した場合
-       ;; 1000000以上のバッファサイズならばhelm-occur、
-       ;; それ以下ならばhelm-swoop
-       (4 (if (< 1000000 (buffer-size)) 'helm-occur 'helm-swoop))
-       ;; C-u C-u C-sでmigemoなしのhelm-swoop
-       (16 'helm-swoop-nomigemo)))))
-(global-set-key (kbd "C-s") 'isearch-forward-or-helm-swoop-or-helm-occur)
+;; (defun isearch-forward-or-helm-swoop-or-helm-occur (use-helm-swoop)
+;;   (interactive "p")
+;;   (let (current-prefix-arg
+;;         (helm-swoop-pre-input-function 'ignore))
+;;     (call-interactively
+;;      (case use-helm-swoop
+;;        (1 'isearch-forward)
+;;        ;; C-u C-sを押した場合
+;;        ;; 1000000以上のバッファサイズならばhelm-occur、
+;;        ;; それ以下ならばhelm-swoop
+;;        (4 (if (< 1000000 (buffer-size)) 'helm-occur 'helm-swoop))
+;;        ;; C-u C-u C-sでmigemoなしのhelm-swoop
+;;        (16 'helm-swoop-nomigemo)))))
+;; (global-set-key (kbd "C-s") 'isearch-forward-or-helm-swoop-or-helm-occur)
 
 (require 'rainbow-delimiters)
 (add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
@@ -1793,13 +1655,13 @@
 
 (global-set-key "\C-a" 'my-move-beginning-of-line)
 
-(require 'plantuml-mode)
+;; (require 'plantuml-mode)
 
-(setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2018.10/libexec/plantuml.jar")
-(setq plantuml-output-type "png")
-(add-to-list 'auto-mode-alist '("\\.pu\\'" . plantuml-mode))
-(add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
-(add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+;; (setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2018.10/libexec/plantuml.jar")
+;; (setq plantuml-output-type "png")
+;; (add-to-list 'auto-mode-alist '("\\.pu\\'" . plantuml-mode))
+;; (add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
+;; (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
 
 
 ;; (add-to-list 'load-path "/your/path/to/dockerfile-mode/")
@@ -1860,7 +1722,7 @@
     ad-do-it))
 
 
-(global-set-key (kbd "C-c s") 'helm-swoop)
+;; (global-set-key (kbd "C-c s") 'helm-swoop)
 ;; editorconfig モードの有効化
 (editorconfig-mode 1)
 
@@ -1939,31 +1801,31 @@
 (require 'terraform-mode)
 (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode)
 
-(defun tf-version ()
-  "terraform version"
-  (interactive)
-  (let* ((buffer-name "*tfcmd*"))
-    (with-output-to-temp-buffer buffer-name
-      (shell-command "terraform version" buffer-name "*Messages*")
-      (pop-to-buffer buffer-name))))
-(defun tf-plan ()
-  "terraform plan"
-  (interactive)
-  (let* ((buffer-name "*tfcmd*"))
-    (with-output-to-temp-buffer buffer-name
-      (shell-command "terraform plan" buffer-name "*stderr*")
-      (pop-to-buffer buffer-name)
-      )))
+;; (defun tf-version ()
+;;   "terraform version"
+;;   (interactive)
+;;   (let* ((buffer-name "*tfcmd*"))
+;;     (with-output-to-temp-buffer buffer-name
+;;       (shell-command "terraform version" buffer-name "*Messages*")
+;;       (pop-to-buffer buffer-name))))
+;; (defun tf-plan ()
+;;   "terraform plan"
+;;   (interactive)
+;;   (let* ((buffer-name "*tfcmd*"))
+;;     (with-output-to-temp-buffer buffer-name
+;;       (shell-command "terraform plan" buffer-name "*stderr*")
+;;       (pop-to-buffer buffer-name)
+;;       )))
 
-(defun tf-apply ()
-  "Save and terraform apply"
-       (interactive)
-       (save-buffer)
-       (shell-command "osascript ~/.emacs.d/script/iterm.scpt"))
+;; (defun tf-apply ()
+;;   "Save and terraform apply"
+;;        (interactive)
+;;        (save-buffer)
+;;        (shell-command "osascript ~/.emacs.d/script/iterm.scpt"))
 
-(global-set-key (kbd "C-c u a") 'tf-apply)
-(global-set-key (kbd "C-c u v") 'tf-version)
-(global-set-key (kbd "C-c u p") 'tf-plan)
+;; (global-set-key (kbd "C-c u a") 'tf-apply)
+;; (global-set-key (kbd "C-c u v") 'tf-version)
+;; (global-set-key (kbd "C-c u p") 'tf-plan)
 
 ;;  project direnv
 (require 'projectile)
@@ -2038,15 +1900,18 @@
 
 (defun date-prefix-rename-file-buffer ()
   (interactive)
-  (let ((now-name (buffer-file-name)))
-    (rename-file (getfilename) (concat (insert-current-time) "_" (getfilename)))
-    (rename-buffer (concat (insert-current-time) "_" (getfilename)))
-    (set-visited-file-name (concat (insert-current-time) "_" (getfilename)))
-    (set-buffer-modified-p nil)
-    ;; (delete-file now-name)
+  (if (y-or-n-p())
+      (let ((now-name (buffer-file-name)))
+        (rename-file (getfilename) (concat (insert-current-time) "_" (getfilename)))
+        (rename-buffer (concat (insert-current-time) "_" (getfilename)))
+        (set-visited-file-name (concat (insert-current-time) "_" (getfilename)))
+        (set-buffer-modified-p nil)
+        ;; (delete-file now-name)
+        )
+    ;; nの場合スルー
     ))
 
-;; (global-set-key (kbd "C-c r") 'rename-file-buffer)
+;; (Global-set-key (kbd "C-c r") 'rename-file-buffer)
 
 (defun rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME."
@@ -2062,3 +1927,89 @@
           (rename-buffer new-name)
           (set-visited-file-name new-name)
           (set-buffer-modified-p nil))))))
+
+;; 補完システム ivyの導入
+(when (require 'ivy nil t)
+
+  ;; M-o を ivy-hydra-read-action に割り当てる．
+  (when (require 'ivy-hydra nil t)
+    (setq ivy-read-action-function #'ivy-hydra-read-action))
+
+  ;; `ivy-switch-buffer' (C-x b) のリストに recent files と bookmark を含める．
+  (setq ivy-use-virtual-buffers t)
+
+  ;; ミニバッファでコマンド発行を認める
+  (when (setq enable-recursive-minibuffers t)
+    (minibuffer-depth-indicate-mode 1)) ;; 何回層入ったかプロンプトに表示．
+
+  ;; ESC連打でミニバッファを閉じる
+  (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)
+
+  ;; プロンプトの表示が長い時に折り返す（選択候補も折り返される）
+  (setq ivy-truncate-lines nil)
+
+  ;; リスト先頭で `C-p' するとき，リストの最後に移動する
+  (setq ivy-wrap t)
+
+  ;; (setq ivy-use-selectable-prompt t)
+
+  ;; アクティベート
+  (ivy-mode 1))
+
+(when (require 'counsel nil t)
+
+  ;; キーバインドは一例です．好みに変えましょう．
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "M-y") 'counsel-yank-pop)
+  (global-set-key (kbd "C-M-z") 'counsel-fzf)
+  (global-set-key (kbd "C-M-r") 'counsel-recentf)
+  (global-set-key (kbd "C-x C-b") 'counsel-ibuffer)
+  (global-set-key (kbd "C-M-f") 'counsel-ag)
+
+  ;; アクティベート
+  (counsel-mode 1))
+;; ファイル名先頭に数値を入れていると表示されなくなってしまう
+;; 意図としては.DS_storeなど外したかった
+;; (setq counsel-find-file-ignore-regexp (regexp-opt completion-ignored-extensions))
+
+(when (require 'swiper nil t)
+
+  ;; キーバインドは一例です．好みに変えましょう．
+  (global-set-key (kbd "M-s M-s") 'swiper-thing-at-point)
+)
+
+
+(custom-set-faces
+ '(ivy-current-match
+   ((((class color) (background light))
+     :background "#FFF3F3" :distant-foreground "#000000")
+    (((class color) (background dark))
+     :background "#404040" :distant-foreground "#abb2bf")))
+ '(ivy-minibuffer-match-face-1
+   ((((class color) (background light)) :foreground "#666666")
+    (((class color) (background dark)) :foreground "#999999")))
+ '(ivy-minibuffer-match-face-2
+   ((((class color) (background light)) :foreground "#c03333" :underline t)
+    (((class color) (background dark)) :foreground "#e04444" :underline t)))
+ '(ivy-minibuffer-match-face-3
+   ((((class color) (background light)) :foreground "#8585ff" :underline t)
+    (((class color) (background dark)) :foreground "#7777ff" :underline t)))
+ '(ivy-minibuffer-match-face-4
+   ((((class color) (background light)) :foreground "#439943" :underline t)
+    (((class color) (background dark)) :foreground "#33bb33" :underline t))))
+
+;; completion-in-region-function も一時的にデフォに戻さないと，TAB補完時に
+;; ivy が有効化されてしまう．
+;; (defun my-disable-counsel-find-file (&rest args)
+;;   "Disable `counsel-find-file' and use the original `find-file' with ARGS."
+;;   (let ((completing-read-function #'completing-read-default)
+;;         (completion-in-region-function #'completion--in-region))
+;;     (apply #'read-file-name-default args)))
+;; (setq read-file-name-function #'my-disable-counsel-find-file)
+;; ;; (counsel-mode 1) を設定しても counsel-find-file が呼ばれないようにする．
+;; (define-key counsel-mode-map [remap find-file]  nil)
+
+;; (global-set-key (kbd "C-x C-h") '(lambda ()
+;;                                    (interactive)
+;;                                    (japanese-hankaku-region (region-beginning) (region-end) t)))
+(setq warning-suppress-log-types '((package reinitialization)))
