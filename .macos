@@ -28,6 +28,10 @@ defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
 defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
 
+# 自然なスクロールを無効化（あなたの設定: 無効）
+# 0 = 従来のスクロール方向, 1 = 自然なスクロール（macOSデフォルト）
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+
 # キーのリピート速度（あなたの設定: 1 = 最速）
 defaults write NSGlobalDomain KeyRepeat -int 1
 
@@ -81,6 +85,10 @@ defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 # 隠しファイルを表示（有効化）
 defaults write com.apple.finder AppleShowAllFiles -bool true
 
+# Finderのデフォルト表示形式をリスト表示に（あなたの設定）
+# icnv = アイコン表示, clmv = カラム表示, Flwv = Cover Flow表示, Nlsv = リスト表示
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+
 ###############################################################################
 # スクリーンショット
 ###############################################################################
@@ -119,6 +127,21 @@ defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
 defaults write com.apple.terminal StringEncodings -array 4
 
 ###############################################################################
+# Mission Control
+###############################################################################
+
+# 最近の使用状況に基づいて操作スペースを自動的に並べ替え（無効にすると固定順序）
+# デフォルトは有効（true）、無効にする場合は以下を有効化:
+# defaults write com.apple.dock mru-spaces -bool false
+
+###############################################################################
+# 外観
+###############################################################################
+
+# ダークモードを有効化したい場合は以下を有効化（現在はライトモード）:
+# defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+
+###############################################################################
 # その他
 ###############################################################################
 
@@ -155,9 +178,12 @@ echo ""
 echo "【現在のPCの設定を反映しました】"
 echo "- トラックパッド速度: 16 (かなり速い)"
 echo "- タップでクリック: 有効"
+echo "- 3本指ドラッグ: 有効"
+echo "- 自然なスクロール: 無効（従来のスクロール方向）"
 echo "- キーリピート: 最速 (1)"
 echo "- マウス速度: 16.0 (かなり速い)"
 echo "- Dockサイズ: 42"
 echo "- Dock自動的に隠す: 有効"
+echo "- Finderデフォルト表示: リスト表示"
 echo "- 拡張子表示: 有効"
 echo "- 隠しファイル表示: 有効"
