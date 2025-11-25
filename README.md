@@ -35,3 +35,11 @@ curl -L https://raw.githubusercontent.com/shuntakeuch1/dotfiles/master/Brewfile 
 # execute brew-bundle to install those applications
 brew bundle
 ```
+
+### macOS settings setup
+```
+# トラックパッド速度、Dock、Finderなどのシステム設定を自動化
+chmod +x .macos
+./.macos
+```
+**Note**: 一部の設定は再起動後に反映されます。

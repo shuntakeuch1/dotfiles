@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+
+# macOS設定の自動化スクリプト（あなたの現在の設定を反映）
+# このスクリプトは現在のPCの設定を再現します
+
+# スクリプト実行前に管理者パスワードを要求
+sudo -v
+
+# バックグラウンドでsudoを維持
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+echo "macOSの設定を適用します..."
+
+###############################################################################
+# トラックパッド、マウス、キーボード
+###############################################################################
+
+# トラックパッドの速度（あなたの設定: 16）
+# 注意: macOS Venturaから仕様が変わり、数値が大きくなっています
+defaults write -g com.apple.trackpad.scaling -float 16
+
+# トラックパッドのタップでクリック（有効）
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+# キーのリピート速度（あなたの設定: 1 = 最速）
+defaults write NSGlobalDomain KeyRepeat -int 1
+
+# キーのリピート開始までの時間（あなたの設定: 10 = 最短）
+defaults write NSGlobalDomain InitialKeyRepeat -int 10
+
+# マウスカーソルの速度（あなたの設定: 16.0）
+defaults write -g com.apple.mouse.scaling -float 16.0
+
+###############################################################################
+# Dock
+###############################################################################
+
+# Dockのアイコンサイズ（あなたの設定: 42）
+defaults write com.apple.dock tilesize -int 42
+
+# Dockを自動的に隠す（有効）
+defaults write com.apple.dock autohide -bool true
+
+# Dockを表示するまでの遅延を削除
+defaults write com.apple.dock autohide-delay -float 0
+
+# Dockのアニメーション速度
+defaults write com.apple.dock autohide-time-modifier -float 0.5
+
+# 最近使ったアプリを表示しない
+defaults write com.apple.dock show-recents -bool false
+
+###############################################################################
+# Finder
+###############################################################################
+
+# ファイル名の拡張子を常に表示（有効）
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+# Finderのタイトルバーにフルパスを表示
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+# ステータスバーを表示
+defaults write com.apple.finder ShowStatusBar -bool true
+
+# パスバーを表示
+defaults write com.apple.finder ShowPathbar -bool true
+
+# ゴミ箱を空にする前の警告を無効化
+defaults write com.apple.finder WarnOnEmptyTrash -bool false
+
+# デフォルトの検索範囲を現在のフォルダに
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+# 隠しファイルを表示（有効化）
+defaults write com.apple.finder AppleShowAllFiles -bool true
+
+###############################################################################
+# スクリーンショット
+###############################################################################
+
+# スクリーンショットの保存場所（デフォルトのデスクトップのまま）
+# 変更したい場合は以下を有効化:
+# defaults write com.apple.screencapture location -string "${HOME}/Downloads"
+
+# スクリーンショットの影を無効化
+defaults write com.apple.screencapture disable-shadow -bool true
+
+# スクリーンショットのファイル形式をPNGに
+defaults write com.apple.screencapture type -string "png"
+
+###############################################################################
+# Safari & WebKit
+###############################################################################
+
+# 開発メニューを有効化
+defaults write com.apple.Safari IncludeDevelopMenu -bool true
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+
+###############################################################################
+# メール
+###############################################################################
+
+# コピー時にメールアドレスのみをコピー（名前を含めない）
+defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
+
+###############################################################################
+# ターミナル
+###############################################################################
+
+# ターミナルでUTF-8のみを使用
+defaults write com.apple.terminal StringEncodings -array 4
+
+###############################################################################
+# その他
+###############################################################################
+
+# クラッシュレポートを無効化
+defaults write com.apple.CrashReporter DialogType -string "none"
+
+# Bluetooth ヘッドフォン/ヘッドセットの音質を向上
+defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int 40
+
+# メニューバーの時計のフォーマット
+defaults write com.apple.menuextra.clock DateFormat -string "M\\U6708d\\U65e5(EEE)  H:mm"
+
+# スクロールバーを常に表示
+defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+
+# 保存パネルとプリントパネルをデフォルトで展開
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
+
+###############################################################################
+# 設定の適用
+###############################################################################
+
+echo "設定を適用するため、影響を受けるアプリケーションを再起動します..."
+
+for app in "Dock" "Finder" "Safari" "SystemUIServer"; do
+    killall "${app}" &> /dev/null
+done
+
+echo "完了！一部の設定は再起動後に反映されます。"
+echo ""
+echo "【現在のPCの設定を反映しました】"
+echo "- トラックパッド速度: 16 (かなり速い)"
+echo "- タップでクリック: 有効"
+echo "- キーリピート: 最速 (1)"
+echo "- マウス速度: 16.0 (かなり速い)"
+echo "- Dockサイズ: 42"
+echo "- Dock自動的に隠す: 有効"
+echo "- 拡張子表示: 有効"
+echo "- 隠しファイル表示: 有効"
