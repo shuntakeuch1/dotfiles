@@ -11,3 +11,11 @@ ln -sf ~/dotfiles/karabiner/karabiner.json ~/.config/karabiner/karabiner.json
 
 # Hammerspoon
 ln -sf ~/dotfiles/hammerspoon ~/.hammerspoon
+
+# IntelliJ IDEA
+INTELLIJ_CONFIG="$HOME/Library/Application Support/JetBrains/IntelliJIdea2023.2"
+mkdir -p "$INTELLIJ_CONFIG"/{keymaps,codestyles,colors,fileTemplates}
+ln -sf ~/dotfiles/intellij/keymaps/* "$INTELLIJ_CONFIG/keymaps/"
+ln -sf ~/dotfiles/intellij/codestyles/* "$INTELLIJ_CONFIG/codestyles/"
+ln -sf ~/dotfiles/intellij/colors/* "$INTELLIJ_CONFIG/colors/"
+ln -sf ~/dotfiles/intellij/fileTemplates/* "$INTELLIJ_CONFIG/fileTemplates/"

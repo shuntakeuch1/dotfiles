@@ -9,3 +9,17 @@
 !/.emacs.d/Cask
 !/.emacs.d/initfuncs.el
 !/.emacs.d/user_customize.el
+
+### IntelliJ IDEA - 機密情報を除外
+# トークンやライセンスキーは含めない
+user.web.token
+idea.key
+*.key
+
+# プロジェクト固有の設定は除外
+intellij/workspace/
+intellij/tasks/
+
+# データベース接続情報は除外
+intellij/options/database*.xml
+intellij/options/*passwords*.xml

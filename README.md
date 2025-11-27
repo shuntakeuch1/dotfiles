@@ -44,12 +44,34 @@ chmod +x .macos
 ```
 **Note**: 一部の設定は再起動後に反映されます。
 
-### Karabiner & Hammerspoon
+### Karabiner & Hammerspoon (ShiftIt)
 ```
 # dotfilesLink.sh実行時に自動的にシンボリックリンクが作成されます
 # Karabiner: ~/.config/karabiner/karabiner.json
-# Hammerspoon: ~/.hammerspoon
+# Hammerspoon + ShiftIt: ~/.hammerspoon
 ```
+
+**ShiftItのショートカット（ウィンドウ管理）:**
+- `Ctrl + Alt + Left`: ウィンドウを左半分に配置
+- `Ctrl + Alt + Right`: ウィンドウを右半分に配置
+- `Ctrl + Cmd + Up`: ウィンドウを最大化
+- `Ctrl + Cmd + N`: 次のスクリーンに移動
+
+### IntelliJ IDEA
+IntelliJ IDEAの以下の設定を管理しています：
+- **キーマップ** (`keymaps/`): カスタムキーバインド設定
+- **コードスタイル** (`codestyles/`): フォーマット設定（GoogleStyleなど）
+- **カラースキーム** (`colors/`): エディタの配色設定
+- **ファイルテンプレート** (`fileTemplates/`): 新規ファイル作成時のテンプレート
+
+```bash
+# dotfilesLink.sh実行時に自動的にシンボリックリンクが作成されます
+# 対象: IntelliJ IDEA 2023.2
+```
+
+**Note**: 
+- ライセンスキー（`idea.key`）やトークン（`user.web.token`）は除外されています
+- バージョンアップ時は`dotfilesLink.sh`のパスを更新してください
 
 ### Alfred
 Alfredの設定は同期フォルダを指定することで管理できます：
