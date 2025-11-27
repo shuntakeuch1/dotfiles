@@ -77,7 +77,6 @@ IntelliJ IDEAの以下の設定を管理しています：
 Alfredの設定をdotfilesで管理しています：
 - **preferences/**: 一般設定、ホットキー、外観など
 - **themes/**: カスタムテーマ（4種類）
-- **workflows/**: カスタムワークフロー（3種類）
 
 ```bash
 # Alfredの設定を適用（手動でコピー）
@@ -86,6 +85,7 @@ cp -r ~/dotfiles/alfred/Alfred.alfredpreferences/* ~/Library/Application\ Suppor
 
 **Note**: 
 - Alfred Powerparkライセンスが必要です（ライセンスファイルは除外されています）
+- **workflows/は除外**：個人情報やAPIキーが含まれる可能性があるため
 - Spotlightは無効化されています（`.macos`で設定、Alfredを⌘Spaceで起動）
 
-**代替方法**: Alfred Preferences → Advanced → Syncing で同期フォルダを指定することもできます
+**workflowsの同期方法**: Alfred Preferences → Advanced → Syncing で同期フォルダを指定することを推奨

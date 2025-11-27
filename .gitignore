@@ -24,10 +24,13 @@ intellij/tasks/
 intellij/options/database*.xml
 intellij/options/*passwords*.xml
 
-### Alfred - ライセンス情報を除外
+### Alfred - ライセンス情報とworkflowsを除外
 # Powerparkライセンスファイルは除外
 powerpack.*.dat
 alfred/powerpack.*.dat
+
+# workflowsは個人情報やAPIキーが含まれる可能性があるため除外
+alfred/Alfred.alfredpreferences/workflows/
 
 # データベースとキャッシュは除外
 alfred/Databases/
