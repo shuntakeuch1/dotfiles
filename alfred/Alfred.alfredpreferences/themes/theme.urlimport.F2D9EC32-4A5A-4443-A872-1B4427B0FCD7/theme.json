@@ -1,0 +1,64 @@
+{
+  "alfredtheme" : {
+    "result" : {
+      "textSpacing" : 10,
+      "subtext" : {
+        "size" : 17,
+        "colorSelected" : "#000000E5",
+        "font" : "Avenir Next",
+        "color" : "#00000073"
+      },
+      "shortcut" : {
+        "size" : 16,
+        "colorSelected" : "#FFFFFFFF",
+        "font" : "Avenir Next",
+        "color" : "#480069FF"
+      },
+      "backgroundSelected" : "#FFE1FF99",
+      "text" : {
+        "size" : 20,
+        "colorSelected" : "#000000E5",
+        "font" : "Avenir Next",
+        "color" : "#000000E5"
+      },
+      "iconPaddingHorizontal" : 10,
+      "roundness" : 0,
+      "paddingVertical" : 8,
+      "iconSize" : 30
+    },
+    "search" : {
+      "backgroundSelected" : "#0000001A",
+      "paddingHorizontal" : 8,
+      "spacing" : 0,
+      "text" : {
+        "size" : 30,
+        "colorSelected" : "#000000FF",
+        "font" : "Avenir Next",
+        "color" : "#000000FF"
+      },
+      "background" : "#00000000",
+      "roundness" : 0,
+      "paddingVertical" : 7
+    },
+    "window" : {
+      "color" : "#FFE1FF99",
+      "paddingHorizontal" : 0,
+      "width" : 1024,
+      "borderPadding" : 0,
+      "borderColor" : "#FFE1FF99",
+      "blur" : 18,
+      "roundness" : -11,
+      "paddingVertical" : 8
+    },
+    "credit" : "Myo Myint Aung",
+    "separator" : {
+      "color" : "#CBCBCBF3",
+      "thickness" : 0
+    },
+    "scrollbar" : {
+      "color" : "#00000033",
+      "thickness" : 3
+    },
+    "name" : "Translucent macOS Pink Accent Theme"
+  }
+}

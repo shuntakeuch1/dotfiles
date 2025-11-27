@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.k15t.labs.alfredapp.confluence.quicksearch</string>
+	<key>connections</key>
+	<dict>
+		<key>93941C10-A469-4465-9639-F6CC438E7DB0</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>CDA15A26-51DA-464A-8AFC-8739279E9DD4</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>K15t</string>
+	<key>description</key>
+	<string>Search, open, and edit Confluence content directly from Alfred.</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Confluence Quicksearch v2.0.1</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>CDA15A26-51DA-464A-8AFC-8739279E9DD4</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>c</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>2</integer>
+				<key>runningsubtext</key>
+				<string>Searching Confluence…</string>
+				<key>script</key>
+				<string>PYTHONPATH=./lib python3 ./confluence-quicksearch.py {query} --output alfred</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Enter search text…</string>
+				<key>title</key>
+				<string>Confluence Search</string>
+				<key>type</key>
+				<integer>5</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>93941C10-A469-4465-9639-F6CC438E7DB0</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>![Confluence Quicksearch for Alfred](./assets/banner.png)
+
+# 
+
+# Confluence Quicksearch
+
+The *Confluence Quicksearch* workflow let's you search, open, and edit Confluence content right from Alfred.
+
+## Getting Started
+
+You are almost there: Fill out the URL, Email, and API Token (create here: https://id.atlassian.com/manage/api-tokens) on the right side and click **Import**.
+
+To search for Confluence content, open Alfred with `⌘Space` and enter `c search term`.
+
+## More Information
+
+Get more information and latest releases on https://github.com/skleinei/alfred-confluence</string>
+	<key>uidata</key>
+	<dict>
+		<key>93941C10-A469-4465-9639-F6CC438E7DB0</key>
+		<dict>
+			<key>xpos</key>
+			<real>30</real>
+			<key>ypos</key>
+			<real>15</real>
+		</dict>
+		<key>CDA15A26-51DA-464A-8AFC-8739279E9DD4</key>
+		<dict>
+			<key>xpos</key>
+			<real>245</real>
+			<key>ypos</key>
+			<real>15</real>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>placeholder</key>
+				<string>https://amce.atlassian.net</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>The URL of your Atlassian Cloud instance. (In case of Confluence Data Center/Server: Enter the Confluence URL)</string>
+			<key>label</key>
+			<string>URL</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>CA_URL</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>placeholder</key>
+				<string>name@example.com</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Email adress of your Atlassian ID account. (In case of Confluence Data Center/Server: Enter your Confluence username)</string>
+			<key>label</key>
+			<string>Email</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>CA_USER</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>placeholder</key>
+				<string>rLXdeZ7leBFn5IjxYDFmvt45</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Generate at: https://id.atlassian.com/manage/api-tokens. (In case of Confluence Data Center/Server: Enter your Confluence password)</string>
+			<key>label</key>
+			<string>API Token</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>CA_TOKEN</string>
+		</dict>
+	</array>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>2.0.1</string>
+	<key>webaddress</key>
+	<string>https://www.k15t.com</string>
+</dict>
+</plist>

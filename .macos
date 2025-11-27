@@ -187,3 +187,28 @@ echo "- Dock自動的に隠す: 有効"
 echo "- Finderデフォルト表示: リスト表示"
 echo "- 拡張子表示: 有効"
 echo "- 隠しファイル表示: 有効"
+echo "- Spotlight: 無効化（Alfredを使用）"
+
+###############################################################################
+# Spotlight
+###############################################################################
+
+# Spotlightを無効化（Alfredを使用するため）
+# キーコード64: Spotlight検索（⌘Space）
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 "
+  <dict>
+    <key>enabled</key><false/>
+    <key>value</key><dict>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>49</integer>
+        <integer>1048576</integer>
+      </array>
+      <key>type</key><string>standard</string>
+    </dict>
+  </dict>
+"
+
+echo "Spotlight無効化設定を適用しました（Alfredを優先）"
+

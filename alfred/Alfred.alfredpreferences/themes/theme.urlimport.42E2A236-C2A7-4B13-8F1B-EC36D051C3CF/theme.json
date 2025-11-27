@@ -1,0 +1,64 @@
+{
+  "alfredtheme" : {
+    "result" : {
+      "textSpacing" : 2,
+      "subtext" : {
+        "size" : 12,
+        "colorSelected" : "#517299FF",
+        "font" : "PT Mono",
+        "color" : "#FEFFFE00"
+      },
+      "shortcut" : {
+        "size" : 13,
+        "colorSelected" : "#42424200",
+        "font" : "PT Mono",
+        "color" : "#00000000"
+      },
+      "backgroundSelected" : "#FEFFFE00",
+      "text" : {
+        "size" : 20,
+        "colorSelected" : "#DD5961FF",
+        "font" : "PT Mono",
+        "color" : "#777998FF"
+      },
+      "iconPaddingHorizontal" : 5,
+      "roundness" : 0,
+      "paddingVertical" : 2,
+      "iconSize" : 32
+    },
+    "search" : {
+      "backgroundSelected" : "#B5D5FFFF",
+      "paddingHorizontal" : 8,
+      "spacing" : 10,
+      "text" : {
+        "size" : 36,
+        "colorSelected" : "#000000FF",
+        "font" : "PT Mono",
+        "color" : "#DA5A61FF"
+      },
+      "background" : "#00000000",
+      "roundness" : 0,
+      "paddingVertical" : 10
+    },
+    "window" : {
+      "color" : "#2D3043FF",
+      "paddingHorizontal" : 20,
+      "width" : 680,
+      "borderPadding" : 0,
+      "borderColor" : "#FDFFFD00",
+      "blur" : 0,
+      "roundness" : -52,
+      "paddingVertical" : 20
+    },
+    "credit" : "ietwat",
+    "separator" : {
+      "color" : "#00000000",
+      "thickness" : 4
+    },
+    "scrollbar" : {
+      "color" : "#FEFFFE19",
+      "thickness" : 1
+    },
+    "name" : "Like Soup"
+  }
+}

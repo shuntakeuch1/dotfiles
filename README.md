@@ -74,9 +74,18 @@ IntelliJ IDEAの以下の設定を管理しています：
 - バージョンアップ時は`dotfilesLink.sh`のパスを更新してください
 
 ### Alfred
-Alfredの設定は同期フォルダを指定することで管理できます：
-1. Alfred Preferences → Advanced → Syncing
-2. "Set preferences folder" で任意のフォルダ（例: Dropbox）を指定
-3. 複数PC間で自動的に同期されます
+Alfredの設定をdotfilesで管理しています：
+- **preferences/**: 一般設定、ホットキー、外観など
+- **themes/**: カスタムテーマ（4種類）
+- **workflows/**: カスタムワークフロー（3種類）
 
-**Note**: Alfred Powerparkライセンスが必要です。
+```bash
+# Alfredの設定を適用（手動でコピー）
+cp -r ~/dotfiles/alfred/Alfred.alfredpreferences/* ~/Library/Application\ Support/Alfred/Alfred.alfredpreferences/
+```
+
+**Note**: 
+- Alfred Powerparkライセンスが必要です（ライセンスファイルは除外されています）
+- Spotlightは無効化されています（`.macos`で設定、Alfredを⌘Spaceで起動）
+
+**代替方法**: Alfred Preferences → Advanced → Syncing で同期フォルダを指定することもできます
